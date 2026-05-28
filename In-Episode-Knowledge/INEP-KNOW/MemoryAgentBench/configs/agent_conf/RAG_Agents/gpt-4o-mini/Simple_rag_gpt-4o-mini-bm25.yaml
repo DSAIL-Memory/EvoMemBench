@@ -1,0 +1,8 @@
+agent_name: Simple_rag_bm25
+model: gpt-4o-mini
+temperature: 0.7
+input_length_limit: 10000000
+buffer_length: 200
+output_dir: ./outputs/gpt-4o-mini-bm25
+
+retrieve_num: 10

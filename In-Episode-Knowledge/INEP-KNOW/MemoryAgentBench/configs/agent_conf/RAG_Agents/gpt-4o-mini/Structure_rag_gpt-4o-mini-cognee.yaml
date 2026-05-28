@@ -1,0 +1,9 @@
+agent_name: Structure_rag_cognee
+model: gpt-4o-mini
+temperature: 0.7
+input_length_limit: 1280000
+buffer_length: 2000
+output_dir: ./outputs/gpt-4o-mini-cognee
+
+agent_chunk_size:  4096  
+retrieve_num: 10

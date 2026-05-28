@@ -1,0 +1,145 @@
+# EvoMemBench root ignore rules.
+# Keep benchmark source/data files unless they are generated, local, or too large for GitHub.
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+build/
+dist/
+site/
+*.egg-info/
+*.egg
+.eggs/
+.pdm-build/
+.pdm-python
+__pypackages__/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+pyenv/
+env.bak/
+venv.bak/
+
+# Node / frontend artifacts
+node_modules/
+.pnp/
+.pnp.js
+.yarn/install-state.gz
+.next/
+out/
+dist-ssr/
+coverage/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+!.env-example
+variables.env
+*.pem
+*.key
+*.crt
+*_auth.yaml
+.pypirc
+
+# Local runtime state, outputs, and experiment artifacts
+logs/
+log/
+# outputs/
+output/
+results/
+result/
+runs/
+wandb/
+mlruns/
+tmp/
+temp/
+cache/
+.cache/
+.memos/
+memories/
+memories_official_implementations/
+qdrant_storage/
+chroma/
+chromadb/
+faiss_index/
+*.log
+*.tmp
+*.temp
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.db
+*.db-journal
+
+# Model/checkpoint binaries and local model caches
+EvoMemBench-Memory-Systems/llms/
+**/.huggingface/
+**/huggingface_cache/
+**/hf_cache/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
+*.h5
+*.gguf
+*.ggml
+
+# Large external datasets/assets that should be downloaded separately.
+Cross-Episode-Execution/Embodied-AI/CROSSEP-EMB/alfworld-data/
+
+# Package/download archives
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+*.xz
+*.7z
+*.rar
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Project-specific generated files
+Cross-Episode-Knowledge/CROSSEP-KNOW/old/
+Cross-Episode-Knowledge/CROSSEP-KNOW/docs/
+Cross-Episode-Knowledge/CROSSEP-KNOW/memory_official_implementations/
+Cross-Episode-Knowledge/CROSSEP-KNOW/memories/
+Cross-Episode-Knowledge/CROSSEP-KNOW/memories_official_implementations/
+EvoMemBench-Memory-Systems/MemOS/evaluation/results/
+EvoMemBench-Memory-Systems/MemOS/evaluation/*tmp/
+EvoMemBench-Memory-Systems/mem0/server/history/
+EvoMemBench-Memory-Systems/mem0/openmemory/.openmemory/
+EvoMemBench-Memory-Systems/mem0/openmemory/api/.openmemory*/

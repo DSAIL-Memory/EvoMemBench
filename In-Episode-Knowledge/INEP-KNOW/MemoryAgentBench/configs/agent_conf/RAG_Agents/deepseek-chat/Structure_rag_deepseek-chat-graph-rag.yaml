@@ -1,0 +1,8 @@
+agent_name: Structure_rag_graph_rag
+model: deepseek-chat
+temperature: 1.0
+input_length_limit: 128000
+buffer_length: 500
+output_dir: ./outputs/deepseek-chat-graph-rag
+
+retrieve_num: 10

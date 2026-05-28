@@ -1,0 +1,12 @@
+agent_name: Recurrent_memory_memobrain
+model: deepseek-v3-2-251201
+temperature: 1.0
+input_length_limit: 10000000
+buffer_length: 1000
+output_dir: ./outputs/memobrain-14b-deepseek
+
+agent_chunk_size: 4096
+memobrain_model: TommyChien/MemoBrain-14B
+memobrain_url: http://localhost:8001/v1
+memobrain_api_key: EMPTY
+token_budget: 20000

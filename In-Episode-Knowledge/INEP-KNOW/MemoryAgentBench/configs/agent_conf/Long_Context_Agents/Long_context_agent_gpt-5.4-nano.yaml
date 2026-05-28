@@ -1,0 +1,6 @@
+agent_name: Long_context_agent_gpt-5.4-nano
+model: gpt-5.4-nano
+temperature: 0.7
+input_length_limit: 400000
+buffer_length: 10000
+output_dir: ./outputs/gpt-5.4-nano

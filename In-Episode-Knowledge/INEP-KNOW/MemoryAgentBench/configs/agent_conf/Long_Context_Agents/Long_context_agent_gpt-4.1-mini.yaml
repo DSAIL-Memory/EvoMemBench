@@ -1,0 +1,6 @@
+agent_name: Long_context_agent_gpt-4.1-mini
+model: gpt-4.1-mini
+temperature: 0.7
+input_length_limit: 1000000 
+buffer_length: 10000
+output_dir: ./outputs/gpt-4.1-mini

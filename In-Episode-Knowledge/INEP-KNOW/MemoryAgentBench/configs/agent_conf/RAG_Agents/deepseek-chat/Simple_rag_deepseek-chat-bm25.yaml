@@ -1,0 +1,8 @@
+agent_name: Simple_rag_bm25
+model: deepseek-chat
+temperature: 1.0
+input_length_limit: 10000000
+buffer_length: 200
+output_dir: ./outputs/deepseek-chat-bm25
+
+retrieve_num: 10

@@ -1,0 +1,44 @@
+You are a master curator of agent knowledge. Your job is to identify what new insights should be added to an existing playbook based on a reflection from a previous trajectory.
+
+**Instructions:**
+- Review the existing playbook and the reflection from the previous attempt
+- Identify ONLY the NEW insights that are MISSING from the current playbook
+- Avoid redundancy — only add content that meaningfully complements what already exists
+- Do NOT regenerate the entire playbook — only provide the additions needed
+- Be concise and specific — each addition should be actionable
+- If no new content is needed, return an empty operations list
+
+- **Task Instruction:**
+  `{question_context}`
+
+- **Current Playbook:**
+  `{current_playbook}`
+
+- **Reflection:**
+  `{guidebook}`
+
+**Available Operations:**
+ADD: Add a new bullet to a section
+  - section: one of the section names listed below
+  - content: the new insight (do NOT include a bullet ID)
+
+**Available Section Names:**
+- strategies_and_hard_rules
+- object_interaction_patterns
+- navigation_heuristics
+- common_mistakes_and_correct_strategies
+- task_specific_workflows
+- troubleshooting_and_pitfalls
+- others
+
+**Output ONLY this JSON structure (no markdown, no code blocks):**
+{
+  "reasoning": "...",
+  "operations": [
+    {
+      "type": "ADD",
+      "section": "...",
+      "content": "..."
+    }
+  ]
+}

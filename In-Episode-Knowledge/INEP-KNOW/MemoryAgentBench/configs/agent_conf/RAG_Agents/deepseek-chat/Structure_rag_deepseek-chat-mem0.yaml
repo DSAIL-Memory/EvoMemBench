@@ -1,0 +1,9 @@
+agent_name: Structure_rag_mem0
+model: deepseek-v3-2-251201 
+temperature: 1.0
+input_length_limit: 95000
+buffer_length: 1000
+output_dir: ./outputs/deepseek-chat-mem0
+
+agent_chunk_size: 4096
+retrieve_num: 100

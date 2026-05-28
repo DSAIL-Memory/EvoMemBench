@@ -1,0 +1,6 @@
+agent_name: Long_context_agent_o4-mini
+model: o4-mini
+temperature: 0.7
+input_length_limit: 1000000 
+buffer_length: 1000
+output_dir: ./outputs/o4-mini

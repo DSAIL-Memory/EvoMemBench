@@ -1,0 +1,91 @@
+# Core Python packages
+numpy
+pandas
+pillow
+tqdm
+dill
+toml
+dotenv
+
+# Machine Learning & Deep Learning
+torch
+torchvision
+transformers
+tokenizers
+tiktoken
+timm
+datasets
+sentence_transformers
+bitsandbytes
+deepspeed
+####minference
+
+# NVIDIA CUDA packages
+nvidia-cublas-cu12
+nvidia-cuda-cupti-cu12
+nvidia-cuda-nvrtc-cu12
+nvidia-cuda-runtime-cu12
+nvidia-cudnn-cu12
+nvidia-cufft-cu12
+nvidia-curand-cu12
+nvidia-cusolver-cu12
+nvidia-cusparse-cu12
+nvidia-nccl-cu12
+nvidia-nvjitlink-cu12
+nvidia-nvtx-cu12
+
+# NLP & Text Processing
+nltk
+spacy
+semantic_text_splitter
+langdetect
+editdistance
+rank_bm25
+
+# LangChain ecosystem
+langchain
+langchain-cohere
+langchain-community
+langchain-core
+langchain-experimental
+langchain-groq
+langchain-openai
+langchain-text-splitters
+langchain_google_genai
+
+# AI/LLM APIs
+openai
+anthropic
+google-genai
+litellm
+instructor
+
+# Database & Vector Storage
+###psycopg2
+pgvector
+qdrant_client
+lancedb
+faiss-gpu
+igraph
+
+# Web & API
+fastapi_users
+fastapi-users-db-sqlalchemy
+frontend
+
+# Development & Testing
+rouge_score
+deepeval
+ipdb
+swe-rex
+
+# Utilities & Infrastructure
+matplotlib
+structlog
+limits
+graphistry
+s3fs
+dlt
+accelerate
+
+# mem0ai

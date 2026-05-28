@@ -1,0 +1,10 @@
+agent_name: Structure_rag_amem
+model: deepseek-v3-2-251201
+temperature: 1.0
+input_length_limit: 10000000
+buffer_length: 1000
+output_dir: ./outputs/deepseek-chat-amem
+
+retrieve_num: 10
+embed_model: text-embedding-v4
+evo_threshold: 9999

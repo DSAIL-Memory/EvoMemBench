@@ -1,0 +1,15 @@
+###### agent_config                                                              dataset_config
+
+###main experiments
+###BM25
+Simple_rag_gpt-4o-mini-bm25.yaml                                               Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                          Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                          Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                 Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-raptor.yaml                                           Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                        Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-mem0.yaml                                             Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-cognee.yaml                                           Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                        Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Agentic_memory_gpt-4o-mini-letta.yaml                                           Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml

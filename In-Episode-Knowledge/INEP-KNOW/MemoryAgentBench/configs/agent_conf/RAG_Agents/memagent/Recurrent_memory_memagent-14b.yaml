@@ -1,0 +1,12 @@
+agent_name: Recurrent_memory_memagent
+model: deepseek-chat
+temperature: 1.0
+input_length_limit: 10000000
+buffer_length: 1000
+output_dir: ./outputs/deepseek-chat-memagent-14b
+
+agent_chunk_size: 5000
+memagent_model: BytedTsinghua-SIA/RL-MemoryAgent-14B
+memagent_url: http://localhost:8000/v1
+memagent_api_key: EMPTY
+recurrent_max_new: 1024

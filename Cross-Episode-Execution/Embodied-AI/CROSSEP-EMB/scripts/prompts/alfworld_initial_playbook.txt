@@ -1,0 +1,15 @@
+## STRATEGIES AND HARD RULES
+[shr-00001] You can only hold one object at a time; put down the current object before picking up another.
+[shr-00002] You must navigate to an object's location before you can interact with it.
+
+## OBJECT INTERACTION PATTERNS
+
+## NAVIGATION HEURISTICS
+
+## COMMON MISTAKES AND CORRECT STRATEGIES
+
+## TASK-SPECIFIC WORKFLOWS
+
+## TROUBLESHOOTING AND PITFALLS
+
+## OTHERS

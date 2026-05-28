@@ -1,0 +1,9 @@
+###### agent_config                                                                      dataset_config                                          backbone                          max_test_queries_ablation     
+
+###main experiments
+Embedding_rag_gpt-4.1-mini-text_embedding_3_small.yaml                         Accurate_Retrieval/EventQA/Eventqa_full.yaml                     gpt-4.1-mini                                 100  
+Embedding_rag_gpt-4.1-mini-text_embedding_3_small.yaml                         Conflict_Resolution/Factconsolidation_sh_262k.yaml               gpt-4.1-mini                                 100  
+Structure_rag_gpt-4.1-mini-graph-rag.yaml                                       Accurate_Retrieval/EventQA/Eventqa_full.yaml                     gpt-4.1-mini                                 100
+Structure_rag_gpt-4.1-mini-graph-rag.yaml                                       Conflict_Resolution/Factconsolidation_sh_262k.yaml               gpt-4.1-mini                                 100  
+Agentic_memory_gpt-4.1-mini-self_rag.yaml                                       Accurate_Retrieval/EventQA/Eventqa_full.yaml                     gpt-4.1-mini                                 100  
+Agentic_memory_gpt-4.1-mini-self_rag.yaml                                       Conflict_Resolution/Factconsolidation_sh_262k.yaml               gpt-4.1-mini                                 100  

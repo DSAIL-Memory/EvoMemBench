@@ -1,0 +1,107 @@
+###### agent_config                                                              dataset_config
+
+###main experiments
+###BM25
+Simple_rag_gpt-4o-mini-bm25.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Simple_rag_gpt-4o-mini-bm25.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Simple_rag_gpt-4o-mini-bm25.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Simple_rag_gpt-4o-mini-bm25.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Simple_rag_gpt-4o-mini-bm25.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Simple_rag_gpt-4o-mini-bm25.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###contriever
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Embedding_rag_gpt-4o-mini-contriever.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###text_embedding_3_small
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_small.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###text_embedding_3_large
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Embedding_rag_gpt-4o-mini-text_embedding_3_large.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###hippo_rag_v2_nv
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Structure_rag_gpt-4o-mini-hippo_rag_v2_nv.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###raptor
+Structure_rag_gpt-4o-mini-raptor.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-raptor.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Structure_rag_gpt-4o-mini-raptor.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Structure_rag_gpt-4o-mini-raptor.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Structure_rag_gpt-4o-mini-raptor.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Structure_rag_gpt-4o-mini-raptor.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###graph-rag
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Structure_rag_gpt-4o-mini-graph-rag.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+###mem0
+Structure_rag_gpt-4o-mini-mem0.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-mem0.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Structure_rag_gpt-4o-mini-mem0.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Structure_rag_gpt-4o-mini-mem0.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Structure_rag_gpt-4o-mini-mem0.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Structure_rag_gpt-4o-mini-mem0.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+###cognee
+Structure_rag_gpt-4o-mini-cognee.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Structure_rag_gpt-4o-mini-cognee.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Structure_rag_gpt-4o-mini-cognee.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Structure_rag_gpt-4o-mini-cognee.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Structure_rag_gpt-4o-mini-cognee.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Structure_rag_gpt-4o-mini-cognee.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###self_rag
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Agentic_memory_gpt-4o-mini-self_rag.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###letta
+Agentic_memory_gpt-4o-mini-letta.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Agentic_memory_gpt-4o-mini-letta.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Agentic_memory_gpt-4o-mini-letta.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Agentic_memory_gpt-4o-mini-letta.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Agentic_memory_gpt-4o-mini-letta.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Agentic_memory_gpt-4o-mini-letta.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###Zep
+Structure_rag_gpt-4o-mini-zep.yaml                     Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml                      
+Structure_rag_gpt-4o-mini-zep.yaml                     Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml     
+Structure_rag_gpt-4o-mini-zep.yaml                     Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml               
+Structure_rag_gpt-4o-mini-zep.yaml                     Accurate_Retrieval/EventQA/Eventqa_full.yaml                         
+Structure_rag_gpt-4o-mini-zep.yaml                     Conflict_Resolution/Factconsolidation_sh_262k.yaml                    
+Structure_rag_gpt-4o-mini-zep.yaml                     Conflict_Resolution/Factconsolidation_mh_262k.yaml                    

@@ -1,0 +1,11 @@
+agent_name: Agentic_memory_letta
+model: gpt-4o-mini
+text_embedding: text-embedding-3-small
+system_path: ./configs/agent_conf/letta_system.txt
+temperature: 0.7
+input_length_limit: 10000000
+buffer_length: 5000
+output_dir: ./outputs/gpt-4o-mini-letta
+
+agent_chunk_size: 4096  #32768    
+letta_mode: insert      #chat 

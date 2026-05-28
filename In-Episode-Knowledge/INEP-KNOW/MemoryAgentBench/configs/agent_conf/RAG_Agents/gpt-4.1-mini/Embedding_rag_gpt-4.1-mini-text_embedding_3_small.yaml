@@ -1,0 +1,8 @@
+agent_name: Embedding_rag_text_embedding_3_small
+model: gpt-4.1-mini
+temperature: 0.7
+input_length_limit: 300000  
+buffer_length: 15000
+output_dir: ./outputs/gpt-4.1-mini-text_embedding_3_small
+
+retrieve_num: 10

@@ -1,0 +1,8 @@
+agent_name: Agentic_memory_self_rag
+model: gpt-4o-mini
+temperature: 0.7
+input_length_limit: 280000
+buffer_length: 200
+output_dir: ./outputs/gpt-4o-mini-self_rag
+
+retrieve_num: 10

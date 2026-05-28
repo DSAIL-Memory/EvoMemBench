@@ -1,0 +1,11 @@
+agent_name: Embedding_rag_memos
+model: deepseek-v3-2-251201
+temperature: 1.0
+input_length_limit: 10000000
+buffer_length: 1000
+output_dir: ./outputs/deepseek-chat-memos
+
+retrieve_num: 10
+memos_model: deepseek-v3-2-251201
+embed_model: text-embedding-v4
+vector_dimension: 1024

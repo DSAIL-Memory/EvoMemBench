@@ -1,0 +1,56 @@
+###### agent_config                                                               dataset_config
+
+###main experiments
+###gpt4o-mini
+Long_context_agent_gpt-4o-mini.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Long_context_agent_gpt-4o-mini.yaml                                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Long_context_agent_gpt-4o-mini.yaml                                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Long_context_agent_gpt-4o-mini.yaml                                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Long_context_agent_gpt-4o-mini.yaml                                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Long_context_agent_gpt-4o-mini.yaml                                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+###gpt-4o
+Long_context_agent_gpt-4o.yaml                                           Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Long_context_agent_gpt-4o.yaml                                           Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Long_context_agent_gpt-4o.yaml                                           Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Long_context_agent_gpt-4o.yaml                                           Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Long_context_agent_gpt-4o.yaml                                           Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Long_context_agent_gpt-4o.yaml                                           Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+###gpt-4.1-mini
+Long_context_agent_gpt-4.1-mini.yaml                                     Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Long_context_agent_gpt-4.1-mini.yaml                                     Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Long_context_agent_gpt-4.1-mini.yaml                                     Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Long_context_agent_gpt-4.1-mini.yaml                                     Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Long_context_agent_gpt-4.1-mini.yaml                                     Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Long_context_agent_gpt-4.1-mini.yaml                                     Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+###gemini-2.0-flash
+Long_context_agent_gemini-2.0-flash.yaml                                Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Long_context_agent_gemini-2.0-flash.yaml                                Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Long_context_agent_gemini-2.0-flash.yaml                                Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Long_context_agent_gemini-2.0-flash.yaml                                Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Long_context_agent_gemini-2.0-flash.yaml                                Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Long_context_agent_gemini-2.0-flash.yaml                                Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+
+###claude-3-7-sonnet-20250219
+Long_context_agent_claude-3-7-sonnet-20250219.yaml                      Accurate_Retrieval/Ruler/QA/Ruler_qa1_197k.yaml
+Long_context_agent_claude-3-7-sonnet-20250219.yaml                      Accurate_Retrieval/Ruler/QA/Ruler_qa2_421k.yaml
+Long_context_agent_claude-3-7-sonnet-20250219.yaml                      Accurate_Retrieval/LongMemEval/Longmemeval_s_star.yaml
+Long_context_agent_claude-3-7-sonnet-20250219.yaml                      Accurate_Retrieval/EventQA/Eventqa_full.yaml
+Long_context_agent_claude-3-7-sonnet-20250219.yaml                      Conflict_Resolution/Factconsolidation_sh_262k.yaml
+Long_context_agent_claude-3-7-sonnet-20250219.yaml                      Conflict_Resolution/Factconsolidation_mh_262k.yaml
+
+###o4-mini
+Long_context_agent_o4-mini.yaml                                         Conflict_Resolution/Factconsolidation_mh_6k.yaml       
+Long_context_agent_o4-mini.yaml                                         Conflict_Resolution/Factconsolidation_sh_6k.yaml
+Long_context_agent_o4-mini.yaml                                         Conflict_Resolution/Factconsolidation_mh_32k.yaml
+Long_context_agent_o4-mini.yaml                                         Conflict_Resolution/Factconsolidation_sh_32k.yaml
+
+Long_context_agent_gpt-4o-mini.yaml                                     Ruler_qa2_421k.yaml
+Long_context_agent_gpt-4.1-mini.yaml                                    Ruler_qa2_421k.yaml
+Long_context_agent_gpt-4o.yaml                                          Ruler_qa2_421k.yaml
+
+
+

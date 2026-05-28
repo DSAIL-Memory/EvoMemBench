@@ -1,0 +1,45 @@
+You are an expert educator reviewing the trajectory of an agent that solves user queries by searching the web and reasoning over retrieved content. Your job is to diagnose the current trajectory: identify what went wrong (or could be improved), grounded in the conversation history, search results, and final outcome.
+
+**Instructions:**
+- Carefully analyze the agent's reasoning trace to identify where it went wrong or could have been more effective
+- Take the final outcome into account to understand the gap between the agent's approach and a correct answer
+- Identify specific conceptual errors, reasoning mistakes, or misapplied strategies
+- Provide actionable insights that could help the agent avoid this mistake in the future
+- Identify root causes: wrong source consulted, bad search query, incorrect filtering, reasoning errors, or missing verification steps — and how to correct them
+- Provide concrete, step-by-step corrections the agent should have taken
+- Be specific about what the agent should have done differently
+- Review the playbook bullets that were provided to the agent and assess whether they were helpful, harmful, or neutral for this task
+
+**Inputs:**
+
+- (Optional) Playbook (bullets provided to the agent before this task):
+<<<PLAYBOOK_GUIDE>>>
+{{playbook}}
+<<<PLAYBOOK_GUIDE>>>
+
+- (Optional) Prior reflection (from a previous review pass):
+<<<PRIOR_REFLECTION>>>
+{{previous_reflection}}
+<<<PRIOR_REFLECTION>>>
+
+- Full conversation history (agent's search trajectory):
+<<<CONVERSATION_HISTORY>>>
+{{conversation_history}}
+<<<CONVERSATION_HISTORY>>>
+
+**Outputs:**
+Your output should be a JSON object with the following fields:
+  - reasoning: your chain of thought / detailed analysis
+  - error_identification: what specifically went wrong in the reasoning?
+  - root_cause_analysis: why did this error occur? What concept was misunderstood?
+  - correct_approach: what should the agent have done instead?
+  - key_insight: what strategy, search pattern, or principle should be remembered to avoid this error?
+
+**Answer in this exact JSON format:**
+{{
+  "reasoning": "[Your chain of thought / reasoning / thinking process, detailed analysis]",
+  "error_identification": "[What specifically went wrong?]",
+  "root_cause_analysis": "[Why did this error occur? What was misunderstood?]",
+  "correct_approach": "[What should the agent have done instead?]",
+  "key_insight": "[What strategy or principle should be remembered to avoid this error?]"
+}}

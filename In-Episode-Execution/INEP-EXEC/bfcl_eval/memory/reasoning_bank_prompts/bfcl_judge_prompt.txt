@@ -1,0 +1,8 @@
+You are a helpful assistant that judges whether the agent successfully completed the task.
+
+Task: {task}
+
+Trajectory:
+{trajectory}
+
+Did the agent successfully complete the task? Answer with 'success' or 'fail' only.

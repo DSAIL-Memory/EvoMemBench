@@ -1,0 +1,6 @@
+agent_name: Long_context_agent_deepseek-chat
+model: deepseek-chat
+temperature: 1.0
+input_length_limit: 128000
+buffer_length: 4000
+output_dir: ./outputs/deepseek-chat

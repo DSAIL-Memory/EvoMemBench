@@ -1,0 +1,17 @@
+# Data/Task configuration
+dataset: Accurate_Retrieval
+chunk_size: 4096
+debug: false
+seed: 42
+
+# specific configuration
+context_max_length: 150000
+sub_dataset: longmemeval_s_-1_500
+generation_max_length: 50
+test_files: ''
+demo_files: ''
+use_chat_template: true
+max_test_samples: 500
+shots: 0
+tag: null
+
