@@ -1,6 +1,6 @@
-# EvoMemBench Simplified
+# EvoMemBench-v1
 
-本目录是 EvoMemBench 的简化版入口，包含 in-episode / cross-episode、knowledge / execution 等不同评测任务，以及一组可复用的 memory system 本地依赖。每个任务的环境、数据路径、默认参数和运行脚本略有差异，正式运行前请优先阅读对应子目录下的 `README.md`。
+EvoMemBench 包含 in-episode / cross-episode、knowledge / execution 等不同评测任务。正式运行前请优先阅读对应子目录下的 `README.md`。
 
 ## 1. 目录导航
 
