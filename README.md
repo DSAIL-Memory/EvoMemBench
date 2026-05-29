@@ -98,4 +98,7 @@ DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 4. 先用小样本 smoke test 验证，再启动全量实验。
 
 ## 6. 实验结果记录指南
-大部分数据集所使用的指标可以直接从输出文件中直接读取（除了INEP-KNOW指标较多，待确认具体是哪一个）
+大部分数据集所使用的指标可以直接从输出文件中直接读取，只有INEP-KNOW较为特殊。具体地：
+1. EventQA子集：应记录`eventqa_recall`指标
+2. Longmemeval(s*)子集：应运行`MemoryAgentBench/llm_based_eval/longmem_qa_evaluate.py`后，再记录输出的`Accuracy`
+3. 其余子集：应记录`substring_exact_match`指标
