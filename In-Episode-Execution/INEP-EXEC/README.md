@@ -1,37 +1,55 @@
-# BFCL In-Episode Execution 评测指南
+# BFCL In-Episode Execution
 
-本文档介绍 `INEP-EXEC` 任务的环境配置、数据路径、环境变量，以及新增 memory 系统时需要改动的位置。除特殊说明外，以下命令都建议在当前目录执行：
+This directory contains the in-episode execution benchmark used by EvoMemBench for evaluating how language models and memory systems behave within a single multi-turn task episode. It extends the Berkeley Function Calling Leaderboard (BFCL) evaluation flow with long-context settings, per-turn memory retrieval/update hooks, and scripts for running several memory backends under fixed context budgets.
+
+Run commands below from this directory unless noted otherwise:
 
 ```text
-EvoMemBench-simplified/In-Episode-Execution/INEP-EXEC
+In-Episode-Execution/INEP-EXEC
 ```
 
-## 环境配置
+## What This Benchmark Evaluates
+
+In-episode execution focuses on function-calling tasks where a model must keep track of user goals, tool results, and prior turns while completing one episode. The benchmark can run:
+
+- no-memory baselines;
+- retrieval-style memory systems that inject relevant memories into the latest user message;
+- compression-style memory systems that maintain a compact working context;
+- long-context variants with context budgets such as 8k, 16k, 32k, 64k, and 128k.
+
+The benchmark is split into four task subsets:
+
+- `gorilla_fs`
+- `vehicle_control`
+- `trading_bot`
+- `travel_api`
+
+## Installation
+
+Create a dedicated Python environment and install the package in editable mode:
 
 ```bash
-# 1. 创建并激活专用 Conda 环境
 conda create -n INEP-EXEC python=3.11 -y
 conda activate INEP-EXEC
 
-# 2. 在当前项目根目录以可编辑模式安装 BFCL
 pip install -e .
-
-# 3. 安装 Volcengine Ark SDK，批量评测入口需要使用
 pip install volcengine-python-sdk[ark]
 ```
 
-## Memory 系统依赖安装（可选）
+Bundled evaluation scripts activate the `INEP-EXEC` conda environment by default.
 
-如果只运行 no-memory baseline，可以跳过本节。若要评测下列 memory backend，需要从 `../../EvoMemBench-Memory-Systems/` 安装对应依赖：
+## Optional Memory System Dependencies
+
+The no-memory baseline does not require memory-system packages. To evaluate external memory backends, install the corresponding packages from the repository-level memory systems directory:
 
 ```bash
-pip install -e ../../EvoMemBench-Memory-Systems/mem0       # 提供 `mem0`，发行包名为 mem0ai
-pip install -e ../../EvoMemBench-Memory-Systems/A-mem      # 提供 `agentic_memory`
-pip install -e ../../EvoMemBench-Memory-Systems/MemOS      # 提供 `memos`
-pip install -e ../../EvoMemBench-Memory-Systems/MemoryOS   # 提供 `memoryos`，发行包名为 memoryos-pypi
+pip install -e ../../EvoMemBench-Memory-Systems/mem0
+pip install -e ../../EvoMemBench-Memory-Systems/A-mem
+pip install -e ../../EvoMemBench-Memory-Systems/MemOS
+pip install -e ../../EvoMemBench-Memory-Systems/MemoryOS
 ```
 
-安装完成后，可以用下面的命令检查主要 import 是否可用：
+You can verify the main imports with:
 
 ```bash
 python -c "from mem0 import Memory; \
@@ -40,72 +58,151 @@ python -c "from mem0 import Memory; \
            from memoryos import Memoryos; print('OK')"
 ```
 
-## 数据路径
+## Data Layout
 
-In-episode execution 数据位于：
+Benchmark data is stored under:
 
 ```text
 bfcl_eval/data
 ```
 
-核心文件如下：
+Key files:
 
-| 路径 | 说明 |
+| Path | Purpose |
 | --- | --- |
-| `bfcl_eval/data/BFCL_v4_multi_turn_ours.json` | 主测试集。 |
-| `bfcl_eval/data/possible_answer/BFCL_v4_multi_turn_ours.json` | 标准答案。 |
-| `bfcl_eval/data/multi_turn_func_doc/*.json` | 各类工具/API 的 function doc。 |
-| `bfcl_eval/scripts/in_episode/ids/*.json` | 4 个子集的样本 id 列表；脚本会按 `gorilla_fs`、`vehicle_control`、`trading_bot`、`travel_api` 分组并行运行。 |
+| `bfcl_eval/data/BFCL_v4_multi_turn_ours.json` | Main in-episode test set. |
+| `bfcl_eval/data/possible_answer/BFCL_v4_multi_turn_ours.json` | Reference answers. |
+| `bfcl_eval/data/multi_turn_func_doc/*.json` | Function documentation for each tool/API category. |
+| `bfcl_eval/scripts/in_episode/ids/*.json` | Sample-id lists for the four task subsets. |
 
-## 环境变量
+## Configuration
 
-常用环境变量需要写入 `.env` 文件。
+Create a local `.env` file in this directory. A template is available at:
 
-| 变量 | 说明 |
+```text
+bfcl_eval/.env.example
+```
+
+Common variables:
+
+| Variable | Purpose |
 | --- | --- |
-| `DEEPSEEK_API_KEY` | Ark/DeepSeek batch endpoint key，主模型调用需要。 |
-| `BATCH_MODEL` | 批量推理接入点名称。 |
-| `DASHSCOPE_API_KEY`、`DASHSCOPE_BASE_URL` | mem0、reasoning_bank、amem、memos、memoryos 以及部分 embedding backend 需要。 |
-| `OPENAI_API_KEY`、`OPENAI_BASE_URL` | 可用于 OpenAI-compatible embedding 或替代模型 endpoint。 |
+| `DEEPSEEK_API_KEY` | API key for the Ark/DeepSeek batch endpoint used by the main model. |
+| `BATCH_MODEL` | Batch inference model or endpoint name. |
+| `DASHSCOPE_API_KEY` | Required by several embedding-backed memory systems. |
+| `DASHSCOPE_BASE_URL` | DashScope OpenAI-compatible base URL. |
+| `BFCL_MEMORY_MODEL` | Optional memory-side LLM name. Defaults to `BATCH_MODEL` when unset. |
+| `OPENAI_API_KEY`, `OPENAI_BASE_URL` | Optional OpenAI-compatible endpoint settings for supported models or embeddings. |
+| `MEMOBRAIN_VLLM_URL`, `MEMOBRAIN_MODEL` | Optional MemoBrain service endpoint and model name. |
 
-## 运行脚本
+## Quick Start
 
-现有脚本位于：
+Run a small no-memory smoke test:
+
+```bash
+bash scripts/run_eval_inepisode_fc_8k_lc.sh \
+  --limit-per-subset 1 \
+  --workers 2 \
+  --run-name smoke_no_memory_8k
+```
+
+Run the 8k mem0 in-episode script:
+
+```bash
+bash scripts/run_eval_mem0_inepisode_fc_8k_lc.sh \
+  --limit-per-subset 2 \
+  --workers 2 \
+  --run-name smoke_mem0_8k
+```
+
+Results are written under `in_episode_results/`. Multi-subset scripts also create merged outputs such as:
+
+```text
+combined_summary.txt
+combined_summary.csv
+combined_per_sample.csv
+```
+
+## Running Evaluations
+
+Reusable scripts live in:
 
 ```text
 scripts
 ```
 
-新增或修改运行脚本时，建议优先参考：
-
-- `scripts/run_eval_mem0_inepisode_fc_8k_lc.sh`
-- `scripts/run_eval_mem0_inepisode_fc_16k_lc.sh`
-- `scripts/run_eval_mem0_inepisode_fc_32k_lc.sh`
-- `scripts/run_eval_mem0_inepisode_fc_64k_lc.sh`
-- `scripts/run_eval_mem0_inepisode_fc_128k_lc.sh`
-
-这些脚本可作为 per-sample、Qdrant/DashScope 类 backend 的模板。
-
-新脚本建议按以下格式命名：
+Script names follow this pattern:
 
 ```text
 scripts/run_eval_<memory_type>_inepisode_fc_<budget>_lc.sh
 ```
 
-其中 `<memory_type>` 对应 `--memory-type`，`<budget>` 对应上下文预算，例如 `8k`、`16k`、`32k`、`64k` 或 `128k`。
+Examples:
 
-## 新 Memory 系统适配指南
+```bash
+bash scripts/run_eval_bm25_inepisode_fc_8k_lc.sh
+bash scripts/run_eval_mem0_inepisode_fc_32k_lc.sh
+bash scripts/run_eval_reasoning_bank_inepisode_fc_64k_lc.sh
+bash scripts/run_eval_inepisode_fc_128k_lc.sh
+```
 
-新增一个 memory 系统通常需要适配 4 个位置：
+Useful flags supported by the subset-parallel scripts include:
 
-1. 在 `bfcl_eval/memory/` 下实现 backend。
-2. 在 `bfcl_eval/memory/factory.py` 中注册 `memory_type`。
-3. 在 `bfcl_eval/scripts/in_episode/run_batch_eval.py` 中补充参数 choices 和构造参数分支。
-4. 在 `scripts/` 下新增运行脚本，复用现有 subset 并行和 summary merge 逻辑。
+| Flag | Description |
+| --- | --- |
+| `--limit-per-subset N` | Run only the first `N` samples from each subset. |
+| `--workers N` | Number of workers per subset. |
+| `--run-name NAME` | Human-readable run name used in output paths. |
+| `--context-budget N` | Token budget per LLM call. |
+| `--keep-per-sample-dir` | Keep per-sample memory stores after the run. |
+| `--keep-going` | Merge completed subset summaries even if a subset fails. |
 
-### 1. 实现 Memory backend
+You can also call the Python entry point directly:
 
-常规 memory backend 需要继承 `bfcl_eval.memory.base.Memory`，并至少实现 `utilize()`、`update()` 和 `load_from_disk()`。
+```bash
+python -m bfcl_eval.scripts.in_episode.run_batch_eval \
+  --num-workers 2 \
+  --output-dir in_episode_results \
+  --run-name direct_smoke \
+  --memory-type none \
+  --context-budget 8000 \
+  --mode FC \
+  --limit 4
+```
+
+Supported `--memory-type` values include:
+
+```text
+none, mem0, memagent, memobrain, memos, memoryos, amem,
+agent_kb, agent_workflow, skillweaver, lightweight,
+bm25, qwen3_embedding, graphrag, ace, reasoning_bank
+```
+
+## Memory Backend Lifecycle
+
+Retrieval-style memory backends implement `bfcl_eval.memory.base.Memory`. During an evaluation:
+
+1. `begin_sample()` resets memory usage metrics at the start of each sample.
+2. `utilize(user_text)` runs before each model call. If it returns non-empty text, the text is appended to the latest user message.
+3. `update(turn_delta)` runs after each turn and receives the user, assistant, and tool-message delta for that turn.
+4. `drain_usage()` runs at sample end. Its output is stored in per-sample JSON fields such as `memory_usage` and `memory_totals`.
+
+The summary logic recognizes these memory-cost fields:
+
+```text
+latency_s, input_tokens, output_tokens, embedding_tokens,
+n_llm_calls, n_embed_calls, n_utilize, n_update
+```
+
+Compression-style backends such as `memagent` and `memobrain` do not follow the regular per-turn retrieval injection path. They are handled in `bfcl_eval/model_handler/base_handler.py` through the compression branch that maintains `_compressed_messages`.
+
+## Adding a Memory Backend
+
+Adding a new retrieval-style memory backend usually requires four changes.
+
+### 1. Implement the backend
+
+Create a backend under `bfcl_eval/memory/` and implement at least `utilize()`, `update()`, and `load_from_disk()`:
 
 ```python
 from pathlib import Path
@@ -126,19 +223,19 @@ class NewMemory(Memory):
         self._storage_dir = Path(storage_dir)
         self._storage_dir.mkdir(parents=True, exist_ok=True)
         self._top_k = top_k
-        # clear=True 时，删除或重置本 backend 的持久化文件。
-        # readonly=True 时，update() 必须 no-op。
+
+        if clear:
+            # Reset this backend's persistent files or indexes here.
+            pass
 
     def utilize(self, user_text: str) -> str:
-        # 根据当前 user_text 检索 memory，并返回要追加到 user message 的文本。
-        # 如果没有可用 memory，返回空字符串。
+        # Return memory text to append to the current user message.
         return ""
 
     def update(self, trajectory: list[dict]) -> None:
         if self.readonly:
             return
-        # trajectory 是当前 turn 的消息增量，形如：
-        # [{"role": ..., "content": ...}, ...]
+        # Store the current turn delta.
 
     @classmethod
     def load_from_disk(cls, **backend_kwargs) -> "NewMemory":
@@ -146,23 +243,9 @@ class NewMemory(Memory):
         return cls(**backend_kwargs)
 ```
 
-常规 backend 的生命周期如下：
+### 2. Register the backend
 
-- sample 开始：`begin_sample()` 重置 memory 计费指标。
-- 每个 turn 调模型前：调用 `utilize(user_text)`；如果返回非空文本，会追加到最后一条 user message。
-- 每个 turn 结束：调用 `update(turn_delta)`，写入当前 turn 的 user、assistant、tool 轨迹。
-- sample 结束：调用 `drain_usage()`；结果会写入 per-sample JSON 的 `memory_usage` / `memory_totals`。
-
-如果 backend 需要统计 LLM、embedding 或延迟开销，请使用 `bfcl_eval.memory.metrics` 中的计数工具。汇总逻辑会读取以下字段：
-
-```text
-latency_s, input_tokens, output_tokens, embedding_tokens,
-n_llm_calls, n_embed_calls, n_utilize, n_update
-```
-
-### 2. 注册 factory
-
-在 `bfcl_eval/memory/factory.py` 的 `build_memory()` 中加入新分支：
+Add the backend to `bfcl_eval/memory/factory.py`:
 
 ```python
 if memory_type == "new_memory":
@@ -170,47 +253,38 @@ if memory_type == "new_memory":
     return NewMemory(**kwargs)
 ```
 
-同时更新未知类型报错中的 supported values，确保参数错误时能看到完整的可用列表。
+Also update the supported-values error message.
 
-### 3. 适配 `run_batch_eval.py` 参数
+### 3. Wire the CLI arguments
 
-在 `bfcl_eval/scripts/in_episode/run_batch_eval.py` 中完成两处改动：
+Update `bfcl_eval/scripts/in_episode/run_batch_eval.py`:
 
-1. 将新类型加入 `--memory-type` 的 `choices`。
-2. 在 memory setup 中按依赖类型配置 `memory_build_kwargs`。
+- add the new value to `--memory-type choices`;
+- add the required setup branch for API keys, model names, embeddings, or local services;
+- pass shared constructor arguments through `memory_build_kwargs`.
 
-常见分类如下：
-
-```python
-# 需要 DashScope embedding + Ark LLM
-_EMBEDDING_MEMORY_TYPES = {
-    "mem0", "memos", "memoryos", "amem",
-    "agent_kb", "agent_workflow",
-    "new_memory",
-}
-
-# 只需要 Ark LLM，不需要 embedding
-_LLM_MEMORY_TYPES = {"skillweaver", "lightweight", "new_memory"}
-```
-
-如果新 backend 只使用本地检索，不需要额外 API key，可以走默认分支，让入口只传入：
+For local-only retrieval backends, the default constructor inputs are usually enough:
 
 ```text
 storage_dir, clear, readonly
 ```
 
-如果新 backend 需要指定检索数量，请确保入口传入：
+For embedding-backed or LLM-backed systems, follow the existing `mem0`, `reasoning_bank`, `skillweaver`, or `ace` branches as templates.
 
-```python
-memory_build_kwargs = {
-    "top_k": args.memory_top_k,
-}
+### 4. Add a run script
+
+Add a script under `scripts/` using the naming convention:
+
+```text
+scripts/run_eval_<memory_type>_inepisode_fc_<budget>_lc.sh
 ```
 
-如果新 backend 依赖独立服务，例如 MemoBrain，请新增专用分支，并从环境变量读取 URL/model 等配置。不要复用含义无关的变量。
+The existing `mem0` scripts are useful templates for per-sample isolated stores, subset-parallel execution, and summary merging.
 
-### 4. 注意 compression 类 backend
+## Development Notes
 
-`memagent` 和 `memobrain` 属于压缩/工作记忆路径，不走常规的每 turn `utilize()` / `update()` 注入逻辑。它们在 `bfcl_eval/model_handler/base_handler.py` 中通过 compression 分支维护 `_compressed_messages`。
-
-如果新系统是“检索后注入 user message”的普通 memory，只需要按上面的 `Memory` 接口适配即可。如果新系统需要替换上下文压缩逻辑，除了新增 backend 和 factory，还需要在 `base_handler.py` 的 compression memory 类型集合及压缩分支中做专门适配。
+- Keep per-sample memory isolated when evaluating in-episode behavior only.
+- Use `--memory-scope sample` when backend state should start empty for every sample.
+- Use `--resume` for direct Python runs that should skip completed sample result files.
+- Use `--dry-run` to inspect selected sample ids without calling the model API.
+- For compression-style systems, update both the backend/factory path and the compression logic in `bfcl_eval/model_handler/base_handler.py`.

@@ -1,13 +1,13 @@
 #!/bin/bash
-# 冒烟测试：ACE all-pairs 端到端链路验证（最小规模）
+# Smoke test: ACE all-pairs end-to-end pipeline validation (minimal scale)
 #
-#   Phase 1 in-env:    每种任务类型取 1 条样本，6 个并行
-#   Phase 2 cross-env: 仅 1 波（offset=1）× 6 对，每对 1 条样本
+#   Phase 1 in-env:    take 1 sample from each task type, with 6-way parallelism
+#   Phase 2 cross-env: only 1 wave (offset=1) x 6 pairs, with 1 sample per pair
 #
-# 总计 12 个实验（6 + 6），约 10-20 分钟（batch API 异步等待为主）。
-# 与 eval_alfworld_all_ace_batch_all_pairs.sh 的唯一差异：
-#   - 每任务 1 个 sample index
-#   - Phase 2 只跑 offset=1 一波
+# Total: 12 experiments (6 + 6), about 10-20 minutes, mostly waiting for the async Batch API.
+# Differs from eval_alfworld_all_ace_batch_all_pairs.sh:
+#   - 1 sample index per task
+#   - Phase 2 only runs one wave with offset=1
 
 set -euo pipefail
 
@@ -30,7 +30,7 @@ TASK_PCO="pick_cool_then_place_in_recep"
 TASK_PH="pick_heat_then_place_in_recep"
 TASK_LA="look_at_obj_in_light"
 
-# 每任务仅取首个索引
+# Use only the first index for each task
 INDICES_PAP='[2423]'
 INDICES_PTO='[2421]'
 INDICES_PC='[2422]'

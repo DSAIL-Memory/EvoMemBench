@@ -1,24 +1,24 @@
 #!/bin/bash
-# 使用 mem0 memory 评估 ALFWorld，分两种 setting：
+# Evaluate ALFWorld with mem0 memory in two settings:
 #
-#   Phase 1 in-env:    每种任务类型独立累积 memory，6 个并行，内部串行（--parallel 1）
-#   Phase 2 cross-env: 全部 30 对（6 source × 5 target），5 波 × 6 对 round-robin
+#   Phase 1 in-env:    each task type accumulates its own memory; 6-way parallelism across tasks and serial execution within each task (--parallel 1)
+#   Phase 2 cross-env: all 30 pairs (6 sources x 5 targets), 5 waves x 6 pairs in round-robin order
 #
-# Wave 编排（每波内每个 source 仅出现一次，避免 ChromaDB 并发读锁冲突）：
-#   第 k 波：TASKS[i] → TASKS[(i+k) mod 6]  (i=0..5, k=1..5)
+# Wave scheduling (each source appears only once per wave to avoid ChromaDB concurrent read-lock conflicts):
+#   Wave k: TASKS[i] → TASKS[(i+k) mod 6]  (i=0..5, k=1..5)
 #
-# Phase 2 在 6 个 in-env 全部完成后启动。cross-env 内部 --parallel 1（沿用 supplement）。
+# Phase 2 starts after all 6 in-env runs finish. cross-env uses --parallel 1 internally, following the supplement script.
 #
-# 依赖：
-#   - ALFWorld server 已在 port 36005 运行
+# Dependencies:
+#   - ALFWorld server is already running on port 36005
 #   - pip install -e memory_systems/official_implentations/mem0/ chromadb tiktoken
 #   - pip install 'volcengine-python-sdk[ark]'
-#   - .env 中配置：DASHSCOPE_API_KEY, DASHSCOPE_BASE_URL, DEEPSEEK_API_KEY, BATCH_MODEL
+#   - .env contains: DASHSCOPE_API_KEY, DASHSCOPE_BASE_URL, DEEPSEEK_API_KEY, BATCH_MODEL
 
 set -euo pipefail
 
 # ──────────────────────────────────────────────
-# 命令行参数解析
+# Command-line argument parsing
 # ──────────────────────────────────────────────
 MEM0_TOPK=3
 while [[ $# -gt 0 ]]; do
@@ -37,13 +37,13 @@ LOG_DIR="$OUTPUT_BASE/logs"
 
 PORT=36005
 MAX_ROUNDS=20
-PARALLEL_CROSS=1   # cross-env 内部并行（沿用 supplement 脚本）
+PARALLEL_CROSS=1   # Internal cross-env parallelism, following the supplement script
 
-# API 调用模式: batch（批量 API，需 volcengine-python-sdk[ark] 及 .env 中 BATCH_MODEL）
+# API call mode: batch (requires volcengine-python-sdk[ark] and BATCH_MODEL in .env)
 API_MODE="batch"
 
 # ──────────────────────────────────────────────
-# 各任务类型的名称及测试集索引（从 mappings_test.json 提取）
+# Task type names and test-set indices, extracted from mappings_test.json
 # ──────────────────────────────────────────────
 TASK_PAP="pick_and_place_simple"
 TASK_PTO="pick_two_obj_and_place"
@@ -59,7 +59,7 @@ INDICES_PCO='[2420,2431,2435,2451,2454,2459,2461,2462,2470,2476,2477,2481,2493,2
 INDICES_PH='[2424,2436,2443,2449,2453,2464,2465,2471,2474,2478,2494,2500,2527,2531,2535,2543,2549,2555,2567,2577,2594,2595,2597,2602,2611]'
 INDICES_LA='[2427,2458,2482,2483,2484,2486,2487,2488,2507,2532,2547,2551,2557,2570,2571,2581,2584,2598,2603]'
 
-# 有序任务数组 + 索引映射（用于 wave round-robin）
+# Ordered task array plus index map for wave round-robin scheduling
 TASKS=("$TASK_PAP" "$TASK_PTO" "$TASK_PC" "$TASK_PCO" "$TASK_PH" "$TASK_LA")
 declare -A INDICES_MAP=(
     ["$TASK_PAP"]="$INDICES_PAP"
@@ -74,7 +74,7 @@ mkdir -p "$MEMORY_DIR" "$CONFIG_DIR" "$LOG_DIR"
 echo "$OUTPUT_BASE" > /tmp/alfworld_mem0_all_pairs_current_output
 
 # ──────────────────────────────────────────────
-# 日志和状态工具
+# Logging and status helpers
 # ──────────────────────────────────────────────
 ts() { date '+%H:%M:%S'; }
 log() { echo "[$(ts)] $*"; }
@@ -87,7 +87,7 @@ wait_for_done() {
 }
 
 # ──────────────────────────────────────────────
-# 生成 mem0 config JSON
+# Generate mem0 config JSON
 # ──────────────────────────────────────────────
 generate_config() {
     local task="$1"
@@ -137,7 +137,7 @@ PYEOF
 }
 
 # ──────────────────────────────────────────────
-# in-env 评估：任务在自身测试集上累积并读取 memory
+# In-env evaluation: accumulate and read memory on each task's own test set
 # ──────────────────────────────────────────────
 run_in_env() {
     local task="$1"
@@ -164,7 +164,7 @@ run_in_env() {
 }
 
 # ──────────────────────────────────────────────
-# cross-env 评估：使用 source 的 memory（只读）在 target 的测试集上评估
+# Cross-env evaluation: use the source memory in read-only mode on the target test set
 # ──────────────────────────────────────────────
 run_cross_env() {
     local src_task="$1"
@@ -194,7 +194,7 @@ run_cross_env() {
 }
 
 # ──────────────────────────────────────────────
-# 汇总报告
+# Summary report
 # ──────────────────────────────────────────────
 generate_final_report() {
     local output_base="$1"
@@ -204,7 +204,7 @@ generate_final_report() {
 }
 
 # ──────────────────────────────────────────────
-# 主流程
+# Main flow
 # ──────────────────────────────────────────────
 log "Output dir : $OUTPUT_BASE"
 log "Memory dir : $MEMORY_DIR"
@@ -225,7 +225,7 @@ log "Phase 1: launching 6 in-env tests in parallel"
 log "Phase 2: all 30 cross-env pairs in 5 waves after all in-env complete"
 log "════════════════════════════════════════"
 
-# ── Phase 1: 6 个 in-env 并行 ─────────────────
+# -- Phase 1: 6 in-env runs in parallel ----------------
 run_in_env "$TASK_PAP" "$INDICES_PAP" &
 run_in_env "$TASK_PTO" "$INDICES_PTO" &
 run_in_env "$TASK_PC"  "$INDICES_PC"  &
@@ -233,7 +233,7 @@ run_in_env "$TASK_PCO" "$INDICES_PCO" &
 run_in_env "$TASK_PH"  "$INDICES_PH"  &
 run_in_env "$TASK_LA"  "$INDICES_LA"  &
 
-# ── 等待所有 in-env summary.json 出现 ─────────
+# -- Wait for all in-env summary.json files ------------
 log "Waiting for all 6 in-env summaries..."
 for task in "${TASKS[@]}"; do
     wait_for_done "$OUTPUT_BASE/in_env/$task/summary.json"
@@ -241,8 +241,8 @@ for task in "${TASKS[@]}"; do
 done
 wait || true
 
-# ── Phase 2: 5 波 × 6 对 round-robin（30 对总计）──
-# Wave k: TASKS[i] → TASKS[(i+k) mod 6]，每波内各 source 唯一（ChromaDB 安全）
+# -- Phase 2: 5 waves x 6 round-robin pairs (30 total) --
+# Wave k: TASKS[i] → TASKS[(i+k) mod 6], each source is unique within a wave (ChromaDB-safe)
 log ""
 log "════════════════════════════════════════"
 log "Phase 2: 5 waves × 6 pairs = 30 cross-env (--parallel $PARALLEL_CROSS each)"

@@ -11,5 +11,5 @@ bash ./setup.sh
 ## Launch
 
 ``` sh
-alfworld --host 0.0.0.0 --port 36001
+alfworld --host 0.0.0.0 --port 36005
 ```

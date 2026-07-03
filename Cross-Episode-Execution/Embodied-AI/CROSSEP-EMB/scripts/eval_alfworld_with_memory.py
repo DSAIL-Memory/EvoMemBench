@@ -1,23 +1,24 @@
 #!/usr/bin/env python
 """
-使用 memory 模块评估 ALFWorld。
-在 eval_alfworld_correct.py 基础上增加 memory inject / update 两个阶段：
-- inject: 每轮 episode 开始前，基于初始观察检索记忆并注入 system prompt
-- update: episode 完成后，将完整轨迹存入记忆库
+Evaluate ALFWorld with the memory module.
+Adds two memory phases on top of eval_alfworld_correct.py:
+- inject: before each episode starts, retrieve memories from the initial observation
+  and inject them into the system prompt
+- update: after each episode finishes, store the full trajectory in the memory bank
 
-用法：
+Usage:
   python scripts/eval_alfworld_with_memory.py \
       --port 36005 --start_idx 2420 --num_samples 200 \
       --max_rounds 20 --parallel 20 \
       --memory_type mem0
 
-  # 只读模式（不更新记忆库）：
+  # Read-only mode (do not update the memory store):
       --readonly_memory
 
-  # 禁用记忆（等同于原始 eval_alfworld_correct.py）：
+  # Disable memory (equivalent to the original eval_alfworld_correct.py):
       --no_memory
 
-  # 使用 JSON 配置文件定制 memory 后端：
+  # Use a JSON config file to customize the memory backend:
       --memory_config path/to/mem0_config.json
 """
 import os
@@ -83,11 +84,11 @@ class InstrumentedAPIAgent(APIAgent):
 
 
 class BatchAPIAgent:
-    """使用火山引擎 ARK Batch API 的 LLM Agent。
+    """LLM agent using the Volcano Engine ARK Batch API.
 
-    Token 计数说明：
-    - prompt_tokens 原样返回（不扣除 cached），与 standard 模式数值一致
-    - cached_tokens 单独返回，用于计算缓存命中率
+    Token accounting:
+    - prompt_tokens is returned as-is without subtracting cached tokens, matching standard mode
+    - cached_tokens is returned separately for computing the cache hit rate
     """
 
     def __init__(self, api_key, model):
@@ -95,7 +96,7 @@ class BatchAPIAgent:
             from volcenginesdkarkruntime import Ark
         except ImportError:
             raise ImportError(
-                "Batch 模式需要 volcengine SDK，请运行：\n"
+                "Batch mode requires the volcengine SDK. Please run:\n"
                 "  pip install 'volcengine-python-sdk[ark]'"
             )
         self.client = Ark(api_key=api_key)
@@ -130,14 +131,16 @@ class BatchAPIAgent:
 
 
 class ContextCachingAPIAgent:
-    """使用火山引擎 ARK 上下文缓存 API 的 LLM Agent。
+    """LLM agent using the Volcano Engine ARK context caching API.
 
-    每局 episode 开始时将对话前缀（系统提示词 + Agent 问候）缓存到服务端，
-    后续每轮只发送前缀之后的消息，节省系统提示词的重复传输 token。
+    At the start of each episode, cache the conversation prefix (system prompt +
+    agent greeting) on the server. Later rounds only send messages after the
+    prefix, avoiding repeated transmission of system-prompt tokens.
 
-    Token 计数说明：
-    - prompt_tokens 返回值 = 实际发送 token + cached_tokens（语义总量，与标准模式对齐）
-    - cached_tokens 单独返回，作为缓存命中效率指标
+    Token accounting:
+    - returned prompt_tokens = actually sent tokens + cached_tokens, preserving
+      the semantic total and matching standard mode
+    - cached_tokens is returned separately as a cache-hit efficiency metric
     """
 
     def __init__(self, api_key, base_url, model, context_ttl=3600):
@@ -145,7 +148,7 @@ class ContextCachingAPIAgent:
             from volcenginesdkarkruntime import Ark
         except ImportError:
             raise ImportError(
-                "上下文缓存模式需要 volcengine SDK，请运行：\n"
+                "Context caching mode requires the volcengine SDK. Please run:\n"
                 "  pip install 'volcengine-python-sdk[ark]'"
             )
         self._ark_cls = Ark
@@ -154,7 +157,7 @@ class ContextCachingAPIAgent:
         self.context_ttl = context_ttl
 
     def create_episode_context(self, prefix_messages, max_retries=3, retry_delay=5.0):
-        """将前缀消息创建为 common_prefix 上下文缓存，返回 context_id。"""
+        """Create a common_prefix context cache from prefix messages and return context_id."""
         messages = [{"role": m["role"], "content": m["content"]} for m in prefix_messages]
         for attempt in range(max_retries):
             try:
@@ -173,11 +176,13 @@ class ContextCachingAPIAgent:
 
     def generate(self, conversation, context_id=None, cached_prefix_len=0,
                  max_retries=8, retry_delay=5.0):
-        """生成回复。
+        """Generate a response.
 
-        context_id 不为 None 时，只发送 conversation[cached_prefix_len:] 并附带 context_id。
-        context_id 为 None 时退化为标准完整发送模式。
-        返回 (content, reasoning_content, usage_dict)，usage_dict 含 cached_tokens。
+        When context_id is not None, send only conversation[cached_prefix_len:]
+        with the context_id attached. When context_id is None, fall back to the
+        standard mode that sends the full conversation.
+        Returns (content, reasoning_content, usage_dict), where usage_dict
+        includes cached_tokens.
         """
         if context_id is not None:
             messages = [{"role": c["role"], "content": c["content"]}
@@ -204,7 +209,7 @@ class ContextCachingAPIAgent:
                     if hasattr(response.usage, "prompt_tokens_details") and response.usage.prompt_tokens_details:
                         cached = getattr(response.usage.prompt_tokens_details, "cached_tokens", 0) or 0
                     usage = {
-                        # 语义总 prompt token = 实际发送 + 缓存命中（与标准模式数值一致）
+                        # Semantic total prompt tokens = actually sent + cache hits.
                         "prompt_tokens": raw_pt + cached,
                         "completion_tokens": raw_ct,
                         "cached_tokens": cached,
@@ -223,7 +228,7 @@ class ContextCachingAPIAgent:
 
 def eval_one(data_idx, env_args, agent, max_rounds, memory):
     """Evaluate a single sample. Thread-safe: each call creates its own EnvClient."""
-    sample_t0 = time.time()   # 样本总耗时从此刻开始计时（含 env + memory + LLM）
+    sample_t0 = time.time()   # Total sample time starts here, including env, memory, and LLM.
     client = AlfWorldEnvClient(**env_args)
     client.reset(data_idx)
     state = client.observe()
@@ -247,14 +252,14 @@ def eval_one(data_idx, env_args, agent, max_rounds, memory):
             context_id = agent.create_episode_context(conversation[:2])
             cached_prefix_len = 2
         except Exception as e:
-            print(f"[ContextCache] idx={data_idx} 创建缓存失败，降级为标准模式: {e}")
+            print(f"[ContextCache] idx={data_idx} failed to create cache; falling back to standard mode: {e}")
             context_id = None
             cached_prefix_len = 0
 
     total_pt = 0
     total_ct = 0
     total_cached = 0
-    total_llm_latency = 0.0   # 纯 LLM API 调用耗时（不含 env 交互和 memory）
+    total_llm_latency = 0.0   # Pure LLM API latency, excluding env interaction and memory.
     reward = 0.0
     rounds = 0
 
@@ -286,7 +291,7 @@ def eval_one(data_idx, env_args, agent, max_rounds, memory):
     if memory is not None:
         update_stats = memory.update(conversation, data_idx, reward=reward)
 
-    sample_latency = time.time() - sample_t0   # 样本总墙钟耗时
+    sample_latency = time.time() - sample_t0   # Total wall-clock latency for this sample.
 
     return data_idx, conversation, reward, total_pt, total_ct, total_cached, sample_latency, total_llm_latency, rounds, inject_stats, update_stats
 
@@ -419,11 +424,12 @@ def main():
                              "When provided, overrides --start_idx and --num_samples.")
     parser.add_argument('--api_mode', type=str, default='standard',
                         choices=['standard', 'context_cache', 'batch'],
-                        help="LLM API 调用模式: standard（标准）、context_cache（上下文缓存）"
-                             "或 batch（批量 API，需要 volcengine-python-sdk[ark]）")
+                        help="LLM API call mode: standard, context_cache, "
+                             "or batch (requires volcengine-python-sdk[ark])")
     parser.add_argument('--model', type=str, default='',
-                        help="覆盖推理模型名称。设置后 standard/context_cache 模式改用 "
-                             "OPENAI_API_KEY/OPENAI_BASE_URL；不设则沿用 deepseek 默认行为。")
+                        help="Override the inference model name. When set, standard/context_cache "
+                             "mode uses OPENAI_API_KEY/OPENAI_BASE_URL; otherwise it keeps the "
+                             "default deepseek behavior.")
     args = parser.parse_args()
 
     env_server_base = f"http://localhost:{args.port}"
@@ -711,7 +717,7 @@ def main():
     print(f"  Total Tokens:           {total_tt:,}")
     print(f"  Avg Tokens/Sample:      {total_tt//nd:,}")
     print(f"  Total Cached Tokens:    {total_cached:,}  (agent)  /  {mem_cached:,}  (memory)")
-    print(f"  Total Sample Latency:   {total_lat:.1f}s  (含 env + memory + LLM)")
+    print(f"  Total Sample Latency:   {total_lat:.1f}s  (including env + memory + LLM)")
     print(f"  Avg Sample Latency:     {total_lat/nd:.2f}s")
     print(f"  Total LLM-Only Latency: {total_llm_lat:.1f}s")
     print(f"  Avg LLM-Only Latency:   {total_llm_lat/nd:.2f}s")

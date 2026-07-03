@@ -1,23 +1,23 @@
 #!/bin/bash
-# 使用 GraphRAG memory 评估 ALFWorld，分两种 setting：
+# Evaluate ALFWorld with GraphRAG memory in two settings:
 #
-#   Phase 1 in-env:    每种任务类型独立累积 memory bank，6 个并行，内部串行（--parallel 1）
-#   Phase 2 cross-env: 全部 30 对（6 source × 5 target），5 波 × 6 对 round-robin
+#   Phase 1 in-env:    each task type accumulates its own memory bank; 6-way parallelism across tasks and serial execution within each task (--parallel 1)
+#   Phase 2 cross-env: all 30 pairs (6 sources x 5 targets), 5 waves x 6 pairs in round-robin order
 #
-# Wave 编排（每波内每个 source 仅出现一次）：
-#   第 k 波：TASKS[i] → TASKS[(i+k) mod 6]  (i=0..5, k=1..5)
+# Wave scheduling (each source appears only once per wave):
+#   Wave k: TASKS[i] → TASKS[(i+k) mod 6]  (i=0..5, k=1..5)
 #
-# Phase 2 在 6 个 in-env 全部完成后启动。
+# Phase 2 starts after all 6 in-env runs finish.
 #
-# 依赖：
-#   - ALFWorld server 已在 port 36005 运行
+# Dependencies:
+#   - ALFWorld server is already running on port 36005
 #   - pip install rank_bm25 nltk networkx numpy
-#   - .env 中配置：BATCH_MODEL, DASHSCOPE_API_KEY, DASHSCOPE_BASE_URL, DEEPSEEK_API_KEY
+#   - .env contains: BATCH_MODEL, DASHSCOPE_API_KEY, DASHSCOPE_BASE_URL, DEEPSEEK_API_KEY
 
 set -euo pipefail
 
 # ──────────────────────────────────────────────
-# 命令行参数解析
+# Command-line argument parsing
 # ──────────────────────────────────────────────
 EMBED_TOPK=10
 EMBED_CHUNK_SIZE=1024
@@ -45,7 +45,7 @@ PARALLEL_CROSS=1
 API_MODE="batch"
 
 # ──────────────────────────────────────────────
-# 各任务类型的名称及测试集索引（从 mappings_test.json 提取）
+# Task type names and test-set indices, extracted from mappings_test.json
 # ──────────────────────────────────────────────
 TASK_PAP="pick_and_place_simple"
 TASK_PTO="pick_two_obj_and_place"
@@ -75,7 +75,7 @@ mkdir -p "$MEMORY_DIR" "$CONFIG_DIR" "$LOG_DIR"
 echo "$OUTPUT_BASE" > /tmp/alfworld_graphrag_all_pairs_current_output
 
 # ──────────────────────────────────────────────
-# 日志工具
+# Logging helpers
 # ──────────────────────────────────────────────
 ts() { date '+%H:%M:%S'; }
 log() { echo "[$(ts)] $*"; }
@@ -88,7 +88,7 @@ wait_for_done() {
 }
 
 # ──────────────────────────────────────────────
-# 生成 GraphRAG config JSON
+# Generate GraphRAG config JSON
 # ──────────────────────────────────────────────
 generate_config() {
     local task="$1"
@@ -114,7 +114,7 @@ PYEOF
 }
 
 # ──────────────────────────────────────────────
-# in-env 评估：顺序（parallel=1）以保证写入顺序
+# In-env evaluation: run sequentially (parallel=1) to preserve write order
 # ──────────────────────────────────────────────
 run_in_env() {
     local task="$1"
@@ -141,7 +141,7 @@ run_in_env() {
 }
 
 # ──────────────────────────────────────────────
-# cross-env 评估：复用 source bank（只读）
+# Cross-env evaluation: reuse the source bank in read-only mode
 # ──────────────────────────────────────────────
 run_cross_env() {
     local src_task="$1"
@@ -171,7 +171,7 @@ run_cross_env() {
 }
 
 # ──────────────────────────────────────────────
-# 汇总报告
+# Summary report
 # ──────────────────────────────────────────────
 generate_final_report() {
     local output_base="$1"
@@ -181,7 +181,7 @@ generate_final_report() {
 }
 
 # ──────────────────────────────────────────────
-# 主流程
+# Main flow
 # ──────────────────────────────────────────────
 log "Output dir : $OUTPUT_BASE"
 log "Memory dir : $MEMORY_DIR"
@@ -204,7 +204,7 @@ log "Phase 1: launching 6 in-env tests in parallel (each internally sequential)"
 log "Phase 2: all 30 cross-env pairs in 5 waves after all in-env complete"
 log "════════════════════════════════════════"
 
-# ── Phase 1: 6 个 in-env 并行 ─────────────────
+# -- Phase 1: 6 in-env runs in parallel ----------------
 run_in_env "$TASK_PAP" "$INDICES_PAP" &
 run_in_env "$TASK_PTO" "$INDICES_PTO" &
 run_in_env "$TASK_PC"  "$INDICES_PC"  &
@@ -212,7 +212,7 @@ run_in_env "$TASK_PCO" "$INDICES_PCO" &
 run_in_env "$TASK_PH"  "$INDICES_PH"  &
 run_in_env "$TASK_LA"  "$INDICES_LA"  &
 
-# ── 等待所有 in-env summary.json 出现 ─────────
+# -- Wait for all in-env summary.json files ------------
 log "Waiting for all 6 in-env summaries..."
 for task in "${TASKS[@]}"; do
     wait_for_done "$OUTPUT_BASE/in_env/$task/summary.json"
@@ -220,8 +220,8 @@ for task in "${TASKS[@]}"; do
 done
 wait || true
 
-# ── Phase 2: 5 波 × 6 对 round-robin（30 对总计）──
-# Wave k: TASKS[i] → TASKS[(i+k) mod 6]，每波内各 source 唯一
+# -- Phase 2: 5 waves x 6 round-robin pairs (30 total) --
+# Wave k: TASKS[i] → TASKS[(i+k) mod 6], each source is unique within a wave
 log ""
 log "════════════════════════════════════════"
 log "Phase 2: 5 waves × 6 pairs = 30 cross-env (--parallel $PARALLEL_CROSS each)"

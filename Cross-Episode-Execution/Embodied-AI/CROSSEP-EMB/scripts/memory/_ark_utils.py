@@ -61,7 +61,7 @@ class ArkBatchLLM:
             from volcenginesdkarkruntime import Ark
         except ImportError as e:
             raise ImportError(
-                "ArkBatchLLM 需要 volcengine SDK，请运行：\n"
+                "ArkBatchLLM requires the volcengine SDK. Please run:\n"
                 "  pip install 'volcengine-python-sdk[ark]'"
             ) from e
         self.client = Ark(api_key=api_key)

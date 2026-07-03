@@ -82,6 +82,7 @@ logs/
 
 # Dataset files (large, downloaded separately)
 *.jsonl
+!CL-bench_context_ge5.jsonl
 
 # Local memory store (auto-generated at runtime)
 memories/

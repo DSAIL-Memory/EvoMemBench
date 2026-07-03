@@ -1,13 +1,13 @@
 #!/bin/bash
-# gemini-3-flash-preview 不使用 memory，仅测试 in-env，6 种任务类型并行，每种内部并行度 8
+# gemini-3-flash-preview uses no memory and only tests in-env runs, with 6 task types in parallel and per-task parallelism 8
 #
-# agent 模型: gemini-3-flash-preview（aigcbest OpenAI 兼容端点，从 .env OPENAI_* 读取）
-# api_mode: standard（非 Ark batch）
-# judge: 无（ALFWorld 环境自带 success/fail 判定）
+# agent model: gemini-3-flash-preview (aigcbest OpenAI-compatible endpoint, read from OPENAI_* in .env)
+# api_mode: standard (not Ark batch)
+# judge: none (the ALFWorld environment provides success/fail judgments)
 #
-# 依赖：
-#   - ALFWorld server 已在 port 36005 运行
-#   - .env 中配置：OPENAI_API_KEY, OPENAI_BASE_URL
+# Dependencies:
+#   - ALFWorld server is already running on port 36005
+#   - .env contains: OPENAI_API_KEY, OPENAI_BASE_URL
 
 set -euo pipefail
 
@@ -24,7 +24,7 @@ API_MODE="standard"
 MODEL="gemini-3-flash-preview"
 
 # ──────────────────────────────────────────────
-# 各任务类型的名称及测试集索引（从 mappings_test.json 提取）
+# Task type names and test-set indices, extracted from mappings_test.json
 # ──────────────────────────────────────────────
 TASK_PAP="pick_and_place_simple"
 TASK_PTO="pick_two_obj_and_place"
@@ -46,7 +46,7 @@ ts() { date '+%H:%M:%S'; }
 log() { echo "[$(ts)] $*"; }
 
 # ──────────────────────────────────────────────
-# in-env 评估（无 memory，并行度 8）
+# In-env evaluation without memory, using parallelism 8
 # ──────────────────────────────────────────────
 run_in_env() {
     local task="$1"
@@ -72,7 +72,7 @@ run_in_env() {
 }
 
 # ──────────────────────────────────────────────
-# 汇总报告
+# Summary report
 # ──────────────────────────────────────────────
 generate_final_report() {
     local output_base="$1"
@@ -170,7 +170,7 @@ PYEOF
 }
 
 # ──────────────────────────────────────────────
-# 主流程
+# Main flow
 # ──────────────────────────────────────────────
 log "Output dir : $OUTPUT_BASE"
 log "Port       : $PORT"

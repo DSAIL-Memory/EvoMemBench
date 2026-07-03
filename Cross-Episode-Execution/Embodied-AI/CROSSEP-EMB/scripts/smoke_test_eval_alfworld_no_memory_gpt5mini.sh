@@ -1,11 +1,11 @@
 #!/bin/bash
-# 冒烟测试：gpt-5-mini no-memory baseline 端到端链路验证（最小规模）
+# Smoke test: gpt-5-mini no-memory baseline end-to-end pipeline validation (minimal scale)
 #
-#   in-env only: 每种任务类型取 1 条样本，6 个并行（无 cross-env）
+#   in-env only: take 1 sample from each task type, with 6-way parallelism (no cross-env)
 #
-# 总计 6 个实验。
-# 与 eval_alfworld_all_no_memory_gpt5mini.sh 的唯一差异：
-#   - 每任务 1 个 sample index
+# Total: 6 experiments.
+# Differs from eval_alfworld_all_no_memory_gpt5mini.sh:
+#   - 1 sample index per task
 #   - PARALLEL=1
 
 set -euo pipefail
@@ -29,7 +29,7 @@ TASK_PCO="pick_cool_then_place_in_recep"
 TASK_PH="pick_heat_then_place_in_recep"
 TASK_LA="look_at_obj_in_light"
 
-# 每任务仅取首个索引
+# Use only the first index for each task
 INDICES_PAP='[2423]'
 INDICES_PTO='[2421]'
 INDICES_PC='[2422]'

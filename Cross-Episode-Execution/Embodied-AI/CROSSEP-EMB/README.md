@@ -1,100 +1,199 @@
-# Agent Environments - AlfWorld（CROSSEP-EMB）
+# CROSSEP-EMB: Cross-Episode Embodied AI Evaluation
 
-本目录是 CROSSEP-EMB 的 ALFWorld 跨 Episode 记忆评测工程。整体流程如下：
+`CROSSEP-EMB` is the embodied-AI component of EvoMemBench's cross-episode execution benchmark. It evaluates whether an agent memory system can accumulate reusable experience in ALFWorld tasks and transfer that experience across related task categories.
 
-1. 启动 ALFWorld HTTP 环境服务。
-2. 使用 `scripts/eval_alfworld_all_*_batch_all_pairs.sh` 运行 in-env 与 cross-env 的 all-pairs 实验。
+This directory contains:
 
-## 环境配置
+- an ALFWorld HTTP environment server wrapper;
+- evaluation scripts for memory-augmented ALFWorld agents;
+- all-pairs in-environment and cross-environment experiment launchers;
+- adapters for retrieval, long-term memory, and procedural memory baselines.
 
-### 1. 配置并启动 ALFWorld 服务端环境
+## Evaluation Workflow
 
-先创建用于部署 ALFWorld 服务端的 Conda 环境，并启动环境服务。如果安装过程中遇到问题，请参考 `agentenv-alfworld/README.md` 中的 `Known issues & fixes`。
+The benchmark is organized around two phases:
 
-```sh
+1. **In-environment evaluation**: each ALFWorld task category builds and uses its own memory store.
+2. **Cross-environment transfer**: memory learned from a source task category is reused in read-only mode on a different target category.
+
+The all-pairs scripts run the six ALFWorld task categories as sources and targets, producing 6 in-environment runs and 30 source-to-target transfer runs.
+
+## Repository Layout
+
+```text
+CROSSEP-EMB/
+|-- agentenv-alfworld/          # ALFWorld HTTP environment service
+|-- agentenv/                   # Agent environment client package
+|-- scripts/
+|   |-- eval_alfworld_with_memory.py
+|   |-- generate_alfworld_report.py
+|   |-- memory/                 # Memory backend adapters
+|   |-- smoke_test_*.sh
+|   `-- eval_alfworld_all_*_batch_all_pairs.sh
+`-- README.md
+```
+
+## Setup
+
+We recommend using two Conda environments: one for the ALFWorld server and one for benchmark execution.
+
+### 1. Start the ALFWorld Server
+
+```bash
 conda create --name CROSSEP-EMB-server python=3.9
 conda activate CROSSEP-EMB-server
+
 cd agentenv-alfworld
 bash ./setup.sh
 alfworld --host 0.0.0.0 --port 36005
 ```
 
-可通过下面的命令检查服务是否正常启动：
+You can check that the server is running with:
 
-```sh
+```bash
 curl http://localhost:36005/
-# 如果返回 "This is environment AlfWorld."，说明服务已正常运行
+# Expected response: This is environment AlfWorld.
 ```
 
-### 2. 配置评测运行环境
+If setup fails, see `agentenv-alfworld/README.md`, especially the known-issues section.
 
-再创建用于运行评测脚本的 Conda 环境：
+### 2. Create the Evaluation Environment
 
-```sh
+In a second terminal:
+
+```bash
 conda create --name CROSSEP-EMB python=3.10
 conda activate CROSSEP-EMB
+
 pip install tiktoken
-pip install 'volcengine-python-sdk[ark]'   # 用于 Ark batch-mode agent 以及 memory LLM 调用
+pip install 'volcengine-python-sdk[ark]'
 ```
 
-### 记忆系统依赖（可选）
+The Volcengine Ark SDK is required by the default batch-mode agent and by several memory adapters that call an LLM during memory extraction.
 
-如果需要评测以下 memory baseline，请将对应的 vendored memory system 以可编辑模式安装。下面的路径均相对于当前 `CROSSEP-EMB/` 目录。
+### 3. Optional Memory Backend Dependencies
 
-```sh
-# mem0（ChromaDB vector store + SQLite）
+Some memory baselines rely on vendored packages under `EvoMemBench-Memory-Systems/`. Install only the systems you plan to evaluate. The paths below are relative to this `CROSSEP-EMB/` directory.
+
+```bash
+# mem0: ChromaDB vector store + SQLite history
 pip install -e ../../../EvoMemBench-Memory-Systems/mem0
 pip install chromadb
 
-# A-mem（Zettelkasten-style agentic memory）
+# A-mem: Zettelkasten-style agentic memory
 pip install -e ../../../EvoMemBench-Memory-Systems/A-mem
 
-# MemoryOS（三层层级式记忆）
+# MemoryOS: hierarchical short-, mid-, and long-term memory
 pip install -e ../../../EvoMemBench-Memory-Systems/MemoryOS/memoryos-pypi
 
-# MemOS（基于 Qdrant 的通用文本记忆）
+# MemOS: general text memory with Qdrant support
 pip install -e ../../../EvoMemBench-Memory-Systems/MemOS
 ```
 
-## 环境变量
+Other adapters in `scripts/memory/` may only need standard Python dependencies plus the API keys described below.
 
-`scripts/eval_alfworld_with_memory.py` 会从仓库根目录加载 `.env`。在运行评测前，请先创建 `CROSSEP-EMB/.env`：
+## Environment Variables
 
-```sh
-# 未设置 --model 时，Agent LLM 使用的默认路径
-DEEPSEEK_API_KEY=...
+`scripts/eval_alfworld_with_memory.py` loads environment variables from `CROSSEP-EMB/.env`. Create this file before running evaluations.
+
+```bash
+# Default agent LLM path
 DEEPSEEK_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
-
-# --api_mode batch 以及许多 memory adapter 使用的 Ark batch API 模型
+# (Recommended) if you choose batch inference mode, please fill in this variable
 BATCH_MODEL=...
+# if you choose online inference mode, please fill in this variable
+DEEPSEEK_API_KEY=...
 
-# 设置 --model 时使用的 OpenAI-compatible 路径
+# OpenAI-compatible endpoint used when --model is set
 OPENAI_API_KEY=...
 OPENAI_BASE_URL=...
 
-# DashScope/text-embedding-v4 配置使用的 embedding endpoint
+# DashScope text-embedding-v4 endpoint used by embedding-based adapters
 DASHSCOPE_API_KEY=...
 DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
-## 评测入口
+Keep `.env` local and do not commit API keys.
 
-可参考 `scripts/eval_alfworld_all_mem0_batch_all_pairs.sh` 了解完整运行方式；实际代码入口为 `scripts/eval_alfworld_with_memory.py`。
+## Running Evaluations
 
-## 接入新的记忆系统
+The main Python entry point is:
 
-如果需要评测新的 memory system，需要先实现 adapter，再注册 adapter，最后补充 smoke/full 运行脚本。
+```bash
+python scripts/eval_alfworld_with_memory.py
+```
 
-### 1. 添加 memory adapter
+For most users, it is easier to start from the provided shell scripts.
 
-新建 `scripts/memory/<your_memory>_adapter.py`，并继承 `BaseMemory`：
+Run a smoke test for one backend:
+
+```bash
+bash scripts/smoke_test_eval_alfworld_mem0_all_pairs.sh
+```
+
+Run a full all-pairs experiment:
+
+```bash
+bash scripts/eval_alfworld_all_mem0_batch_all_pairs.sh
+```
+
+The repository includes all-pairs scripts for the following memory types:
+
+| Memory type | Script family |
+| --- | --- |
+| No memory | `*_no_memory_*.sh` |
+| BM25 | `*_bm25_*.sh` |
+| Qwen3 embedding | `*_qwen3_embedding_*.sh` |
+| GraphRAG | `*_graphrag_*.sh` |
+| mem0 | `*_mem0_*.sh` |
+| A-mem | `*_amem_*.sh` |
+| MemoryOS | `*_memoryos_*.sh` |
+| MemOS | `*_memos_*.sh` |
+| AgentKB | `*_agent_kb_*.sh` |
+| AWM / agent workflow memory | `*_awm_*.sh` |
+| Lightweight memory | `*_lightweight_*.sh` |
+| SkillWeaver | `*_skillweaver_*.sh` |
+| ACE | `*_ace_*.sh` |
+| ReasoningBank | `*_reasoning_bank_*.sh` |
+
+Use the `mem0` scripts as a reference when adding a new backend or adapting paths, API parameters, top-k values, and output directories.
+
+## Outputs
+
+All-pairs scripts create an output directory similar to:
+
+```text
+output/<run_name>/
+  configs/        # Auto-generated memory configs for each task category
+  memory/         # Persistent memory stores
+  logs/           # Per-job stdout logs
+  in_env/         # Six task-specific in-environment runs
+  cross_env/      # Source-to-target transfer runs
+  final_report.txt
+```
+
+`final_report.txt` summarizes the in-environment and cross-environment results. Raw episode-level outputs remain under the corresponding `in_env/` and `cross_env/` subdirectories.
+
+## Adding a New Memory Backend
+
+To evaluate a new memory system, add a task-specific adapter, register it in the memory factory, and create smoke/full run scripts.
+
+### 1. Implement an Adapter
+
+Create `scripts/memory/<your_memory>_adapter.py` and subclass `BaseMemory`:
 
 ```python
 from .base import BaseMemory, MemoryCallStats
 
 
 class YourMemory(BaseMemory):
-    def __init__(self, read_only: bool = False, top_k: int = 3, store_path: str = "./storage/your_memory.json", **kwargs):
+    def __init__(
+        self,
+        read_only: bool = False,
+        top_k: int = 3,
+        store_path: str = "./storage/your_memory.json",
+        **kwargs,
+    ):
         super().__init__(memory_type="your_memory", read_only=read_only)
         self._top_k = top_k
         self._store_path = store_path
@@ -102,35 +201,39 @@ class YourMemory(BaseMemory):
     def inject(self, conversation: list[dict]) -> tuple[list[dict], MemoryCallStats]:
         if len(conversation) < 3:
             return conversation, MemoryCallStats()
+
         query = conversation[2]["content"]
-        # 根据 query 检索记忆，并将检索结果追加到 conversation[0]["content"]。
+        # Retrieve memories with query and append them to conversation[0]["content"].
         return conversation, MemoryCallStats()
 
-    def update(self, conversation: list[dict], data_idx: int | None = None, reward: float | None = None) -> MemoryCallStats:
+    def update(
+        self,
+        conversation: list[dict],
+        data_idx: int | None = None,
+        reward: float | None = None,
+    ) -> MemoryCallStats:
         if self.read_only:
             return MemoryCallStats()
-        # 存储轨迹或提取后的记忆。若系统只学习成功轨迹，可使用 reward >= 1 作为判断条件。
+
+        # Store the trajectory or extracted memories.
+        # If the backend should learn only from successful episodes,
+        # skip updates when reward is not None and reward < 1.
         return MemoryCallStats()
 
     def load_from_disk(self, **kwargs) -> None:
-        # 可选：供 --memory_load_args 使用的重新加载钩子。
+        # Optional reload hook used by --memory_load_args.
         return None
 ```
 
-Adapter 需要满足以下约定：
+Adapter contract:
 
-- `inject()` 会在环境 reset 之后、第一次调用 agent LLM 之前执行一次。
-- `conversation[2]["content"]` 是 ALFWorld 的第一条 observation，默认应将其作为检索 query。
-- 将检索到的内容注入 `conversation[0]["content"]`，通常建议放在清晰的标题下，例如 `--- Retrieved Memories ---`。
-- `inject()` 需要返回修改后的 conversation，以及一个 `MemoryCallStats` 实例。
-- `update()` 会在 episode 结束后，以完整轨迹为输入执行一次。
-- 当 `read_only=True` 时，`update()` 必须为空操作，因为 cross-env 脚本依赖这一行为。
-- 如果 memory system 只应从成功轨迹中学习，请在 `reward is not None and reward < 1` 时跳过更新。
-- 所有持久化数据都应存放到配置中指定的路径下，最好放在脚本创建的 `$MEMORY_DIR` 内。
+- `inject()` is called once after environment reset and before the first agent LLM call.
+- `update()` is called once after each episode with the completed trajectory.
+- Persistent data should be written under paths supplied in the runtime config, preferably inside the script-created `$MEMORY_DIR`.
 
-### 2. 注册 adapter
+### 2. Register the Adapter
 
-编辑 `scripts/memory/base.py`：
+Edit `scripts/memory/base.py`:
 
 ```python
 if memory_type == "your_memory":
@@ -138,13 +241,13 @@ if memory_type == "your_memory":
     return YourMemory(read_only=read_only, **kwargs)
 ```
 
-同时更新未知类型的报错信息，确保新的 `memory_type` 出现在支持列表中。
+Also update the unknown-type error message so `your_memory` appears in the supported list.
 
-### 3. 定义配置参数
+### 3. Define Runtime Configuration
 
-通过 `--memory_config` 传入 JSON，暴露运行时可调整的参数。不要在 adapter 中硬编码实验输出路径或 API key。
+Pass backend options through `--memory_config` as JSON. Avoid hard-coding experiment output paths or API keys inside the adapter.
 
-推荐的最小配置结构如下：
+A minimal config usually looks like:
 
 ```json
 {
@@ -163,33 +266,20 @@ if memory_type == "your_memory":
 }
 ```
 
-建议在 adapter 构造函数中设置保守默认值：
+Suggested defaults:
 
-- 对于纯 RAG 方法，建议设置 `top_k=10`；存储 trajectory chunk 时，建议设置 `chunk_size=1024`。
-- 对于涉及 LLM 抽取与精炼的 memory，建议设置 `top_k=3`。
+- For pure retrieval-augmented memory, start with `top_k=10`.
+- When storing trajectory chunks, start with `chunk_size=1024`.
+- For LLM-extracted or refined memories, start with `top_k=3`.
 
-## 运行已有脚本
+### 4. Add Run Scripts
 
-端到端 smoke test 单个 memory backend：
+Copy an existing smoke-test script and full all-pairs script, then update:
 
-```sh
-bash scripts/smoke_test_eval_alfworld_mem0_all_pairs.sh
-```
+- `memory_type`;
+- generated config fields;
+- output directory name;
+- backend-specific dependency checks;
+- any top-k, chunking, embedding, or LLM parameters.
 
-运行完整 all-pairs 实验：
-
-```sh
-bash scripts/eval_alfworld_all_mem0_batch_all_pairs.sh
-```
-
-all-pairs memory 脚本会生成如下目录结构：
-
-```text
-output/<run_name>/
-  configs/        # 每个任务自动生成的 memory config
-  memory/         # 持久化的 memory store
-  logs/           # 每个 job 的 stdout 日志
-  in_env/         # 六个 task-specific in-env 运行结果
-  cross_env/      # source-to-target transfer 运行结果
-  final_report.txt
-```
+Run the smoke test before launching the full all-pairs evaluation.

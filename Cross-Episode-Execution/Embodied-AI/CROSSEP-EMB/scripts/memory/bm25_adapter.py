@@ -307,7 +307,7 @@ if __name__ == "__main__":
 
     m = Bm25Memory(memory_dir=TEST_DIR, top_k=3)
 
-    # 模拟一条 ALFWorld 对话（系统提示 + 首次回复 + 第一轮环境观察 + 动作）
+    # Mock one ALFWorld conversation (system prompt + first reply + first environment observation + action)
     conv = [
         {"role": "user",      "content": "You are an agent in an ALFWorld household environment. Complete the task by issuing actions."},
         {"role": "assistant", "content": "I will complete the task step by step."},
@@ -322,22 +322,22 @@ if __name__ == "__main__":
         {"role": "user",      "content": "Task completed! Reward: 1"},
     ]
 
-    # 1. 首次 inject：无记忆，应返回原 conversation
+    # 1. First inject: no memories, should return the original conversation
     new_conv, s = m.inject(conv)
     assert new_conv[0]["content"] == conv[0]["content"], "FAIL: first inject should not modify conv"
     print(f"[1] inject (empty bank): latency={s.latency*1000:.1f}ms  ✓")
 
-    # 2. update：写入 JSONL
+    # 2. update: write to JSONL
     s2 = m.update(conv, data_idx=2420)
     print(f"[2] update: input_tokens={s2.input_tokens}  latency={s2.latency*1000:.1f}ms  chunks={len(m._memory_bank)}  ✓")
 
-    # 3. 再次 inject：应能召回
+    # 3. Second inject: should retrieve the memory
     new_conv2, s3 = m.inject(conv)
     assert "--- Retrieved Memories ---" in new_conv2[0]["content"], "FAIL: no memories injected"
     print(f"[3] inject (with memory): input_tokens={s3.input_tokens}  latency={s3.latency*1000:.1f}ms  ✓")
     print(f"    system prompt tail: ...{new_conv2[0]['content'][-120:]!r}")
 
-    # 4. read_only：update 应为空操作，bank 不变
+    # 4. read_only: update should be a no-op and the bank should remain unchanged
     m_ro = Bm25Memory(memory_dir=TEST_DIR, top_k=3, read_only=True)
     lines_before = len(open(m_ro._bank_path).readlines())
     s4 = m_ro.update(conv, data_idx=9999)
@@ -346,7 +346,7 @@ if __name__ == "__main__":
     assert s4.input_tokens == 0, "FAIL: readonly stats should be zero"
     print(f"[4] readonly update: bank lines unchanged ({lines_before})  ✓")
 
-    # 5. 持久化重载
+    # 5. Persistent reload
     m2 = Bm25Memory(memory_dir=TEST_DIR, top_k=3)
     assert len(m2._memory_bank) == len(m._memory_bank), "FAIL: reload count mismatch"
     print(f"[5] reload from disk: {len(m2._memory_bank)} chunk(s)  ✓")

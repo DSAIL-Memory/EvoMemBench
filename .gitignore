@@ -60,6 +60,7 @@ lerna-debug.log*
 
 # Secrets and local environment files
 .env
+**/.env
 .env.*
 !.env.example
 !.env-example
@@ -135,9 +136,7 @@ Cross-Episode-Execution/Embodied-AI/CROSSEP-EMB/alfworld-data/
 # Project-specific generated files
 Cross-Episode-Knowledge/CROSSEP-KNOW/old/
 Cross-Episode-Knowledge/CROSSEP-KNOW/docs/
-Cross-Episode-Knowledge/CROSSEP-KNOW/memory_official_implementations/
 Cross-Episode-Knowledge/CROSSEP-KNOW/memories/
-Cross-Episode-Knowledge/CROSSEP-KNOW/memories_official_implementations/
 EvoMemBench-Memory-Systems/MemOS/evaluation/results/
 EvoMemBench-Memory-Systems/MemOS/evaluation/*tmp/
 EvoMemBench-Memory-Systems/mem0/server/history/

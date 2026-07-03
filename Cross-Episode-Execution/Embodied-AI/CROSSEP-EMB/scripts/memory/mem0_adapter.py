@@ -61,7 +61,7 @@ class Mem0Memory(BaseMemory):
                 from volcenginesdkarkruntime import Ark
             except ImportError as e:
                 raise ImportError(
-                    "ark_batch_config 需要 volcengine SDK，请运行：\n"
+                    "ark_batch_config requires the volcengine SDK. Please run:\n"
                     "  pip install 'volcengine-python-sdk[ark]'"
                 ) from e
             self._ark_client = Ark(api_key=ark_batch_config["api_key"])

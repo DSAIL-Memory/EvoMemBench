@@ -1,56 +1,74 @@
-# 一句话总结用法
+# Difficulty-Tier Score Table Kit
+
+This utility generates an Excel-ready TSV summary from EvoMemBench / CROSSEP-KNOW
+graded result files. It groups results by task category and difficulty tier
+(`Easy`, `Medium`, and `Hard`) so different methods can be compared at a more
+interpretable level than raw per-sample scores.
 
 ```bash
 python3 generate_difficulty_table.py <results_folder>
 ```
 
-# CL-bench 难度分桶评分表生成工具
+The script uses only the Python 3 standard library.
 
-给定任意一个包含 `*_graded.jsonl` 文件的结果文件夹，自动按预定义的难度分桶（Easy / Medium / Hard）汇总各 category 的平均分，生成可直接粘贴进 Excel 的 TSV 表格。
+## What It Does
 
----
+Given a folder containing one or more `*_graded.jsonl` files, the script:
 
-## 目录结构
+1. Reads each graded JSONL file.
+2. Computes the mean score for each `context_id`.
+3. Looks up the precomputed difficulty tier for each context.
+4. Aggregates scores by `category x tier`.
+5. Writes a tab-separated table that can be pasted directly into Excel,
+   Google Sheets, or other spreadsheet tools.
 
+By default, the output is written to:
+
+```text
+<results_folder>/difficulty_score_table.tsv
 ```
+
+## Files
+
+```text
 tier_table_kit/
-├── generate_difficulty_table.py   # 主脚本
-├── difficulty_tiers.csv           # 预计算的分桶表（120 个 context）
-└── README.md                      # 本文档
+├── generate_difficulty_table.py   # Main CLI script
+├── difficulty_tiers.csv           # Precomputed tier assignments for 120 contexts
+└── README.md                      # Usage guide
 ```
 
----
+## Difficulty Tiers
 
-## 依赖
+`difficulty_tiers.csv` assigns each context to a difficulty tier using the
+sample pass rate of the `deepseek-v3-2-251201` no-memory baseline. Tiering is
+performed separately within each category, so `Easy`, `Medium`, and `Hard`
+reflect relative difficulty among contexts of the same type.
 
-仅使用 Python 3 标准库，**无需额外安装任何包**。
+| Tier | Interpretation | Assignment Rule |
+| --- | --- | --- |
+| Hard | The baseline rarely solves these contexts | Lowest third within the category |
+| Medium | The baseline solves these contexts partially | Middle third within the category |
+| Easy | The baseline usually solves these contexts well | Highest third within the category |
 
----
+The bundled tier table covers 120 contexts:
 
-## 分桶逻辑说明
-
-`difficulty_tiers.csv` 基于 **deepseek-v3-2-251201 no-memory baseline** 的 sample pass rate，在每个 category 内部独立三等分：
-
-| Tier | 含义 | 分配方式 |
-|------|------|----------|
-| Hard | 模型原本几乎答不出来 | 每类分数最低的 1/3 contexts |
-| Medium | 模型能部分作答 | 每类分数中间的 1/3 contexts |
-| Easy | 模型原本就能答好 | 每类分数最高的 1/3 contexts |
-
-各 category 的 context 数量：
-
-| Category | Hard | Medium | Easy | 合计 |
-|----------|------|--------|------|------|
+| Category | Hard | Medium | Easy | Total |
+| --- | ---: | ---: | ---: | ---: |
 | Domain Knowledge Reasoning | 15 | 15 | 15 | 45 |
 | Empirical Discovery & Simulation | 1 | 1 | 2 | 4 |
 | Procedural Task Execution | 13 | 13 | 15 | 41 |
 | Rule System Application | 10 | 10 | 10 | 30 |
 
----
+## Input Format
 
-## 对输入文件的要求
+Each input folder should contain one or more files matching:
 
-结果文件夹中的每个 `*_graded.jsonl`，每行需包含以下字段：
+```text
+*_graded.jsonl
+```
+
+Each line in a graded JSONL file should be a JSON object with at least the
+following fields:
 
 ```json
 {
@@ -62,52 +80,88 @@ tier_table_kit/
 }
 ```
 
-- `score`：二元评分，0 或 1。
-- `context_id` 必须在 `difficulty_tiers.csv` 中有对应记录（即属于已评测的 120 个 contexts）。
+Field requirements:
 
----
+| Field | Description |
+| --- | --- |
+| `metadata.context_id` | Context identifier. It must appear in `difficulty_tiers.csv`. |
+| `metadata.context_category` | Category name for the context. |
+| `score` | Binary score, usually `0` or `1`. |
 
-## 使用方法
+Contexts that are not present in the tier table are skipped.
 
-### 基本用法
+## Usage
 
-```bash
-python3 generate_difficulty_table.py <results_folder>
-```
-
-输出文件默认保存在 `<results_folder>/difficulty_score_table.tsv`。
-
-### 示例
+### Basic Usage
 
 ```bash
-# 单个方法的结果文件夹
 python3 generate_difficulty_table.py path/to/context_new_method
-
-# 指定输出路径
-python3 generate_difficulty_table.py path/to/context_new_method --output my_table.tsv
 ```
 
-### 参数说明
+### Custom Output Path
 
-| 参数 | 说明 | 默认值 |
-|------|------|--------|
-| `folder` | 包含 `*_graded.jsonl` 的结果文件夹（必填） | — |
-| `--tiers` | `difficulty_tiers.csv` 路径 | 脚本同目录下的 `difficulty_tiers.csv` |
-| `--output` | 输出 TSV 路径 | `<folder>/difficulty_score_table.tsv` |
-
----
-
-## 输出格式
-
-生成的 TSV 包含两行表头，可直接粘贴到 Excel 中（Tab 分隔，自动分列）：
-
-```
-(空)    Domain Knowledge Reasoning          ...  Overall
-Method  Easy  Medium  Hard  Easy  Medium  Hard  ...  Easy  Medium  Hard
-方法名   xx.x  xx.x   xx.x  ...                      xx.x   xx.x   xx.x
+```bash
+python3 generate_difficulty_table.py path/to/context_new_method \
+  --output my_table.tsv
 ```
 
-- 数值为各 (category × tier) 桶内所有 context 的**平均 sample pass rate**，以百分比表示（保留 1 位小数）。
-- **Overall** 列 = 四个 category 同 tier 值的简单平均数。
-- 一个文件夹中有多个 `*_graded.jsonl` 时，每个文件占一行，行标签自动附加时间戳以区分。
-- 行标签自动从文件夹名（`context_` 前缀会被剥离）和文件名（提取 `topkN` 或 `nomemory`）拼合生成，例如 `mem0(topk10)`。
+### Custom Tier File
+
+```bash
+python3 generate_difficulty_table.py path/to/context_new_method \
+  --tiers path/to/custom_difficulty_tiers.csv
+```
+
+## CLI Arguments
+
+| Argument | Required | Default | Description |
+| --- | --- | --- | --- |
+| `folder` | Yes | None | Folder containing `*_graded.jsonl` files. |
+| `--tiers` | No | `difficulty_tiers.csv` next to the script | CSV file containing context difficulty assignments. |
+| `--output` | No | `<folder>/difficulty_score_table.tsv` | Path for the generated TSV table. |
+
+## Output Format
+
+The generated TSV has two header rows:
+
+```text
+        Domain Knowledge Reasoning          ...     Overall
+Method  Easy    Medium  Hard                ...     Easy    Medium  Hard
+```
+
+Each data row corresponds to one graded result file. Values are percentages
+with one decimal place.
+
+For each `category x tier` cell, the value is:
+
+```text
+mean sample pass rate over all contexts in that category and tier
+```
+
+The `Overall` columns are simple averages across the available category-level
+values for the same difficulty tier.
+
+When a folder contains multiple `*_graded.jsonl` files, each file becomes a
+separate row. The script builds compact row labels from the folder and file
+names, including variants such as `topk10` or `nomemory` when they can be
+inferred.
+
+## Example
+
+```bash
+python3 generate_difficulty_table.py results/context_mem0_topk10
+```
+
+Example console output:
+
+```text
+Loaded 120 tier assignments from difficulty_tiers.csv
+Found 1 graded file(s)
+  example_topk10_graded.jsonl
+    -> label: mem0(topk10),  contexts loaded: 120
+
+Saved: results/context_mem0_topk10/difficulty_score_table.tsv
+```
+
+You can open the resulting TSV directly in a spreadsheet editor or paste it
+into an existing benchmark comparison table.
