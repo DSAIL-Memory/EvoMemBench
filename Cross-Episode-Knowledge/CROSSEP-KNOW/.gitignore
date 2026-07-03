@@ -72,7 +72,9 @@ venv.bak/
 .LSOverride
 
 # Output files
-outputs/
+outputs/*
+!outputs/context_nomemory/
+outputs/context_nomemory/*
 logs/
 *.log
 
@@ -83,6 +85,8 @@ logs/
 # Dataset files (large, downloaded separately)
 *.jsonl
 !CL-bench_context_ge5.jsonl
+!outputs/context_nomemory/CL-bench_context_ge5_deepseek-v3-2-251201_ctx_nomemory.jsonl
+!outputs/context_nomemory/CL-bench_context_ge5_deepseek-v3-2-251201_ctx_nomemory_graded.jsonl
 
 # Local memory store (auto-generated at runtime)
 memories/

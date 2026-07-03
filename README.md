@@ -46,6 +46,28 @@ The four cells in the taxonomy are instantiated as follows:
 | In-episode | Retain and revise facts, constraints, and long-context evidence during one episode. | Maintain task progress, tool outputs, intermediate results, and unresolved subgoals during one episode. |
 | Cross-episode | Accumulate reusable knowledge from earlier episodes sharing the same context. | Distill reusable procedures, action routines, and environment-specific experience for later episodes. |
 
+## Included Baseline Outputs
+
+The repository includes a ready-to-use no-memory baseline for CrossEp-Know:
+
+```text
+Cross-Episode-Knowledge/CROSSEP-KNOW/outputs/context_nomemory/
+|-- CL-bench_context_ge5_deepseek-v3-2-251201_ctx_nomemory.jsonl
+`-- CL-bench_context_ge5_deepseek-v3-2-251201_ctx_nomemory_graded.jsonl
+```
+
+This baseline was generated on the 884-sample `CL-bench_context_ge5.jsonl` split with `--no-memory`, so retrieval, memory injection, and memory extraction are disabled. Each raw record stores the prompt messages, model output, rubrics, metadata, `memory_type: "none"`, empty retrieved memory, and latency/token statistics. The graded file adds LLM-as-judge results and can be used directly as the default comparison target for CrossEp-Know memory runs.
+
+The current graded baseline scores 211 / 884 overall. Category-level scores are:
+
+| Category | Correct / Total | Accuracy |
+| --- | ---: | ---: |
+| Rule System Application | 73 / 257 | 28.40% |
+| Domain Knowledge Reasoning | 71 / 294 | 24.15% |
+| Procedural Task Execution | 66 / 306 | 21.57% |
+| Empirical Discovery & Simulation | 1 / 27 | 3.70% |
+| Overall | 211 / 884 | 23.87% |
+
 ## Repository Layout
 
 ```text
@@ -173,6 +195,18 @@ When adding a new memory system or experiment configuration, the recommended wor
 2. Find an existing `mem0` script for that task.
 3. Copy the script and update the memory type, config paths, output directory, API parameters, and smoke-test limits.
 4. Run a small smoke test before launching the full evaluation.
+
+For CrossEp-Know, compare memory-augmented runs against the included no-memory baseline unless you intentionally regenerate it:
+
+```bash
+cd Cross-Episode-Knowledge/CROSSEP-KNOW
+bash run_context_memory.sh \
+    --memory-type <memory_backend> \
+    --top-k 10 \
+    --baseline outputs/context_nomemory/CL-bench_context_ge5_deepseek-v3-2-251201_ctx_nomemory_graded.jsonl
+```
+
+To regenerate the baseline, run `bash scripts/nomemory_deepseek-v3.2.sh` from `Cross-Episode-Knowledge/CROSSEP-KNOW/`.
 
 ## Memory Systems
 
