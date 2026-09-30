@@ -1,0 +1,33 @@
+# Local-Qwen RAG agent — for the T4 shadow-neutrality check (HNAV_MODE off vs shadow).
+#
+# Three things here are load-bearing. Changing any of them breaks the test:
+#
+# 1. agent_name CONTAINS "rag_qwen3_embedding_4b".
+#    agent.py:1710 does a substring match to pick the embedder:
+#        elif any(a in self.agent_name for a in ["rag_qwen3_embedding_4b"]):
+#            embedding_model_name = "Qwen/Qwen3-Embedding-4B"
+#    Rename this field and you fall through to `raise NotImplementedError`.
+#
+# 2. model does NOT contain the substring "deepseek".
+#    agent.py:1730 does `use_deepseek = "deepseek" in self.model` and then passes
+#    use_ark_batch=use_deepseek, which routes through volcenginesdkarkruntime.Ark
+#    — a cloud batch API you do not have keys for. A non-deepseek name falls
+#    through to RAGSystem's `self.llm = OpenAI()` branch (embedding_retriever.py:298),
+#    which honours OPENAI_BASE_URL from the SHELL environment.
+#    Set this to whatever :8000 actually serves, minus any "deepseek" substring.
+#
+# 3. temperature is 0.
+#    The T4 acceptance criterion is BYTE-IDENTICAL model output between
+#    HNAV_MODE=off and HNAV_MODE=shadow. At the shipped 0.7 there is no
+#    byte-identity claim to make and the test means nothing.
+#
+# output_dir is overridden per arm on the command line so the two runs cannot
+# overwrite each other. See RUNBOOK.md §6.
+
+agent_name: Embedding_rag_qwen3_embedding_4b_local
+model: Qwen/Qwen3-4B-Instruct-2507
+temperature: 0
+input_length_limit: 10000000
+buffer_length: 200
+output_dir: ./outputs/local-qwen-qwen3_embedding_4b
+retrieve_num: 10

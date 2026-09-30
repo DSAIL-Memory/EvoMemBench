@@ -1,0 +1,61 @@
+{
+ "source": "stage0_results/t4_s2_trials_summary.json",
+ "off_sem_per_run_pct": [
+  26.0,
+  27.0,
+  28.000000000000004,
+  27.0,
+  26.0,
+  26.0,
+  27.0,
+  26.0,
+  27.0,
+  31.0
+ ],
+ "shadow_sem_per_run_pct": [
+  26.0,
+  27.0,
+  26.0,
+  28.000000000000004,
+  26.0
+ ],
+ "off_mean_recomputed": 27.1,
+ "shadow_mean_recomputed": 26.6,
+ "noise_floor": {
+  "within_off_mismatch_mean": 0.030444444444444448,
+  "within_off_mismatch_max": 0.09,
+  "within_shadow_mismatch_mean": 0.022,
+  "cross_mismatch_mean": 0.024200000000000003,
+  "n_pairs": {
+   "within_off": 45,
+   "within_shadow": 10,
+   "cross": 50
+  }
+ },
+ "tost": {
+  "diff": 0.5,
+  "se": 0.6262764742685316,
+  "df": 12.414414913047803,
+  "p_lower": 0.0008377318146739476,
+  "p_upper": 0.016596311205614108,
+  "equivalent": true
+ },
+ "permutation": {
+  "observed_delta": -0.004709090909090909,
+  "p_two_sided": 0.47465253474652536,
+  "reps": 10000,
+  "seed": 20260814
+ },
+ "decision_rule_result": {
+  "supports_substrate_noise_attribution": true,
+  "evidence_against_neutrality": false,
+  "note": "SUPPORTING EVIDENCE ONLY — the definitive verdict is the :8002 deterministic rerun (protocol Part 2)."
+ },
+ "protocol": "stage0_results/t4_s2_protocol.md Part 1 (pre-registered)",
+ "scale_reference_confirmatory_sh64k": {
+  "conflicted_native": 0.25757575757575757,
+  "conflicted_suppress": 0.5606060606060606,
+  "delta_points": 30.303030303030305,
+  "note": "sh_64k conflicted stratum, different subset from the sh_6k noise runs; drawn for scale only"
+ }
+}

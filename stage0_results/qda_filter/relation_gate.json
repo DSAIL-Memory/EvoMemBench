@@ -1,0 +1,73 @@
+{
+ "provenance": {
+  "git_commit": "2f87c16cdf985138794638b2de0a0f2ebec7a9c3",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "pipeline": "qda_filter",
+  "stage": "relation_gate"
+ },
+ "eligible_subsets": [
+  "sh_32k",
+  "sh_64k"
+ ],
+ "n_relations_own_sigma": 0,
+ "own_sigma_threshold": 192,
+ "n_gate_classes": 36,
+ "gate_kind": "logreg",
+ "gate_cv_acc": {
+  "logreg": 0.9075692515601297,
+  "centroid": 0.805790915026947
+ },
+ "balanced": {
+  "sh_32k": {
+   "auroc": 0.8272265478922242,
+   "band_auroc": 0.7332784726793944
+  },
+  "sh_64k": {
+   "auroc": 0.8695508926621891,
+   "band_auroc": 0.7973385944638669,
+   "delta_vs_V2": {
+    "delta": 9.059506448005905e-05,
+    "lo": 5.8736389949526345e-05,
+    "hi": 0.0001238604397186843,
+    "p_delta_le_0": 0.0,
+    "n_boot": 1000
+   },
+   "band_delta_vs_V2": {
+    "delta": 0.000142011516951146,
+    "lo": 9.565968920818292e-05,
+    "hi": 0.0001932088020323297,
+    "p_delta_le_0": 0.0,
+    "n_boot": 1000
+   }
+  }
+ },
+ "note": "scored on eval sets only; a full-pool scoring is not needed for the gates",
+ "G5": {
+  "pass": true,
+  "seen_delta": {
+   "delta": 9.059506448005905e-05,
+   "lo": 5.8736389949526345e-05,
+   "hi": 0.0001238604397186843,
+   "p_delta_le_0": 0.0,
+   "n_boot": 1000
+  },
+  "seen_band_delta": {
+   "delta": 0.000142011516951146,
+   "lo": 9.565968920818292e-05,
+   "hi": 0.0001932088020323297,
+   "p_delta_le_0": 0.0,
+   "n_boot": 1000
+  },
+  "relation_disjoint_delta": {
+   "delta": 0.0001770276158440387,
+   "lo": 0.0001376952350105265,
+   "hi": 0.0002206638790810844,
+   "p_delta_le_0": 0.0,
+   "n_boot": 1000
+  }
+ }
+}

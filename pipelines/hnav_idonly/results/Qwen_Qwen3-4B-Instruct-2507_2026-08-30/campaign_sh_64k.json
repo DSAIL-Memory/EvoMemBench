@@ -1,0 +1,36 @@
+{
+ "model_tag": "Qwen_Qwen3-4B-Instruct-2507_2026-08-30",
+ "subset": "sh_64k",
+ "arms": {
+  "hnav_idonly": {
+   "path": "pipelines/hnav_idonly/results/Qwen_Qwen3-4B-Instruct-2507_2026-08-30/detector_gap_sh_64k.json",
+   "strata": {
+    "all": {
+     "n": 100,
+     "native": 45,
+     "arm": 66,
+     "net": 21,
+     "p_exact": 5.7220458984375e-06
+    },
+    "conflicted": {
+     "n": 66,
+     "native": 17,
+     "arm": 39,
+     "net": 22,
+     "p_exact": 4.76837158203125e-07
+    },
+    "unique": {
+     "n": 34,
+     "native": 28,
+     "arm": 27,
+     "net": -1,
+     "p_exact": 1.0
+    }
+   },
+   "void": [],
+   "warnings": [],
+   "valid": true
+  }
+ },
+ "cross_arm": {}
+}

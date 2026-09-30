@@ -1,0 +1,116 @@
+{
+ "provenance": {
+  "git_commit": "2f87c16cdf985138794638b2de0a0f2ebec7a9c3",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "pipeline": "qda_filter",
+  "stage": "calibration",
+  "n0_cal": 1946
+ },
+ "conformal_V2": {
+  "n0_cal": 1946,
+  "alpha_floor": 0.0005136106831022085,
+  "extrapolation_note": "any alpha < 5.136e-04 is extrapolation, not a guarantee",
+  "thresholds": {
+   "0.1": {
+    "alpha": 0.1,
+    "order_statistic_k": 1753,
+    "achievable": true,
+    "threshold": -243.538858667581
+   },
+   "0.01": {
+    "alpha": 0.01,
+    "order_statistic_k": 1928,
+    "achievable": true,
+    "threshold": -192.57251914164803
+   },
+   "0.001": {
+    "alpha": 0.001,
+    "order_statistic_k": 1946,
+    "achievable": true,
+    "threshold": -155.91374567737594
+   },
+   "alpha_floor": {
+    "alpha": 0.0005136106831022085,
+    "order_statistic_k": 1946,
+    "achievable": true,
+    "threshold": -155.91374567737594
+   }
+  }
+ },
+ "conformal_V4": {
+  "n0_cal": 1946,
+  "alpha_floor": 0.0005136106831022085,
+  "extrapolation_note": "any alpha < 5.136e-04 is extrapolation, not a guarantee",
+  "thresholds": {
+   "0.1": {
+    "alpha": 0.1,
+    "order_statistic_k": 1753,
+    "achievable": true,
+    "threshold": 3278.6648603450894
+   },
+   "0.01": {
+    "alpha": 0.01,
+    "order_statistic_k": 1928,
+    "achievable": true,
+    "threshold": 4245.3370879021995
+   },
+   "0.001": {
+    "alpha": 0.001,
+    "order_statistic_k": 1946,
+    "achievable": true,
+    "threshold": 5895.20325869475
+   },
+   "alpha_floor": {
+    "alpha": 0.0005136106831022085,
+    "order_statistic_k": 1946,
+    "achievable": true,
+    "threshold": 5895.20325869475
+   }
+  }
+ },
+ "chi2_check": {
+  "n": 1946,
+  "k_obj": 64,
+  "ks_statistic": 0.6279771173563112,
+  "ks_pvalue": 0.0,
+  "qq": [
+   {
+    "q": 0.5,
+    "empirical": 26.731439513037884,
+    "theoretical": 63.334582023531965
+   },
+   {
+    "q": 0.9,
+    "empirical": 106.62111767931694,
+    "theoretical": 78.8596424991116
+   },
+   {
+    "q": 0.99,
+    "empirical": 262.6818491019998,
+    "theoretical": 93.21685966023843
+   },
+   {
+    "q": 0.999,
+    "empirical": 536.0405574310364,
+    "theoretical": 104.71632526304057
+   }
+  ],
+  "tail_excess": {
+   "1e-2": {
+    "empirical": 262.6818491019998,
+    "theoretical": 93.21685966023843,
+    "excess_ratio": 2.8179650125464
+   },
+   "1e-3": {
+    "empirical": 536.0405574310364,
+    "theoretical": 104.71632526304057,
+    "excess_ratio": 5.118977925214025
+   }
+  },
+  "verdict_hint": "excess_ratio >> 1 means the chi^2 p-value is anticonservative at that FPR and must not replace the conformal threshold"
+ }
+}

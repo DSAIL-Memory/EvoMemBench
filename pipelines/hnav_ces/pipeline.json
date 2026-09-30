@@ -1,0 +1,16 @@
+{
+ "name": "hnav_ces",
+ "description": "H-Nav read-time conflict detector with the CES screen: raw cosine >= 0.80 frame + contrastive-edit-subspace identity decision (relation from the parser, subject identity from geometry) replacing the parser same-key filter",
+ "geometry_space": "raw",
+ "pair_screen": "ces",
+ "operating_point": "stage0_results/geometry_filter/ces_operating_point.json",
+ "operating_point_sha256": "1b96d1002c84badd700fe27a2359d22fde740a7374831ac443ebddfbb52b48c0",
+ "ces_artifact": "stage0_results/geometry_filter/ces_subspaces_k20.json",
+ "ces_fingerprint": "34e3abc10168444a6c9275773e85c2231595a3394f4346035dac3f11ccda05ab",
+ "prepass_tag": "_ces",
+ "prepass_cos_loose": 0.8,
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "subsets": ["sh_6k", "sh_32k", "sh_64k"],
+ "frozen_thresholds_for_reference": {"cos_pair": 0.80, "ces_tau": 0.40, "nli_contradiction": 0.90, "pair_filter": "ces"},
+ "preregistration": "stage0_results/geometry_filter/NEXT_GOAL.md + the approved 2026-08-27 plan: cos_pair frame fixed 0.80 (the CES validation frame), ces_tau selected on sh_6k+sh_32k only. AMENDMENT (2026-08-27, calibration-only): the preregistered tau grid {-0.05..0.10} contained no zero-harm cell with nonzero recall (best: tau 0.10, 619 harmful); the grid was extended to 0.60 after inspecting calibration detection metrics. Chosen: tau 0.40 - precision 1.000, pool recall 0.734, 0 harmful. sh_64k untouched throughout."
+}

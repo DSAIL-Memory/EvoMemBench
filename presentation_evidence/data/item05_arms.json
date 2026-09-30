@@ -1,0 +1,228 @@
+{
+ "sh_6k": {
+  "file": "stage0_results/stage1/stale_suppression_probe_sh6k.json",
+  "harness": {
+   "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+   "llm_base_url": "http://localhost:8003/v1",
+   "temperature": 0.0,
+   "max_tokens": 10,
+   "system_message": "You are a helpful assistant that can read the context and memorize it for future retrieval.",
+   "prompt_shape": "RAGSystem: 'Memory 1:\\n<whole context>\\n' + templated query",
+   "prompt_source": "hnav.stage1.calibrate_read_policy (imported verbatim)",
+   "grader": "hnav.labeling.counterfactual.substring_exact_match",
+   "deviation_from_campaign": "the campaign presents top_k CHUNKS in similarity-rank order; on the calibration split all chunks are retrieved (2 and 9 vs retrieve_num=10) so the same facts are shown, but block order is query-dependent. This probe uses one Memory block in context order, identically for every arm, because placement arms need a defined 'end of context'.",
+   "aa_floor_caveat": "the A/A floor is two calls in one process; the eight committed t4_s2 runs give the wider cross-run floor (conflicted stratum 0-5 of 74). Treat the in-harness floor as a LOWER bound on noise."
+  },
+  "arm_descriptions": {
+   "native": "untouched context",
+   "native_repeat": "same prompt, independent second call (A/A floor)",
+   "oracle_suppress": "delete every non-expected-value fact of the queried key; serials NOT renumbered",
+   "oracle_recency": "move the highest-serial fact of the queried key to the END",
+   "anti": "highest-serial fact to the FRONT, most recent stale fact LAST"
+  },
+  "conflicted_arms": {
+   "native": {
+    "n": 74,
+    "correct": 4,
+    "accuracy": 0.05405405405405406
+   },
+   "native_repeat": {
+    "n": 74,
+    "correct": 4,
+    "accuracy": 0.05405405405405406
+   },
+   "oracle_suppress": {
+    "n": 74,
+    "correct": 66,
+    "accuracy": 0.8918918918918919
+   },
+   "oracle_recency": {
+    "n": 74,
+    "correct": 20,
+    "accuracy": 0.2702702702702703
+   },
+   "anti": {
+    "n": 74,
+    "correct": 1,
+    "accuracy": 0.013513513513513514
+   }
+  },
+  "paired_vs_native": {
+   "native_repeat": {
+    "n": 74,
+    "b_native_only": 0,
+    "c_arm_only": 0,
+    "net": 0,
+    "p_exact": 1.0
+   },
+   "oracle_suppress": {
+    "n": 74,
+    "b_native_only": 0,
+    "c_arm_only": 62,
+    "net": 62,
+    "p_exact": 4.336808689942018e-19
+   },
+   "oracle_recency": {
+    "n": 74,
+    "b_native_only": 1,
+    "c_arm_only": 17,
+    "net": 16,
+    "p_exact": 0.00014495849609375
+   },
+   "anti": {
+    "n": 74,
+    "b_native_only": 3,
+    "c_arm_only": 0,
+    "net": -3,
+    "p_exact": 0.25
+   }
+  }
+ },
+ "sh_32k": {
+  "file": "stage0_results/stage1/stale_suppression_probe_sh32k.json",
+  "harness": {
+   "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+   "llm_base_url": "http://localhost:8003/v1",
+   "temperature": 0.0,
+   "max_tokens": 10,
+   "system_message": "You are a helpful assistant that can read the context and memorize it for future retrieval.",
+   "prompt_shape": "RAGSystem: 'Memory 1:\\n<whole context>\\n' + templated query",
+   "prompt_source": "hnav.stage1.calibrate_read_policy (imported verbatim)",
+   "grader": "hnav.labeling.counterfactual.substring_exact_match",
+   "deviation_from_campaign": "the campaign presents top_k CHUNKS in similarity-rank order; on the calibration split all chunks are retrieved (2 and 9 vs retrieve_num=10) so the same facts are shown, but block order is query-dependent. This probe uses one Memory block in context order, identically for every arm, because placement arms need a defined 'end of context'.",
+   "aa_floor_caveat": "the A/A floor is two calls in one process; the eight committed t4_s2 runs give the wider cross-run floor (conflicted stratum 0-5 of 74). Treat the in-harness floor as a LOWER bound on noise."
+  },
+  "arm_descriptions": {
+   "native": "untouched context",
+   "native_repeat": "same prompt, independent second call (A/A floor)",
+   "oracle_suppress": "delete every non-expected-value fact of the queried key; serials NOT renumbered",
+   "oracle_recency": "move the highest-serial fact of the queried key to the END",
+   "anti": "highest-serial fact to the FRONT, most recent stale fact LAST"
+  },
+  "conflicted_arms": {
+   "native": {
+    "n": 65,
+    "correct": 7,
+    "accuracy": 0.1076923076923077
+   },
+   "native_repeat": {
+    "n": 65,
+    "correct": 7,
+    "accuracy": 0.1076923076923077
+   },
+   "oracle_suppress": {
+    "n": 65,
+    "correct": 53,
+    "accuracy": 0.8153846153846154
+   },
+   "oracle_recency": {
+    "n": 65,
+    "correct": 33,
+    "accuracy": 0.5076923076923077
+   },
+   "anti": {
+    "n": 65,
+    "correct": 4,
+    "accuracy": 0.06153846153846154
+   }
+  },
+  "paired_vs_native": {
+   "native_repeat": {
+    "n": 65,
+    "b_native_only": 0,
+    "c_arm_only": 0,
+    "net": 0,
+    "p_exact": 1.0
+   },
+   "oracle_suppress": {
+    "n": 65,
+    "b_native_only": 0,
+    "c_arm_only": 46,
+    "net": 46,
+    "p_exact": 2.842170943040401e-14
+   },
+   "oracle_recency": {
+    "n": 65,
+    "b_native_only": 2,
+    "c_arm_only": 28,
+    "net": 26,
+    "p_exact": 8.67992639541626e-07
+   },
+   "anti": {
+    "n": 65,
+    "b_native_only": 5,
+    "c_arm_only": 2,
+    "net": -3,
+    "p_exact": 0.453125
+   }
+  }
+ },
+ "sh_64k_confirmatory_mirror": {
+  "file": "stage0_results/stage1/detector_gap_confirmatory_sh64k.json",
+  "harness_note": "SAME system message, grader and frozen :8003 substrate, but a DIFFERENT prompt shape from the oracle probe (rank-ordered multi-block page vs one whole-context block). Ratios against the oracle are cross-harness; see detector_vs_oracle.harness_caveat.",
+  "arm_descriptions": {
+   "native": "untouched context",
+   "native_repeat": "same prompt, independent second call (A/A floor)",
+   "detector_suppress": "ReadFactPolicy('suppress'): drop every stale member of every verified group; serials NOT renumbered",
+   "detector_demote_late": "ReadFactPolicy('demote_late'): every verified group's LATEST carrier moves to the END, ascending serial order",
+   "detector_anti": "measurement-only mirror: the same LATEST carriers move to the FRONT"
+  },
+  "conflicted_arms": {
+   "native": {
+    "n": 66,
+    "correct": 17,
+    "accuracy": 0.25757575757575757
+   },
+   "native_repeat": {
+    "n": 66,
+    "correct": 17,
+    "accuracy": 0.25757575757575757
+   },
+   "detector_suppress": {
+    "n": 66,
+    "correct": 37,
+    "accuracy": 0.5606060606060606
+   },
+   "detector_demote_late": {
+    "n": 66,
+    "correct": 20,
+    "accuracy": 0.30303030303030304
+   },
+   "detector_anti": {
+    "n": 66,
+    "correct": 15,
+    "accuracy": 0.22727272727272727
+   }
+  },
+  "paired_vs_native": {
+   "native_repeat": {
+    "n": 66,
+    "b_native_only": 0,
+    "c_arm_only": 0,
+    "net": 0,
+    "p_exact": 1.0
+   },
+   "detector_suppress": {
+    "n": 66,
+    "b_native_only": 0,
+    "c_arm_only": 20,
+    "net": 20,
+    "p_exact": 1.9073486328125e-06
+   },
+   "detector_demote_late": {
+    "n": 66,
+    "b_native_only": 2,
+    "c_arm_only": 5,
+    "net": 3,
+    "p_exact": 0.453125
+   },
+   "detector_anti": {
+    "n": 66,
+    "b_native_only": 3,
+    "c_arm_only": 1,
+    "net": -2,
+    "p_exact": 0.625
+   }
+  }
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "net_positive_cells": {
+  "true": 0,
+  "false": 21
+ },
+ "helped_harmed_totals": {
+  "pair_filter_true": {
+   "helped": 228,
+   "harmed": 441
+  },
+  "pair_filter_false": {
+   "helped": 354,
+   "harmed": 426
+  }
+ },
+ "narrative": "STAGE1_NULL_ANALIZI.md"
+}

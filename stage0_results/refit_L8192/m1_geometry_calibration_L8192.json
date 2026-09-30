@@ -1,0 +1,78 @@
+[
+  {
+    "subset": "sh_6k",
+    "model": "Qwen/Qwen3-Embedding-4B",
+    "dtype": "float32",
+    "n_facts": 455,
+    "parse_coverage": 99.56,
+    "n_conflict_pairs": 160,
+    "n_control_pairs": 159,
+    "whole_blob_sim": {
+      "mean": 0.9547498822212219,
+      "p10": 0.9127786159515381,
+      "p50": 0.96361243724823,
+      "p90": 0.9831692576408386
+    },
+    "diff_sim": {
+      "mean": 0.7049170136451721,
+      "p10": 0.5836063027381897,
+      "p50": 0.6872350573539734,
+      "p90": 0.8270344138145447
+    },
+    "control_whole_blob_sim": {
+      "mean": 0.6047795414924622,
+      "p10": 0.5312104821205139,
+      "p50": 0.5976653099060059,
+      "p90": 0.6893954873085022
+    },
+    "qr_residual_new_vs_old": {
+      "mean": 0.19911977648735046,
+      "p10": 0.11353954672813416,
+      "p50": 0.19440899789333344,
+      "p90": 0.284668892621994
+    },
+    "separation_auc_conflict_vs_control": 1.0,
+    "critical_delta_n": 0,
+    "critical_delta_pct": 0.0,
+    "gate_median_whole_blob": 0.9636,
+    "gate_pass": true
+  },
+  {
+    "subset": "sh_32k",
+    "model": "Qwen/Qwen3-Embedding-4B",
+    "dtype": "float32",
+    "n_facts": 2310,
+    "parse_coverage": 99.65,
+    "n_conflict_pairs": 835,
+    "n_control_pairs": 830,
+    "whole_blob_sim": {
+      "mean": 0.955725371837616,
+      "p10": 0.9158293008804321,
+      "p50": 0.963786244392395,
+      "p90": 0.9841616153717041
+    },
+    "diff_sim": {
+      "mean": 0.7090187072753906,
+      "p10": 0.596757173538208,
+      "p50": 0.712501585483551,
+      "p90": 0.8114861845970154
+    },
+    "control_whole_blob_sim": {
+      "mean": 0.6062317490577698,
+      "p10": 0.5269215703010559,
+      "p50": 0.6050882339477539,
+      "p90": 0.6846200227737427
+    },
+    "qr_residual_new_vs_old": {
+      "mean": 0.20951522886753082,
+      "p10": 0.10172171145677567,
+      "p50": 0.2051520049571991,
+      "p90": 0.3258793354034424
+    },
+    "separation_auc_conflict_vs_control": 1.0,
+    "critical_delta_n": 0,
+    "critical_delta_pct": 0.0,
+    "gate_median_whole_blob": 0.9638,
+    "gate_pass": true
+  }
+]

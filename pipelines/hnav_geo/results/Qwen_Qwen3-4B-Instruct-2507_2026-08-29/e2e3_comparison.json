@@ -1,0 +1,114 @@
+{
+ "geo_vs_native": {
+  "all": {
+   "n": 100,
+   "native": 45,
+   "arm": 56,
+   "b_native_only": 2,
+   "c_arm_only": 13,
+   "net": 11,
+   "p_exact": 0.00738525390625
+  },
+  "conflicted": {
+   "n": 66,
+   "native": 17,
+   "arm": 29,
+   "b_native_only": 1,
+   "c_arm_only": 13,
+   "net": 12,
+   "p_exact": 0.0018310546875
+  },
+  "unique": {
+   "n": 34,
+   "native": 28,
+   "arm": 27,
+   "b_native_only": 1,
+   "c_arm_only": 0,
+   "net": -1,
+   "p_exact": 1.0
+  }
+ },
+ "cross_arm": {
+  "geo_vs_hnav_raw": {
+   "a_only": [
+    30
+   ],
+   "b_only": [
+    9,
+    11,
+    26,
+    35,
+    54,
+    69,
+    70,
+    91,
+    93
+   ],
+   "net_a_minus_b": -8,
+   "p_exact": 0.021484375,
+   "native_disagreements": []
+  },
+  "geo_vs_hnav_abtt": {
+   "a_only": [
+    30
+   ],
+   "b_only": [
+    9,
+    11,
+    26,
+    35,
+    54,
+    69,
+    70,
+    91,
+    93
+   ],
+   "net_a_minus_b": -8,
+   "p_exact": 0.021484375,
+   "native_disagreements": []
+  },
+  "geo_vs_hnav_ces": {
+   "a_only": [
+    30,
+    47,
+    61,
+    64
+   ],
+   "b_only": [
+    35,
+    54,
+    93
+   ],
+   "net_a_minus_b": 1,
+   "p_exact": 1.0,
+   "native_disagreements": []
+  },
+  "geo_vs_hnav_abtt_noparser": {
+   "a_only": [
+    30,
+    61
+   ],
+   "b_only": [
+    9,
+    26,
+    54,
+    69,
+    77
+   ],
+   "net_a_minus_b": -3,
+   "p_exact": 0.453125,
+   "native_disagreements": []
+  }
+ },
+ "GG2": {
+  "geo_overall_sh64k": 56,
+  "hnav_raw_overall_sh64k": 64,
+  "pass": false,
+  "paired_vs_parser": {
+   "net_a_minus_b": -8,
+   "p_exact": 0.021484375
+  },
+  "conflicted": 29,
+  "unique": 27
+ }
+}

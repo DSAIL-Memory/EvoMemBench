@@ -1,0 +1,15 @@
+{
+ "name": "hnav_abtt_noparser",
+ "description": "H-Nav read-time conflict detector with ABTT whitening (D=128) and NO identity screen - the preregistered danger arm: measures what removing the parser same-key filter does when NLI is known to rubber-stamp same-template/different-subject pairs",
+ "geometry_space": "abtt",
+ "pair_screen": "none",
+ "operating_point": "stage0_results/geometry_filter/abtt_noparser_operating_point.json",
+ "operating_point_sha256": "c656a826e07c8591f9853878baa4817507156b4e45315864914ecd8b8ffc60ac",
+ "whitening_artifact": "stage0_results/abtt/abtt_whitening_D128.json",
+ "whitening_fingerprint": "3fdacc1fcc479efb721730a6b5bbc01f35821531c69b1f6b212f9c12d3c89980",
+ "prepass_cos_loose": 0.3,
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "subsets": ["sh_6k", "sh_32k", "sh_64k"],
+ "frozen_thresholds_for_reference": {"cos_pair": 0.80, "nli_contradiction": 0.90, "pair_filter": false},
+ "preregistration": "the approved 2026-08-27 plan: reuses the committed _abtt prepasses (cos_loose 0.30 is a pure superset when the filter is removed); cos_pair re-selected on sh_6k+sh_32k only; expectation stated in advance - this arm may degrade via harmful suppressions. AMENDMENT (2026-08-27, calibration-only): the preregistered grid {0.30, 0.45, 0.60} reached zero harm only at a degenerate cell (recall 0.028); extended to {0.70, 0.80, 0.90} after inspecting calibration detection metrics. Chosen: ABTT-cos 0.80 - precision 1.000, pool recall 0.444, 0 harmful. sh_64k untouched throughout."
+}

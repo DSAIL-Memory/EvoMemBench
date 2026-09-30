@@ -1,0 +1,124 @@
+{
+ "blocks": [
+  {
+   "subset": "factconsolidation_sh_6k",
+   "split": "calibration",
+   "source": "stage0_results\\stage1\\stale_suppression_probe_sh6k.json",
+   "n_conflicted": 74,
+   "n_scored": 74,
+   "n_unresolvable_stale_value": 0,
+   "arms": {
+    "native (serial order)": {
+     "NEW": 4,
+     "OLD": 70,
+     "OTHER": 0,
+     "n_changed_vs_native": null
+    },
+    "native repeat (A/A floor)": {
+     "NEW": 4,
+     "OLD": 70,
+     "OTHER": 0,
+     "n_changed_vs_native": 0
+    },
+    "NEW -> END": {
+     "NEW": 20,
+     "OLD": 54,
+     "OTHER": 0,
+     "n_changed_vs_native": 18
+    },
+    "NEW -> FRONT, OLD -> END": {
+     "NEW": 1,
+     "OLD": 72,
+     "OTHER": 1,
+     "n_changed_vs_native": 4
+    },
+    "OLD deleted": {
+     "NEW": 66,
+     "OLD": 8,
+     "OTHER": 0,
+     "n_changed_vs_native": 62
+    }
+   }
+  },
+  {
+   "subset": "factconsolidation_sh_32k",
+   "split": "calibration",
+   "source": "stage0_results\\stage1\\stale_suppression_probe_sh32k.json",
+   "n_conflicted": 65,
+   "n_scored": 65,
+   "n_unresolvable_stale_value": 0,
+   "arms": {
+    "native (serial order)": {
+     "NEW": 7,
+     "OLD": 58,
+     "OTHER": 0,
+     "n_changed_vs_native": null
+    },
+    "native repeat (A/A floor)": {
+     "NEW": 7,
+     "OLD": 58,
+     "OTHER": 0,
+     "n_changed_vs_native": 0
+    },
+    "NEW -> END": {
+     "NEW": 33,
+     "OLD": 32,
+     "OTHER": 0,
+     "n_changed_vs_native": 30
+    },
+    "NEW -> FRONT, OLD -> END": {
+     "NEW": 4,
+     "OLD": 61,
+     "OTHER": 0,
+     "n_changed_vs_native": 9
+    },
+    "OLD deleted": {
+     "NEW": 53,
+     "OLD": 11,
+     "OTHER": 1,
+     "n_changed_vs_native": 48
+    }
+   }
+  },
+  {
+   "subset": "factconsolidation_sh_64k",
+   "split": "held out",
+   "source": "stage0_results\\stage1\\detector_gap_confirmatory_sh64k.json",
+   "n_conflicted": 66,
+   "n_scored": 66,
+   "n_unresolvable_stale_value": 0,
+   "arms": {
+    "native (serial order)": {
+     "NEW": 17,
+     "OLD": 44,
+     "OTHER": 5,
+     "n_changed_vs_native": null
+    },
+    "native repeat (A/A floor)": {
+     "NEW": 17,
+     "OLD": 44,
+     "OTHER": 5,
+     "n_changed_vs_native": 0
+    },
+    "NEW -> END": {
+     "NEW": 20,
+     "OLD": 43,
+     "OTHER": 3,
+     "n_changed_vs_native": 10
+    },
+    "NEW -> FRONT": {
+     "NEW": 15,
+     "OLD": 46,
+     "OTHER": 5,
+     "n_changed_vs_native": 6
+    },
+    "OLD deleted": {
+     "NEW": 37,
+     "OLD": 23,
+     "OTHER": 6,
+     "n_changed_vs_native": 21
+    }
+   }
+  }
+ ]
+}

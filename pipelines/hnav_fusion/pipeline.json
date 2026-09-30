@@ -1,0 +1,16 @@
+{
+ "name": "hnav_fusion",
+ "description": "H-Nav read-time conflict detector with the FUSION screen: calibration-fit logistic over (CES score, ABTT-space cosine) replacing the parser same-key filter - the tail-complementarity result of experiment 5 turned into a screen",
+ "geometry_space": "raw",
+ "pair_screen": "fusion",
+ "operating_point": "stage0_results/geometry_filter/fusion_operating_point.json",
+ "operating_point_sha256": "79a077b3a0a967b9e8a6ab263a7141e72b2cf1f85c301abce3a40b6fcc8a1ffa",
+ "status": "FAIL under the preregistered zero-harm rule (2026-08-27): calibration harmful suppressions plateau at ~305 across the whole tau grid (517/359/321/312/305 at tau 0/2/4/6/8, recall 0.93->0.87) - an irreducible high-ABTT-cosine cross-key core that NLI verifies even at 0.99. The frozen operating point is the vacuous zero-harm cell (recall 0, suppress 0); the arm is NOT run wet under this rule. Exploratory relaxed-harm analysis lives in stage0_results/geometry_filter/fusion_tradeoff* and is NOT a preregistered result.",
+ "fusion_artifact": "stage0_results/geometry_filter/fusion_screen.json",
+ "fusion_fingerprint": "2ffb0c85e80b20e16eda014ee67eae199804e9759f27f3a78224840be0bd23ee",
+ "prepass_tag": "_ces",
+ "prepass_cos_loose": 0.8,
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "subsets": ["sh_6k", "sh_32k", "sh_64k"],
+ "preregistration": "E2E-2 (2026-08-27): fusion form (logistic over max-z) chosen on CALIBRATION tails only; pair-level held-out tails dominate both components (hard tpr@1e-4 0.748 vs 0.598 CES / 0.468 ABTT-cos; transition-disjoint 0.536 vs 0.208 / 0.404). cos_pair frame fixed 0.80 (reuses the _ces prepasses); fusion tau (a logit) selected from {0, 2, 4, 6, 8} on sh_6k+sh_32k only; zero-harm selection rule unchanged. Parser still supplies relation identity inside the CES component - partial parser removal, same as hnav_ces."
+}

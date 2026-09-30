@@ -1,0 +1,758 @@
+[
+ {
+  "subset": "sh_6k",
+  "index": 12,
+  "subject": "Robert Parish",
+  "question": "What position does Robert Parish play?",
+  "gold": [
+   "quarterback"
+  ],
+  "plan": {
+   "gold_serials": [
+    334
+   ],
+   "stale_serials": [
+    330
+   ],
+   "latest": 334,
+   "stale_anchor": 330,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "center",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "center",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "quarterback",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "quarterback",
+    "correct": true
+   },
+   "anti": {
+    "output": "center",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 13,
+  "subject": "Cédric Klapisch",
+  "question": "What is the country of citizenship of Cédric Klapisch?",
+  "gold": [
+   "Malaysia"
+  ],
+  "plan": {
+   "gold_serials": [
+    239
+   ],
+   "stale_serials": [
+    210
+   ],
+   "latest": 239,
+   "stale_anchor": 210,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "France",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "France",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Malaysia",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Malaysia",
+    "correct": true
+   },
+   "anti": {
+    "output": "France",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 16,
+  "subject": "Kingdom of Ireland",
+  "question": "Which religion is Kingdom of Ireland affiliated with?",
+  "gold": [
+   "Zoroastrianism"
+  ],
+  "plan": {
+   "gold_serials": [
+    260
+   ],
+   "stale_serials": [
+    70
+   ],
+   "latest": 260,
+   "stale_anchor": 70,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Catholic Church",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Catholic Church",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Zoroastrianism",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Zoroastrianism",
+    "correct": true
+   },
+   "anti": {
+    "output": "Catholic Church",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 25,
+  "subject": "Tang Empire",
+  "question": "What is the capital of Tang Empire?",
+  "gold": [
+   "Beaumont"
+  ],
+  "plan": {
+   "gold_serials": [
+    177
+   ],
+   "stale_serials": [
+    21
+   ],
+   "latest": 177,
+   "stale_anchor": 21,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Chang'an",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Chang'an",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Beaumont",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Beaumont",
+    "correct": true
+   },
+   "anti": {
+    "output": "Chang'an",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 28,
+  "subject": "Michael Mantler",
+  "question": "What type of music does Michael Mantler play?",
+  "gold": [
+   "post-punk"
+  ],
+  "plan": {
+   "gold_serials": [
+    298
+   ],
+   "stale_serials": [
+    289
+   ],
+   "latest": 298,
+   "stale_anchor": 289,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "jazz",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "jazz",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "post-punk",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "post-punk",
+    "correct": true
+   },
+   "anti": {
+    "output": "jazz",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 29,
+  "subject": "Oscar Wilde",
+  "question": "Which city did Oscar Wilde die in?",
+  "gold": [
+   "Guangzhou"
+  ],
+  "plan": {
+   "gold_serials": [
+    270
+   ],
+   "stale_serials": [
+    128
+   ],
+   "latest": 270,
+   "stale_anchor": 128,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Paris",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Paris",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Guangzhou",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Guangzhou",
+    "correct": true
+   },
+   "anti": {
+    "output": "Paris",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 35,
+  "subject": "United States of America",
+  "question": "What is the official language of United States of America?",
+  "gold": [
+   "German"
+  ],
+  "plan": {
+   "gold_serials": [
+    295
+   ],
+   "stale_serials": [
+    242
+   ],
+   "latest": 295,
+   "stale_anchor": 242,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "American English",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "American English",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "German",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "German",
+    "correct": true
+   },
+   "anti": {
+    "output": "American English",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 52,
+  "subject": "United States of America",
+  "question": "What is the name of the current head of state in United States of America?",
+  "gold": [
+   "Connachta"
+  ],
+  "plan": {
+   "gold_serials": [
+    126
+   ],
+   "stale_serials": [
+    115
+   ],
+   "latest": 126,
+   "stale_anchor": 115,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Donald Trump",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Donald Trump",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Donald Trump",
+    "correct": false
+   },
+   "oracle_recency": {
+    "output": "Connachta",
+    "correct": true
+   },
+   "anti": {
+    "output": "Donald Trump",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 54,
+  "subject": "Dana International",
+  "question": "What type of music does Dana International play?",
+  "gold": [
+   "Australian hip hop"
+  ],
+  "plan": {
+   "gold_serials": [
+    281
+   ],
+   "stale_serials": [
+    243
+   ],
+   "latest": 281,
+   "stale_anchor": 243,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "pop music",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "pop music",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Australian hip hop",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Australian hip hop",
+    "correct": true
+   },
+   "anti": {
+    "output": "pop music",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 58,
+  "subject": "Hermione Granger",
+  "question": "Who performed Hermione Granger?",
+  "gold": [
+   "Kylie Minogue"
+  ],
+  "plan": {
+   "gold_serials": [
+    425
+   ],
+   "stale_serials": [
+    413
+   ],
+   "latest": 425,
+   "stale_anchor": 413,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Emma Watson",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Emma Watson",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Kylie Minogue",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Kylie Minogue",
+    "correct": true
+   },
+   "anti": {
+    "output": "Emma Watson",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 66,
+  "subject": "Stephen McNeil",
+  "question": "What kind of work does Stephen McNeil do?",
+  "gold": [
+   "journalist"
+  ],
+  "plan": {
+   "gold_serials": [
+    320
+   ],
+   "stale_serials": [
+    152
+   ],
+   "latest": 320,
+   "stale_anchor": 152,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "politician",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "politician",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "journalist",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "journalist",
+    "correct": true
+   },
+   "anti": {
+    "output": "politician",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 80,
+  "subject": "Lisa Leslie",
+  "question": "What position does Lisa Leslie play?",
+  "gold": [
+   "goaltender"
+  ],
+  "plan": {
+   "gold_serials": [
+    169
+   ],
+   "stale_serials": [
+    14
+   ],
+   "latest": 169,
+   "stale_anchor": 14,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "goaltender",
+    "correct": true
+   },
+   "native_repeat": {
+    "output": "goaltender",
+    "correct": true
+   },
+   "oracle_suppress": {
+    "output": "goaltender",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "center",
+    "correct": false
+   },
+   "anti": {
+    "output": "center",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 81,
+  "subject": "Soviet Union",
+  "question": "What is the name of the current head of state in Soviet Union?",
+  "gold": [
+   "Elizabeth II"
+  ],
+  "plan": {
+   "gold_serials": [
+    365
+   ],
+   "stale_serials": [
+    159
+   ],
+   "latest": 365,
+   "stale_anchor": 159,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Mikhail Gorbachev",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Mikhail Gorbachev",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Elizabeth II",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Elizabeth II",
+    "correct": true
+   },
+   "anti": {
+    "output": "Mikhail Gorbachev",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 90,
+  "subject": "Surrey Senior Cup",
+  "question": "Which sport is Surrey Senior Cup associated with?",
+  "gold": [
+   "basketball"
+  ],
+  "plan": {
+   "gold_serials": [
+    315
+   ],
+   "stale_serials": [
+    291
+   ],
+   "latest": 315,
+   "stale_anchor": 291,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "association football",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "association football",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "basketball",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "basketball",
+    "correct": true
+   },
+   "anti": {
+    "output": "association football",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 93,
+  "subject": "Charles Messier",
+  "question": "What is the country of citizenship of Charles Messier?",
+  "gold": [
+   "Iran"
+  ],
+  "plan": {
+   "gold_serials": [
+    343
+   ],
+   "stale_serials": [
+    204
+   ],
+   "latest": 343,
+   "stale_anchor": 204,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "France",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "France",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Iran",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Iran",
+    "correct": true
+   },
+   "anti": {
+    "output": "France",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 96,
+  "subject": "Colin Irwin",
+  "question": "What is the country of citizenship of Colin Irwin?",
+  "gold": [
+   "Israel"
+  ],
+  "plan": {
+   "gold_serials": [
+    441
+   ],
+   "stale_serials": [
+    55
+   ],
+   "latest": 441,
+   "stale_anchor": 55,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "United Kingdom",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "United Kingdom",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Israel",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Israel",
+    "correct": true
+   },
+   "anti": {
+    "output": "United Kingdom",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 97,
+  "subject": "Walter Chrysler",
+  "question": "Who is Walter Chrysler's child?",
+  "gold": [
+   "Charles Frederick, Duke of Holstein-Gottorp"
+  ],
+  "plan": {
+   "gold_serials": [
+    231
+   ],
+   "stale_serials": [
+    61
+   ],
+   "latest": 231,
+   "stale_anchor": 61,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Walter Percy Chrysler Jr.",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Walter Percy Chrysler Jr.",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Charles Frederick, Duke of Holstein-Gottorp",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Charles Frederick, Duke of Holstein-Gottorp",
+    "correct": true
+   },
+   "anti": {
+    "output": "Walter Percy Chrysler Jr.",
+    "correct": false
+   }
+  }
+ },
+ {
+  "subset": "sh_6k",
+  "index": 98,
+  "subject": "Charles Darwin",
+  "question": "Who is Charles Darwin married to?",
+  "gold": [
+   "Amala Paul"
+  ],
+  "plan": {
+   "gold_serials": [
+    335
+   ],
+   "stale_serials": [
+    164
+   ],
+   "latest": 335,
+   "stale_anchor": 164,
+   "gold_is_latest": true
+  },
+  "answers_by_arm": {
+   "native": {
+    "output": "Emma Darwin",
+    "correct": false
+   },
+   "native_repeat": {
+    "output": "Emma Darwin",
+    "correct": false
+   },
+   "oracle_suppress": {
+    "output": "Amala Paul",
+    "correct": true
+   },
+   "oracle_recency": {
+    "output": "Amala Paul",
+    "correct": true
+   },
+   "anti": {
+    "output": "Emma Darwin",
+    "correct": false
+   }
+  }
+ }
+]

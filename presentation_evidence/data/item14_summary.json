@@ -1,0 +1,26 @@
+{
+ "artifact_vc4": {
+  "n_suppressed_harmful": 0,
+  "n_suppressed_superseded": 735,
+  "n_suppressed_same_value": 0
+ },
+ "recomputed": {
+  "n_suppressed_total": 735,
+  "n_not_key_latest": 735,
+  "n_is_key_latest": 0,
+  "n_parse_fail": 0,
+  "n_carrying_queried_gold_value": 1
+ },
+ "method": "sum of len(per_question[i].plan.suppress_serials); each serial joined to the full sh_64k context, keyed by the validated parser, and compared to the key's highest serial in the full context",
+ "positive_control": {
+  "n_questions": 100,
+  "n_questions_policy_fired": 100,
+  "n_fact_edits_applied": 200,
+  "n_facts_suppressed": 735,
+  "ok": true,
+  "n_editing_arms": 2,
+  "n_fact_edits_applied_per_arm": 100.0,
+  "counter_note": "n_fact_edits_applied ACCUMULATES ACROSS THE TWO EDITING ARMS (suppress and demote_late). 200 = 100 questions x 2 arms; the per-arm figure is 100, which is what pre-registration v2 VC8 means by 'must equal the number of questions fired'. ok=true and the condition is MET; the raw 200 is not a failure."
+ },
+ "gold_cut_correction": "GOLD-CUT MECHANISM CORRECTION. The commit message of 077ca68 and the first relayed report stated the two gold-not-latest questions BACKWARDS. Correct, re-derived from this artifact: q18 (gold serial 7, 'Tom Clancy'; latest 1219, 'Torquato Tasso') was NEVER acted on - its gold was not suppressed - and native answered wrongly ('Torquato Tasso'). q20 (gold serial 2374, 'Europe'; latest 2468, 'Asia') DID have its gold fact suppressed, native was correct, and the suppressed arm answered correctly ANYWAY. So 2 predicted gold-cuts produced 1 deletion and 0 accuracy losses."
+}

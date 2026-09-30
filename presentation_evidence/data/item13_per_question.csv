@@ -1,0 +1,101 @@
+index,stratum,relation,subject,truths,native_output,native_correct,native_repeat_output,native_repeat_correct,detector_suppress_output,detector_suppress_correct,detector_demote_late_output,detector_demote_late_correct,detector_anti_output,detector_anti_correct
+0,conflicted,| was written in the language of ,The New York Times,ancient greek,English,False,English,False,English,False,English,False,English,False
+1,conflicted,The author of | is ,Hard Times,martin luther king jr.,Charles Dickens,False,Charles Dickens,False,Charles Dickens,False,Charles Dickens,False,Charles Dickens,False
+2,conflicted,| is a citizen of ,David Farragut,denmark,United States of America,False,United States of America,False,United States of America,False,United States of America,False,United States of America,False
+3,unique,| was founded by ,Death Eater,lord voldemort,None of the provided facts mention the founding of Death,False,None of the provided facts mention the founding of Death,False,None of the provided facts mention the founding of Death,False,None of the provided facts mention the founding of Death,False,None of the provided facts mention the founding of Death,False
+4,conflicted,| is a citizen of ,Joseph Mitchell,united kingdom,United States of America,False,United States of America,False,United States of America,False,United States of America,False,United States of America,False
+5,conflicted,The type of music that | plays is ,Aki Takase,carnatic music,Carnatic music,True,Carnatic music,True,Carnatic music,True,Carnatic music,True,Carnatic music,True
+6,conflicted,| was created in the country of ,Shaman King,greece,Japan,False,Japan,False,Japan,False,Japan,False,Japan,False
+7,conflicted,| is affiliated with the religion of ,Henry of Blois,church of scotland,Catholic Church,False,Catholic Church,False,Catholic Church,False,Catholic Church,False,Catholic Church,False
+8,conflicted,The original language of | is ,The Sky at Night,filipino,English,False,English,False,English,False,English,False,English,False
+9,conflicted,| was created by ,Kermit the Frog,hiroshige,Jim Henson,False,Jim Henson,False,Hiroshige,True,Jim Henson,False,Jim Henson,False
+10,unique,| was born in the city of ,Monty Norman,london,London,True,London,True,London,True,London,True,London,True
+11,conflicted,| is married to ,"Prince Andrew, Duke of York",mahidol adulyadej,"Sarah, Duchess of York",False,"Sarah, Duchess of York",False,Mahidol Adulyadej,True,"Sarah, Duchess of York",False,"Sarah, Duchess of York",False
+12,conflicted,| was performed by ,Day Tripper,madonna,The Beatles,False,The Beatles,False,Madonna,True,The Beatles,False,The Beatles,False
+13,unique,| worked in the city of ,Pablo Picasso,paris,Paris,True,Paris,True,Paris,True,Paris,True,Paris,True
+14,conflicted,The director of | is ,CERN,giorgio armani,Fabiola Gianotti,False,Fabiola Gianotti,False,Fabiola Gianotti,False,Fabiola Gianotti,False,Fabiola Gianotti,False
+15,unique,| was performed by ,Jane Foster,natalie portman,Natalie Portman,True,Natalie Portman,True,Natalie Portman,True,Natalie Portman,True,Natalie Portman,True
+16,conflicted,The head coach of | is ,Burnley F.C.,jeff hornacek,Jeff Hornacek,True,Jeff Hornacek,True,Jeff Hornacek,True,Jeff Hornacek,True,Jeff Hornacek,True
+17,unique,The origianl broadcaster of | is ,One Life to Live,american broadcasting company,American Broadcasting Company,True,American Broadcasting Company,True,American Broadcasting Company,True,American Broadcasting Company,True,American Broadcasting Company,True
+18,conflicted,The author of | is ,Red Storm Rising,tom clancy,Torquato Tasso,False,Torquato Tasso,False,Torquato Tasso,False,Torquato Tasso,False,Torquato Tasso,False
+19,conflicted,The official language of | is ,Soviet Union,french,French,True,French,True,French,True,French,True,Russian,False
+20,conflicted,| is located in the continent of ,Great Britain,europe,Europe,True,Europe,True,Europe,True,Europe,True,Europe,True
+21,unique,| was founded by ,Sōtō,dōgen,Dōgen,True,Dōgen,True,Dōgen,True,Dōgen,True,Dōgen,True
+22,conflicted,| was created in the country of ,The Orange County Register,united kingdom,United States of America,False,United States of America,False,United States of America,False,United States of America,False,United States of America,False
+23,conflicted,| is associated with the sport of ,racing video game,australian rules football,racing,False,racing,False,racing,False,racing,False,racing,False
+24,conflicted,| is a citizen of ,Philip II of Spain,united kingdom,Spain,False,Spain,False,United Kingdom,True,United Kingdom,True,Spain,False
+25,unique,| is famous for ,Luís de Camões,os lusíadas,The official language of Italy is Walloon.,False,The official language of Italy is Walloon.,False,The official language of Spain is Spanish.,False,The official language of Portugal is Portuguese.,False,The provided knowledge pool does not contain any information about,False
+26,conflicted,|'s child is ,Wilma Flintstone,eric garcetti,Pebbles Flintstone,False,Pebbles Flintstone,False,Eric Garcetti,True,Eric Garcetti,True,Pebbles Flintstone,False
+27,unique,The origianl broadcaster of | is ,General Hospital,american broadcasting company,American Broadcasting Company,True,American Broadcasting Company,True,American Broadcasting Company,True,American Broadcasting Company,True,American Broadcasting Company,True
+28,unique,| is associated with the sport of ,Erik Spoelstra,basketball,basketball,True,basketball,True,basketball,True,basketball,True,basketball,True
+29,conflicted,| was developed by ,PowerBook G4,microsoft,Apple Inc.,False,Apple Inc.,False,Apple Inc.,False,Apple Inc.,False,Apple Inc.,False
+30,conflicted,| was written in the language of ,Os Lusíadas,english,Portuguese,False,Portuguese,False,Portuguese,False,Portuguese,False,Portuguese,False
+31,conflicted,| was created in the country of ,Die Gartenlaube,austrian empire,Germany,False,Germany,False,Germany,False,Germany,False,Germany,False
+32,conflicted,| died in the city of ,Martin Luther King Jr.,st leonards-on-sea,Memphis,False,Memphis,False,Memphis,False,Memphis,False,Memphis,False
+33,unique,| is a citizen of ,Sher Bahadur Deuba,nepal,Nepal,True,Nepal,True,Nepal,True,Nepal,True,Nepal,True
+34,unique,The chief executive officer of | is ,Toshiba,nobuaki kurumatani,Nobuaki Kurumatani,True,Nobuaki Kurumatani,True,Nobuaki Kurumatani,True,Nobuaki Kurumatani,True,Nobuaki Kurumatani,True
+35,conflicted,The univeristy where | was educated is ,Ilir Meta,montana state university - bozeman,University of Tirana,False,University of Tirana,False,Montana State University - Bozeman,True,University of Tirana,False,University of Tirana,False
+36,unique,| is famous for ,Richard Adams,watership down,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False
+37,conflicted,The chairperson of | is ,General Motors,yoweri kaguta museveni,Carlos Slim,False,Carlos Slim,False,Carlos Slim,False,Mary Barra,False,Terry Gou,False
+38,conflicted,| is located in the continent of ,Zürich,antarctica,Antarctica,True,Antarctica,True,Antarctica,True,Antarctica,True,Antarctica,True
+39,conflicted,| speaks the language of ,Daphne du Maurier,arabic,English,False,English,False,English,False,English,False,English,False
+40,conflicted,The author of | is ,The Andromeda Strain,multatuli,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,Arthur C. Clarke,False,The provided knowledge pool does not contain any information about,False
+41,unique,The name of the current head of the | government is ,India,narendra modi,Narendra Modi,True,Narendra Modi,True,Narendra Modi,True,Narendra Modi,True,Narendra Modi,True
+42,conflicted,| is a citizen of ,Bibi Andersson,united kingdom,United Kingdom,True,United Kingdom,True,United Kingdom,True,Sweden,False,Sweden,False
+43,conflicted,| is a citizen of ,Felix Aylmer,denmark,United Kingdom,False,United Kingdom,False,United Kingdom,False,United Kingdom,False,United Kingdom,False
+44,unique,| was founded in the city of ,Finnair,helsinki,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False
+45,conflicted,| was developed by ,Mortal Kombat X,blizzard entertainment,Blizzard Entertainment,True,Blizzard Entertainment,True,Blizzard Entertainment,True,Blizzard Entertainment,True,Blizzard Entertainment,True
+46,conflicted,| is a citizen of ,Kim Tae-hee,united states of america,United States of America,True,United States of America,True,United States of America,True,United States of America,True,United States of America,True
+47,conflicted,| was developed by ,Windows Server 2008,blackberry,Microsoft,False,Microsoft,False,BlackBerry,True,Microsoft,False,Microsoft,False
+48,conflicted,The official language of | is ,Kingdom of the Netherlands,old turkic,Dutch,False,Dutch,False,Old Turkic,True,Dutch,False,Dutch,False
+49,unique,| is famous for ,Colleen McCullough,the thorn birds,The Thorn Birds,True,The Thorn Birds,True,The Thorn Birds,True,The Thorn Birds,True,The Thorn Birds,True
+50,conflicted,| is affiliated with the religion of ,John Paul I,church of scotland,Church of Scotland,True,Church of Scotland,True,Church of Scotland,True,Church of Scotland,True,Church of Scotland,True
+51,conflicted,| was performed by ,Taxman,madonna,Madonna,True,Madonna,True,Madonna,True,Madonna,True,The Beatles,False
+52,unique,The headquarters of | is located in the city of ,University of Manchester,manchester,Manchester,True,Manchester,True,Manchester,True,Manchester,True,Manchester,True
+53,conflicted,| is associated with the sport of ,Texas Legends,cricket,cricket,True,cricket,True,cricket,True,cricket,True,cricket,True
+54,conflicted,| is a citizen of ,Jaime Alguersuari,brazil,Spain,False,Spain,False,Brazil,True,Spain,False,Spain,False
+55,conflicted,| is affiliated with the religion of ,Alassane Dramane Ouattara,catholic church,Islam,False,Islam,False,Catholic Church,True,Catholic Church,True,Islam,False
+56,unique,| plays the position of ,Andrea Pirlo,midfielder,midfielder,True,midfielder,True,midfielder,True,midfielder,True,midfielder,True
+57,conflicted,| was created in the country of ,association football,italy,England,False,England,False,Italy,True,England,False,England,False
+58,conflicted,The type of music that | plays is ,Big Sean,country rock,hip hop music,False,hip hop music,False,country rock,True,country rock,True,hip hop music,False
+59,conflicted,| was created in the country of ,bluegrass music,indonesia,United States of America,False,United States of America,False,Indonesia,True,Indonesia,True,United States of America,False
+60,conflicted,| is associated with the sport of ,North East Stars,cricket,cricket,True,cricket,True,cricket,True,cricket,True,cricket,True
+61,conflicted,The chief executive officer of | is ,Tesla,adam sandler,Elon Musk,False,Elon Musk,False,Adam Sandler,True,Elon Musk,False,Elon Musk,False
+62,unique,| was founded by ,Omidyar Network,pierre omidyar,Pierre Omidyar,True,Pierre Omidyar,True,Pierre Omidyar,True,Pierre Omidyar,True,Pierre Omidyar,True
+63,unique,The headquarters of | is located in the city of ,Berklee College of Music,boston,Boston,True,Boston,True,Boston,True,Boston,True,Boston,True
+64,conflicted,The capital of | is ,Czechoslovakia,przeworsk,Prague,False,Prague,False,Przeworsk,True,Prague,False,Prague,False
+65,unique,| is a citizen of ,Ellen Pompeo,united states of america,United States of America,True,United States of America,True,United States of America,True,United States of America,True,United States of America,True
+66,unique,| is a citizen of ,Alan Blyth,united kingdom,United States of America,False,United States of America,False,United States of America,False,United States of America,False,United States of America,False
+67,conflicted,The author of | is ,Satyricon,william blake,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The provided knowledge pool does not contain any information about,False,The author of Satyricon is Petronius,False,The provided knowledge pool does not contain any information about,False
+68,conflicted,The origianl broadcaster of | is ,Revenge,british broadcasting corporation,American Broadcasting Company,False,American Broadcasting Company,False,American Broadcasting Company,False,American Broadcasting Company,False,American Broadcasting Company,False
+69,conflicted,The univeristy where | was educated is ,Stewart Udall,"california state university, long beach","California State University, Long Beach",True,"California State University, Long Beach",True,"California State University, Long Beach",True,University of Arizona,False,"California State University, Long Beach",True
+70,conflicted,The chairperson of | is ,Aam Aadmi Party,lamar alexander,Arvind Kejriwal,False,Arvind Kejriwal,False,Lamar Alexander,True,Arvind Kejriwal,False,Arvind Kejriwal,False
+71,conflicted,| was performed by ,Beatles for Sale,madonna,The Beatles,False,The Beatles,False,Madonna,True,The Beatles,False,Madonna,True
+72,unique,| is associated with the sport of ,Philippine Basketball Association Draft,basketball,Basketball,True,Basketball,True,Basketball,True,Basketball,True,Basketball,True
+73,conflicted,The type of music that | plays is ,Archie Shepp,j-pop,jazz,False,jazz,False,Jazz,False,jazz,False,jazz,False
+74,unique,The capital of | is ,El Salvador,san salvador,San Salvador,True,San Salvador,True,San Salvador,True,San Salvador,True,San Salvador,True
+75,conflicted,| is employed by ,Larry Page,university of edinburgh,University of Edinburgh,True,University of Edinburgh,True,University of Edinburgh,True,University of Edinburgh,True,University of Edinburgh,True
+76,unique,The univeristy where | was educated is ,James Dashner,brigham young university,Brigham Young University,True,Brigham Young University,True,Brigham Young University,True,Brigham Young University,True,Brigham Young University,True
+77,unique,The author of | is ,Areopagitica,john milton,John Milton,True,John Milton,True,The provided knowledge pool does not contain any information about,False,John Milton,True,John Milton,True
+78,conflicted,| was performed by ,Dear Prudence,madonna,Madonna,True,Madonna,True,Madonna,True,Madonna,True,Madonna,True
+79,conflicted,| speaks the language of ,George Boole,spanish,English,False,English,False,English,False,English,False,English,False
+80,unique,| was written in the language of ,Shahnameh,persian,Persian,True,Persian,True,Persian,True,Persian,True,Persian,True
+81,unique,| is associated with the sport of ,Altrincham F.C.,association football,association football,True,association football,True,association football,True,association football,True,association football,True
+82,unique,| is located in the continent of ,São Paulo,south america,South America,True,South America,True,South America,True,South America,True,South America,True
+83,unique,| is associated with the sport of ,three-point field goal,basketball,Basketball,True,Basketball,True,Basketball,True,Basketball,True,Basketball,True
+84,conflicted,| is a citizen of ,Paul Morley,ireland,United Kingdom,False,United Kingdom,False,Ireland,True,United Kingdom,False,United Kingdom,False
+85,conflicted,|'s child is ,Reese Witherspoon,james badge dale,Ava Phillippe,False,Ava Phillippe,False,Ava Phillippe,False,Ava Phillippe,False,Ava Phillippe,False
+86,conflicted,| is associated with the sport of ,Lisbon Lions,baseball,baseball,True,baseball,True,baseball,True,baseball,True,baseball,True
+87,unique,| was performed by ,Born This Way Ball,lady gaga,Lady Gaga,True,Lady Gaga,True,Lady Gaga,True,Lady Gaga,True,Lady Gaga,True
+88,conflicted,| is affiliated with the religion of ,Denis Thatcher,lutheranism,Anglicanism,False,Anglicanism,False,Catholic Church,False,Anglicanism,False,Anglicanism,False
+89,unique,The author of | is ,Rerum Novarum,leo xiii,Leo XIII,True,Leo XIII,True,Leo XIII,True,Leo XIII,True,Leo XIII,True
+90,conflicted,| plays the position of ,Manuel Neuer,linebacker,goalkeeper,False,goalkeeper,False,goalkeeper,False,goalkeeper,False,goalkeeper,False
+91,conflicted,The author of | is ,Lonesome Dove,robert a. heinlein,Larry McMurtry,False,Larry McMurtry,False,Robert A. Heinlein,True,Larry McMurtry,False,Larry McMurtry,False
+92,conflicted,| died in the city of ,Allan Pinkerton,pune,New York City,False,New York City,False,New York City,False,New York City,False,The provided knowledge pool does not contain any information about,False
+93,conflicted,The official language of | is ,Helsinki,esperanto,Finnish,False,Finnish,False,Esperanto,True,Finnish,False,Finnish,False
+94,unique,| is a citizen of ,Mads Mikkelsen,denmark,United States of America,False,United States of America,False,United Kingdom,False,United States of America,False,United States of America,False
+95,conflicted,| was developed by ,iPad Pro,google,Google,True,Google,True,Google,True,Google,True,Google,True
+96,unique,The author of | is ,The Vagina Monologues,eve ensler,Eve Ensler,True,Eve Ensler,True,Eve Ensler,True,Eve Ensler,True,Eve Ensler,True
+97,conflicted,| is associated with the sport of ,Montreal Royals,field hockey,baseball,False,baseball,False,baseball,False,baseball,False,baseball,False
+98,conflicted,| was founded in the city of ,The Kinks,england,London,False,London,False,London,False,London,False,London,False
+99,unique,| is a citizen of ,Estelle Getty,united states of america,United States of America,True,United States of America,True,United States of America,True,United States of America,True,United States of America,True

@@ -1,0 +1,1082 @@
+{
+  "generated_at_utc": "2026-08-15T12:39:15+00:00",
+  "git_head": "93e523587ed7b9b6c86c24059d8a61aa1dbcdfe7",
+  "producer_uncommitted_at_generation": true,
+  "provenance": {
+    "dataset_file": "In-Episode-Knowledge/INEP-KNOW/MemoryAgentBench/data/Conflict_Resolution.json",
+    "dataset_sha256": "8e2a7b6755c8525966a93810b6063c835e69ff62779d5379b9f7f86e4e1cebb8",
+    "evidence_dir": "stage0_results/t4_s2_evidence",
+    "n_run_files": 8,
+    "fact_parser": "hnav.labeling.conflict_analysis.parse (imported; validated 99.5%+ coverage)",
+    "question_to_key_rule": "gold_rule.py's rule (subject-in-question AND expected-answer-in-key-values) with two audit-forced refinements: word-boundary subject matching, and all-candidate collection where a properly-contained subject loses to a longer one and a residual disagreement is labelled 'ambiguous' instead of first-won. Differs from counterfactual.map_questions_to_keys on exactly 1 of 400 questions (sh_262k q26, Arthur Miller), pinned by hnav/tests/test_question_strata.py",
+    "grader": "hnav.labeling.counterfactual.substring_exact_match (recomputed, cross-checked against each run's own field)",
+    "m3_file": "stage0_results/final/m3_headroom.json",
+    "m3_caveat": "m3_headroom.py grades with H-Nav's own counterfactual prompt (labeling.counterfactual.build_prompt) over retrieved chunks, NOT the benchmark's templated query used by the t4_s2 evidence runs. Every number derived from accuracy_native is an m3-harness number and must be labelled as one wherever it is exported.",
+    "embedding_independence": "no embedder, retriever or vector is used anywhere in this analysis, so the result is unaffected by the 512-token truncation defect and does not move when that is re-fit"
+  },
+  "definitions": {
+    "unique": "queried (relation, subject) key has exactly one distinct value in the context",
+    "conflicted": "queried key has >= 2 distinct values",
+    "ambiguous": "several keys qualify and disagree about conflictedness; not assigned",
+    "unmatched": "no key with the question's subject carries the expected answer",
+    "stale_value": "incorrect output contains a non-expected value OF THE SAME KEY",
+    "off_list": "incorrect output contains no value of the queried key",
+    "empty": "output is empty after the evaluator's normalization",
+    "conflicted_only_accuracy.kind": "'estimate' = the unique-stratum premise is MEASURED for this subset and a point estimate is defensible; 'bound' = it is not, so only the assumption-free counting interval is emitted"
+  },
+  "subsets": [
+    {
+      "subset": "sh_6k",
+      "n_questions": 100,
+      "counts": {
+        "unique": 26,
+        "conflicted": 74,
+        "ambiguous": 0,
+        "unmatched": 0
+      },
+      "indices": {
+        "unique": [
+          3,
+          4,
+          9,
+          10,
+          11,
+          18,
+          21,
+          22,
+          27,
+          32,
+          37,
+          46,
+          49,
+          64,
+          68,
+          71,
+          72,
+          74,
+          75,
+          76,
+          78,
+          79,
+          89,
+          92,
+          95,
+          99
+        ],
+        "conflicted": [
+          0,
+          1,
+          2,
+          5,
+          6,
+          7,
+          8,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          19,
+          20,
+          23,
+          24,
+          25,
+          26,
+          28,
+          29,
+          30,
+          31,
+          33,
+          34,
+          35,
+          36,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          47,
+          48,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          65,
+          66,
+          67,
+          69,
+          70,
+          73,
+          77,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          90,
+          91,
+          93,
+          94,
+          96,
+          97,
+          98
+        ],
+        "ambiguous": [],
+        "unmatched": []
+      },
+      "n_multi_candidate": 0,
+      "n_conflicted_gold_is_latest": 74,
+      "m3_accuracy_native": 0.33,
+      "conflicted_only_accuracy": {
+        "kind": "estimate",
+        "estimate": 0.0945945945945946,
+        "bound": {
+          "lo": 0.0945945945945946,
+          "hi": 0.44594594594594594,
+          "unique_accuracy_upper_bound": 1.0,
+          "assumption_refuted": false
+        },
+        "pooled_accuracy": 0.33,
+        "n_correct_pooled": 33,
+        "unique_accuracy": {
+          "accuracy": 1.0,
+          "accuracy_range": [
+            1.0,
+            1.0
+          ],
+          "n_runs": 8,
+          "source": "stage0_results/t4_s2_evidence"
+        },
+        "harness": "m3_headroom.py accuracy_native",
+        "harness_caveat": "m3_headroom.py grades with H-Nav's own counterfactual prompt (labeling.counterfactual.build_prompt) over retrieved chunks, NOT the benchmark's templated query used by the t4_s2 evidence runs. Every number derived from accuracy_native is an m3-harness number and must be labelled as one wherever it is exported.",
+        "basis": "unique stratum measured at 1.000 in 8 committed runs (stage0_results/t4_s2_evidence)"
+      }
+    },
+    {
+      "subset": "sh_32k",
+      "n_questions": 100,
+      "counts": {
+        "unique": 35,
+        "conflicted": 65,
+        "ambiguous": 0,
+        "unmatched": 0
+      },
+      "indices": {
+        "unique": [
+          4,
+          6,
+          7,
+          10,
+          12,
+          13,
+          14,
+          22,
+          24,
+          25,
+          28,
+          29,
+          30,
+          34,
+          35,
+          36,
+          37,
+          39,
+          40,
+          44,
+          45,
+          48,
+          55,
+          58,
+          59,
+          63,
+          64,
+          73,
+          75,
+          82,
+          85,
+          90,
+          93,
+          96,
+          97
+        ],
+        "conflicted": [
+          0,
+          1,
+          2,
+          3,
+          5,
+          8,
+          9,
+          11,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          23,
+          26,
+          27,
+          31,
+          32,
+          33,
+          38,
+          41,
+          42,
+          43,
+          46,
+          47,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          56,
+          57,
+          60,
+          61,
+          62,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          74,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          83,
+          84,
+          86,
+          87,
+          88,
+          89,
+          91,
+          92,
+          94,
+          95,
+          98,
+          99
+        ],
+        "ambiguous": [],
+        "unmatched": []
+      },
+      "n_multi_candidate": 0,
+      "n_conflicted_gold_is_latest": 63,
+      "m3_accuracy_native": 0.47,
+      "conflicted_only_accuracy": {
+        "kind": "bound",
+        "estimate": null,
+        "bound": {
+          "lo": 0.18461538461538463,
+          "hi": 0.7230769230769231,
+          "unique_accuracy_upper_bound": 1.0,
+          "assumption_refuted": false
+        },
+        "pooled_accuracy": 0.47,
+        "n_correct_pooled": 47,
+        "unique_accuracy": null,
+        "harness": "m3_headroom.py accuracy_native",
+        "harness_caveat": "m3_headroom.py grades with H-Nav's own counterfactual prompt (labeling.counterfactual.build_prompt) over retrieved chunks, NOT the benchmark's templated query used by the t4_s2 evidence runs. Every number derived from accuracy_native is an m3-harness number and must be labelled as one wherever it is exported.",
+        "basis": "no committed per-question run for this subset, so the unique-stratum premise is unmeasured; counting bound only"
+      }
+    },
+    {
+      "subset": "sh_64k",
+      "n_questions": 100,
+      "counts": {
+        "unique": 34,
+        "conflicted": 66,
+        "ambiguous": 0,
+        "unmatched": 0
+      },
+      "indices": {
+        "unique": [
+          3,
+          10,
+          13,
+          15,
+          17,
+          21,
+          25,
+          27,
+          28,
+          33,
+          34,
+          36,
+          41,
+          44,
+          49,
+          52,
+          56,
+          62,
+          63,
+          65,
+          66,
+          72,
+          74,
+          76,
+          77,
+          80,
+          81,
+          82,
+          83,
+          87,
+          89,
+          94,
+          96,
+          99
+        ],
+        "conflicted": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11,
+          12,
+          14,
+          16,
+          18,
+          19,
+          20,
+          22,
+          23,
+          24,
+          26,
+          29,
+          30,
+          31,
+          32,
+          35,
+          37,
+          38,
+          39,
+          40,
+          42,
+          43,
+          45,
+          46,
+          47,
+          48,
+          50,
+          51,
+          53,
+          54,
+          55,
+          57,
+          58,
+          59,
+          60,
+          61,
+          64,
+          67,
+          68,
+          69,
+          70,
+          71,
+          73,
+          75,
+          78,
+          79,
+          84,
+          85,
+          86,
+          88,
+          90,
+          91,
+          92,
+          93,
+          95,
+          97,
+          98
+        ],
+        "ambiguous": [],
+        "unmatched": []
+      },
+      "n_multi_candidate": 0,
+      "n_conflicted_gold_is_latest": 64,
+      "m3_accuracy_native": 0.44,
+      "conflicted_only_accuracy": {
+        "kind": "bound",
+        "estimate": null,
+        "bound": {
+          "lo": 0.15151515151515152,
+          "hi": 0.6666666666666666,
+          "unique_accuracy_upper_bound": 1.0,
+          "assumption_refuted": false
+        },
+        "pooled_accuracy": 0.44,
+        "n_correct_pooled": 44,
+        "unique_accuracy": null,
+        "harness": "m3_headroom.py accuracy_native",
+        "harness_caveat": "m3_headroom.py grades with H-Nav's own counterfactual prompt (labeling.counterfactual.build_prompt) over retrieved chunks, NOT the benchmark's templated query used by the t4_s2 evidence runs. Every number derived from accuracy_native is an m3-harness number and must be labelled as one wherever it is exported.",
+        "basis": "no committed per-question run for this subset, so the unique-stratum premise is unmeasured; counting bound only"
+      }
+    },
+    {
+      "subset": "sh_262k",
+      "n_questions": 100,
+      "counts": {
+        "unique": 22,
+        "conflicted": 76,
+        "ambiguous": 0,
+        "unmatched": 2
+      },
+      "indices": {
+        "unique": [
+          1,
+          6,
+          16,
+          20,
+          22,
+          25,
+          26,
+          29,
+          30,
+          34,
+          37,
+          38,
+          47,
+          50,
+          58,
+          60,
+          62,
+          71,
+          81,
+          84,
+          89,
+          92
+        ],
+        "conflicted": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18,
+          19,
+          21,
+          23,
+          24,
+          28,
+          31,
+          32,
+          33,
+          35,
+          36,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          48,
+          49,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          59,
+          61,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          82,
+          83,
+          85,
+          86,
+          87,
+          90,
+          91,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99
+        ],
+        "ambiguous": [],
+        "unmatched": [
+          27,
+          88
+        ]
+      },
+      "n_multi_candidate": 1,
+      "n_conflicted_gold_is_latest": 73,
+      "m3_accuracy_native": 0.2,
+      "conflicted_only_accuracy": {
+        "kind": "bound",
+        "estimate": null,
+        "bound": {
+          "lo": 0.0,
+          "hi": 0.2631578947368421,
+          "unique_accuracy_upper_bound": 0.9090909090909091,
+          "assumption_refuted": true
+        },
+        "pooled_accuracy": 0.2,
+        "n_correct_pooled": 20,
+        "unique_accuracy": null,
+        "harness": "m3_headroom.py accuracy_native",
+        "harness_caveat": "m3_headroom.py grades with H-Nav's own counterfactual prompt (labeling.counterfactual.build_prompt) over retrieved chunks, NOT the benchmark's templated query used by the t4_s2 evidence runs. Every number derived from accuracy_native is an m3-harness number and must be labelled as one wherever it is exported.",
+        "basis": "no committed per-question run for this subset, so the unique-stratum premise is unmeasured; counting bound only"
+      }
+    }
+  ],
+  "runs": [
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.27,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 1,
+          "accuracy": 0.013513513513513514,
+          "errors": {
+            "stale_value": 72,
+            "off_list": 1,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [
+        {
+          "index": 0,
+          "output": "association football",
+          "truths": [
+            "pesäpallo"
+          ],
+          "other_values": [
+            "ice hockey"
+          ]
+        }
+      ],
+      "recorded_averaged_substring_exact_match": 27.0,
+      "run": "sh_6k_detA",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_detA_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.26,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 0,
+          "accuracy": 0.0,
+          "errors": {
+            "stale_value": 73,
+            "off_list": 1,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [
+        {
+          "index": 0,
+          "output": "association football",
+          "truths": [
+            "pesäpallo"
+          ],
+          "other_values": [
+            "ice hockey"
+          ]
+        }
+      ],
+      "recorded_averaged_substring_exact_match": 26.0,
+      "run": "sh_6k_detB",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_detB_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.31,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 5,
+          "accuracy": 0.06756756756756757,
+          "errors": {
+            "stale_value": 69,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [],
+      "recorded_averaged_substring_exact_match": 31.0,
+      "run": "sh_6k_detC",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_detC_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.27,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 1,
+          "accuracy": 0.013513513513513514,
+          "errors": {
+            "stale_value": 72,
+            "off_list": 1,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [
+        {
+          "index": 0,
+          "output": "association football",
+          "truths": [
+            "pesäpallo"
+          ],
+          "other_values": [
+            "ice hockey"
+          ]
+        }
+      ],
+      "recorded_averaged_substring_exact_match": 27.0,
+      "run": "sh_6k_detD",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_detD_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.29,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 3,
+          "accuracy": 0.04054054054054054,
+          "errors": {
+            "stale_value": 71,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [],
+      "recorded_averaged_substring_exact_match": 28.999999999999996,
+      "run": "sh_6k_off",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_off_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.26,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 0,
+          "accuracy": 0.0,
+          "errors": {
+            "stale_value": 74,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [],
+      "recorded_averaged_substring_exact_match": 26.0,
+      "run": "sh_6k_offA",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_offA_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.3,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 4,
+          "accuracy": 0.05405405405405406,
+          "errors": {
+            "stale_value": 70,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [],
+      "recorded_averaged_substring_exact_match": 30.0,
+      "run": "sh_6k_offB",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_offB_results.json"
+    },
+    {
+      "subset": "sh_6k",
+      "n_rows": 100,
+      "accuracy_overall": 0.29,
+      "strata": {
+        "unique": {
+          "n": 26,
+          "correct": 26,
+          "accuracy": 1.0,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "conflicted": {
+          "n": 74,
+          "correct": 3,
+          "accuracy": 0.04054054054054054,
+          "errors": {
+            "stale_value": 71,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "ambiguous": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        },
+        "unmatched": {
+          "n": 0,
+          "correct": 0,
+          "accuracy": null,
+          "errors": {
+            "stale_value": 0,
+            "off_list": 0,
+            "empty": 0
+          }
+        }
+      },
+      "grade_check": {
+        "n_compared": 100,
+        "n_disagreements": 0,
+        "n_id_mismatches": 0
+      },
+      "off_list_outputs": [],
+      "recorded_averaged_substring_exact_match": 28.999999999999996,
+      "run": "sh_6k_shadow",
+      "file": "stage0_results/t4_s2_evidence/sh_6k_shadow_results.json"
+    }
+  ],
+  "aggregate": {
+    "n_runs": 8,
+    "unique_accuracy_min": 1.0,
+    "unique_accuracy_max": 1.0,
+    "conflicted_accuracy_min": 0.0,
+    "conflicted_accuracy_max": 0.06756756756756757,
+    "errors_total": {
+      "stale_value": 572,
+      "off_list": 3,
+      "empty": 0
+    },
+    "n_grade_disagreements": 0
+  }
+}

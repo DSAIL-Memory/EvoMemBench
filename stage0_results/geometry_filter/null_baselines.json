@@ -1,0 +1,241 @@
+{
+ "provenance": {
+  "git_commit": "5bd60d46115a78c2bca80c7179a03ecb633f79b9",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "experiment": "null_baselines",
+  "n_shuffle": 50,
+  "n_boot": 200
+ },
+ "splits": {
+  "calibration": {
+   "n_pairs": 989,
+   "spaces": {
+    "raw": {
+     "genuine": {
+      "n_vectors": 989,
+      "same_transition_diff_subject": 0.8547511926986926,
+      "same_relation_diff_transition": 0.06966039913721515,
+      "across_relation": 0.022378836018586045,
+      "across_relation_abs": 0.04976963747705937,
+      "global_mean_direction_norm": 0.1630715021417291,
+      "ci95": {
+       "same_transition_diff_subject": [
+        0.8392327750974753,
+        0.8664321526863503
+       ],
+       "same_relation_diff_transition": [
+        0.05852540705492858,
+        0.08458674672087453
+       ]
+      }
+     },
+     "shuffled_transition_null": {
+      "same_relation_diff_transition_mean": -0.009860916783281954,
+      "same_relation_diff_transition_sd": 0.0005057906293144692,
+      "same_transition_diff_subject_mean": 0.08086400368048921,
+      "global_mean_direction_norm_mean": 0.0662160471296067,
+      "p_same_relation": 0.0196078431372549,
+      "p_same_transition": 0.0196078431372549
+     },
+     "random_unit_control": {
+      "n_vectors": 989,
+      "same_transition_diff_subject": -0.0008475582194511257,
+      "same_relation_diff_transition": -0.00013094918917452278,
+      "across_relation": 1.1328337009563967e-05,
+      "across_relation_abs": 0.015800158898666546,
+      "global_mean_direction_norm": 0.03186477640661623
+     }
+    },
+    "centered": {
+     "genuine": {
+      "n_vectors": 989,
+      "same_transition_diff_subject": 0.8538699130811749,
+      "same_relation_diff_transition": 0.07201385472817136,
+      "across_relation": 0.02307547584003749,
+      "across_relation_abs": 0.049244396944710986,
+      "global_mean_direction_norm": 0.16540675819705355,
+      "ci95": {
+       "same_transition_diff_subject": [
+        0.840681111345915,
+        0.8673678462190755
+       ],
+       "same_relation_diff_transition": [
+        0.05943444922858268,
+        0.08999891379035346
+       ]
+      }
+     },
+     "shuffled_transition_null": {
+      "same_relation_diff_transition_mean": -0.009182708865197764,
+      "same_relation_diff_transition_sd": 0.0005036632466471541,
+      "same_transition_diff_subject_mean": 0.07813358831947505,
+      "global_mean_direction_norm_mean": 0.06714746179888743,
+      "p_same_relation": 0.0196078431372549,
+      "p_same_transition": 0.0196078431372549
+     },
+     "random_unit_control": {
+      "n_vectors": 989,
+      "same_transition_diff_subject": -0.0017540900650176152,
+      "same_relation_diff_transition": 7.134611361528895e-05,
+      "across_relation": 4.5901238382317e-06,
+      "across_relation_abs": 0.015786485221507482,
+      "global_mean_direction_norm": 0.031893794988449145
+     }
+    },
+    "abtt": {
+     "genuine": {
+      "n_vectors": 989,
+      "same_transition_diff_subject": 0.7267877675568583,
+      "same_relation_diff_transition": 0.05812382097725215,
+      "across_relation": 0.011660726926433197,
+      "across_relation_abs": 0.030361246941187872,
+      "global_mean_direction_norm": 0.12544515725601454,
+      "ci95": {
+       "same_transition_diff_subject": [
+        0.6952097049680751,
+        0.7597307098498531
+       ],
+       "same_relation_diff_transition": [
+        0.04948105447625619,
+        0.06634444533873259
+       ]
+      }
+     },
+     "shuffled_transition_null": {
+      "same_relation_diff_transition_mean": -0.006227910368917474,
+      "same_relation_diff_transition_sd": 0.0003723572729432448,
+      "same_transition_diff_subject_mean": 0.015191841071046314,
+      "global_mean_direction_norm_mean": 0.057281355678930994,
+      "p_same_relation": 0.0196078431372549,
+      "p_same_transition": 0.0196078431372549
+     },
+     "random_unit_control": {
+      "n_vectors": 989,
+      "same_transition_diff_subject": -0.0009494808867544722,
+      "same_relation_diff_transition": 6.267091601404178e-05,
+      "across_relation": 2.1774294315975405e-05,
+      "across_relation_abs": 0.015778136030016883,
+      "global_mean_direction_norm": 0.03214914442551619
+     }
+    }
+   }
+  },
+  "confirmatory": {
+   "n_pairs": 1681,
+   "spaces": {
+    "raw": {
+     "genuine": {
+      "n_vectors": 1681,
+      "same_transition_diff_subject": 0.8626572377807051,
+      "same_relation_diff_transition": 0.0668756258584858,
+      "across_relation": 0.01987537145256223,
+      "across_relation_abs": 0.048790808687433324,
+      "global_mean_direction_norm": 0.1546064418380926,
+      "ci95": {
+       "same_transition_diff_subject": [
+        0.8541685525397746,
+        0.8709940478503514
+       ],
+       "same_relation_diff_transition": [
+        0.055463480427150894,
+        0.0789804512860835
+       ]
+      }
+     },
+     "shuffled_transition_null": {
+      "same_relation_diff_transition_mean": 0.00027698486299641324,
+      "same_relation_diff_transition_sd": 0.0002377245136895204,
+      "same_transition_diff_subject_mean": 0.07684074488422506,
+      "global_mean_direction_norm_mean": 0.06009229380696416,
+      "p_same_relation": 0.0196078431372549,
+      "p_same_transition": 0.0196078431372549
+     },
+     "random_unit_control": {
+      "n_vectors": 1681,
+      "same_transition_diff_subject": -0.00029010698136922107,
+      "same_relation_diff_transition": 9.876752617586506e-05,
+      "across_relation": -2.193001920102501e-05,
+      "across_relation_abs": 0.01577050464558658,
+      "global_mean_direction_norm": 0.024051039678194025
+     }
+    },
+    "centered": {
+     "genuine": {
+      "n_vectors": 1681,
+      "same_transition_diff_subject": 0.861401773897097,
+      "same_relation_diff_transition": 0.0689459699242805,
+      "across_relation": 0.020377223856407767,
+      "across_relation_abs": 0.04829916208252982,
+      "global_mean_direction_norm": 0.15645567353503512,
+      "ci95": {
+       "same_transition_diff_subject": [
+        0.852472765571538,
+        0.8706086881175213
+       ],
+       "same_relation_diff_transition": [
+        0.05833428920343111,
+        0.08190907921412392
+       ]
+      }
+     },
+     "shuffled_transition_null": {
+      "same_relation_diff_transition_mean": 0.0007355987397981668,
+      "same_relation_diff_transition_sd": 0.0002565862439897658,
+      "same_transition_diff_subject_mean": 0.07599653657757104,
+      "global_mean_direction_norm_mean": 0.06078984532608909,
+      "p_same_relation": 0.0196078431372549,
+      "p_same_transition": 0.0196078431372549
+     },
+     "random_unit_control": {
+      "n_vectors": 1681,
+      "same_transition_diff_subject": 0.00015475974417628196,
+      "same_relation_diff_transition": -6.53192286692216e-05,
+      "across_relation": -2.682462027167992e-06,
+      "across_relation_abs": 0.0157852429274629,
+      "global_mean_direction_norm": 0.024277183628064688
+     }
+    },
+    "abtt": {
+     "genuine": {
+      "n_vectors": 1681,
+      "same_transition_diff_subject": 0.734184409901071,
+      "same_relation_diff_transition": 0.053274241421245774,
+      "across_relation": 0.010702552943500676,
+      "across_relation_abs": 0.02971918667293048,
+      "global_mean_direction_norm": 0.11981695830714216,
+      "ci95": {
+       "same_transition_diff_subject": [
+        0.7117443220802584,
+        0.7613889386208395
+       ],
+       "same_relation_diff_transition": [
+        0.04715981777717342,
+        0.060161993844068874
+       ]
+      }
+     },
+     "shuffled_transition_null": {
+      "same_relation_diff_transition_mean": -0.0006308808028645559,
+      "same_relation_diff_transition_sd": 0.00013918863003660941,
+      "same_transition_diff_subject_mean": 0.024415377599985112,
+      "global_mean_direction_norm_mean": 0.048134752105413334,
+      "p_same_relation": 0.0196078431372549,
+      "p_same_transition": 0.0196078431372549
+     },
+     "random_unit_control": {
+      "n_vectors": 1681,
+      "same_transition_diff_subject": -0.0007266180329284545,
+      "same_relation_diff_transition": -7.483650102202827e-05,
+      "across_relation": 1.013188171516691e-05,
+      "across_relation_abs": 0.015789406417092217,
+      "global_mean_direction_norm": 0.024492233241695614
+     }
+    }
+   }
+  }
+ }
+}

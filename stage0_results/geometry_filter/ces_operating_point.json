@@ -1,0 +1,181 @@
+{
+ "task": "T13",
+ "thresholds": {
+  "cos_pair": 0.8,
+  "r_min": 0.5999999999999999,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.9
+ },
+ "r_min_label": "loose",
+ "pair_filter": "ces",
+ "ces": {
+  "tau": 0.4,
+  "artifact": "stage0_results/geometry_filter/ces_subspaces_k20.json",
+  "fingerprint": "34e3abc10168444a6c9275773e85c2231595a3394f4346035dac3f11ccda05ab"
+ },
+ "mechanisms": [
+  "suppress",
+  "demote_late"
+ ],
+ "selection_rule": {
+  "require": [
+   "pair_filter == 'ces' (pinned by the arm)",
+   "n_suppressed_harmful == 0"
+  ],
+  "maximise": "pair_recall_pool",
+  "tie_break": [
+   "higher ces_tau (stricter identity screen)",
+   "higher cos_pair",
+   "higher nli_contradiction",
+   "tighter r_min (frozen<loose<off)",
+   "stricter ambiguity_mode (all<any<none)"
+  ],
+  "fit_on": "detection quality only - no LLM, no accuracy, no gold answer",
+  "split": "sh_6k + sh_32k (calibration) ONLY"
+ },
+ "metrics": {
+  "n_questions": 200,
+  "tp": 2006,
+  "fp": 0,
+  "gt_pool": 2732,
+  "gt_page": 99200,
+  "n_suppressed": 2006,
+  "n_suppressed_superseded": 2006,
+  "n_suppressed_same_value": 0,
+  "n_suppressed_harmful": 0,
+  "n_demoted": 2006,
+  "n_demoted_is_latest": 2006,
+  "n_conflicted": 139,
+  "n_conflicted_hit": 114,
+  "n_conflicted_gold_cut": 2,
+  "n_unique": 61,
+  "n_unique_touched": 61,
+  "n_touched": 200,
+  "n_ambiguous_pass": 200,
+  "pair_precision": 1.0,
+  "pair_recall_pool": 0.7342606149341142,
+  "pair_recall_page": 0.020221774193548387,
+  "fact_precision": 1.0,
+  "question_recall_conflicted": 0.8201438848920863,
+  "coverage": 1.0
+ },
+ "by_subset": {
+  "sh_6k": {
+   "n_questions": 100,
+   "tp": 1054,
+   "fp": 0,
+   "gt_pool": 1444,
+   "gt_page": 16000,
+   "n_suppressed": 1054,
+   "n_suppressed_superseded": 1054,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1054,
+   "n_demoted_is_latest": 1054,
+   "n_conflicted": 74,
+   "n_conflicted_hit": 61,
+   "n_conflicted_gold_cut": 0,
+   "n_unique": 26,
+   "n_unique_touched": 26,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.7299168975069252,
+   "pair_recall_page": 0.065875,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.8243243243243243,
+   "coverage": 1.0
+  },
+  "sh_32k": {
+   "n_questions": 100,
+   "tp": 952,
+   "fp": 0,
+   "gt_pool": 1288,
+   "gt_page": 83200,
+   "n_suppressed": 952,
+   "n_suppressed_superseded": 952,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 952,
+   "n_demoted_is_latest": 952,
+   "n_conflicted": 65,
+   "n_conflicted_hit": 53,
+   "n_conflicted_gold_cut": 2,
+   "n_unique": 35,
+   "n_unique_touched": 35,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.7391304347826086,
+   "pair_recall_page": 0.011442307692307693,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.8153846153846154,
+   "coverage": 1.0
+  }
+ },
+ "ambiguity_note": "ambiguity_mode='none' disables the frozen Stage-0 nmargin/H_z precondition. Declared, not incidental: those two signals are the only gate input computed from CHUNK embeddings, which were truncated at 512 of ~4096 tokens (T12) and are not yet re-fit; they are also the dominant recall bottleneck (question-level recall collapses from 0.97 to 0.16 with the screen on); and the volume-limiting role they played is now carried by the identity screen plus bidirectional NLI at the measured precision recorded here. A campaign run after the embeddings are re-fit must revisit this.",
+ "provenance": {
+  "generated_at_utc": "2026-08-26T23:35:19+00:00",
+  "git_head": "74e8264e7ec53fd6eb0dce5081188bce0a10e2aa",
+  "fit_subsets": [
+   "sh_32k",
+   "sh_6k"
+  ],
+  "confirmatory_refused": [
+   "sh_64k",
+   "sh_262k"
+  ],
+  "prepass": {
+   "sh_6k": "stage1_prepass_sh_6k_benchmarkpage_ces.json",
+   "sh_32k": "stage1_prepass_sh_32k_benchmarkpage_ces.json"
+  },
+  "prepass_unstamped_nli_config": [],
+  "embed_cache_namespace": [
+   "Qwen_Qwen3-Embedding-4B|float32",
+   "Qwen_Qwen3-Embedding-4B|float32|L8192"
+  ],
+  "max_pair_cosine_error_vs_prepass": 6.024715323293961e-07,
+  "geometry_space": "raw",
+  "pair_screen": "ces",
+  "whitening_artifact": null,
+  "whitening_fingerprint": null,
+  "grid": {
+   "cos_pair": [
+    0.8
+   ],
+   "r_min": [
+    "frozen",
+    "loose",
+    "off"
+   ],
+   "ambiguity_mode": [
+    "all",
+    "any",
+    "none"
+   ],
+   "nli_contradiction": [
+    0.5,
+    0.9,
+    0.99
+   ],
+   "pair_filter": [
+    true,
+    false
+   ],
+   "ces_tau": [
+    -0.05,
+    0.0,
+    0.05,
+    0.1,
+    0.15,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6
+   ]
+  }
+ }
+}

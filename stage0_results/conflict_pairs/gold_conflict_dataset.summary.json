@@ -1,0 +1,124 @@
+{
+ "what": "gold conflict dataset for the geometry filter — tiered, dual-labeled, with a balanced cosine-matched eval set",
+ "producer": "hnav/labeling/build_gold_conflict_dataset.py",
+ "conventions": {
+  "gold_update": "benchmark memory-store convention: later serial supersedes the same (relation, subject) key; the DEFAULT gold label (user decision 2026-08-26)",
+  "gold_strict": "values logically cannot coexist (judge strict_conflict); gold_strict implies gold_update",
+  "triage": "recorded judge flags, not reason codes: fork = slot alignment held but values judged compatible",
+  "eval_set": "per subset, all gold positives + equal negatives cosine-matched in 0.01 bins, nearest-bin fallback, seed 20260824",
+  "splits": {
+   "sh_6k": "calibration",
+   "sh_32k": "calibration",
+   "sh_64k": "confirmatory"
+  }
+ },
+ "caveats": [
+  "selection frame is cos>=0.80 under the campaign embeddings (Qwen3-Embedding-4B float32 L8192); nothing below that is covered",
+  "judge is a single model (openai/gpt-5-mini, minimal reasoning); discovered_unverified stays quarantined until adjudicated",
+  "the shuffled bulk tail was 34.5% audited (budget stop) — prevalence claims from the negative pool need that weighting",
+  "unaudited candidates (32,533) are excluded entirely"
+ ],
+ "tiers_total": {
+  "core": 2388,
+  "discovered_unverified": 105,
+  "negative": 51782,
+  "rejected": 12,
+  "update_only_fork": 282
+ },
+ "core_strict": 1966,
+ "per_subset": {
+  "sh_6k": {
+   "tiers": {
+    "core": 141,
+    "negative": 368,
+    "update_only_fork": 19,
+    "discovered_unverified": 3
+   },
+   "eval": {
+    "n_pos": 160,
+    "n_neg": 160,
+    "exact_bin": 26,
+    "fallback": {
+     "8": 6,
+     "9": 4,
+     "10": 27,
+     "11": 83,
+     "12": 14
+    },
+    "pos_cos_p10_p50_p90": [
+     0.9129,
+     0.9637,
+     0.9843
+    ],
+    "neg_cos_p10_p50_p90": [
+     0.8347,
+     0.8592,
+     0.908
+    ],
+    "cosine_only_auc": 0.9598
+   }
+  },
+  "sh_32k": {
+   "tiers": {
+    "negative": 9364,
+    "core": 740,
+    "update_only_fork": 89,
+    "rejected": 6,
+    "discovered_unverified": 27
+   },
+   "eval": {
+    "n_pos": 829,
+    "n_neg": 829,
+    "exact_bin": 238,
+    "fallback": {
+     "5": 8,
+     "6": 61,
+     "7": 251,
+     "8": 271
+    },
+    "pos_cos_p10_p50_p90": [
+     0.9153,
+     0.9638,
+     0.9842
+    ],
+    "neg_cos_p10_p50_p90": [
+     0.8821,
+     0.8991,
+     0.9324
+    ],
+    "cosine_only_auc": 0.9109
+   }
+  },
+  "sh_64k": {
+   "tiers": {
+    "core": 1507,
+    "negative": 42050,
+    "update_only_fork": 174,
+    "discovered_unverified": 75,
+    "rejected": 6
+   },
+   "eval": {
+    "n_pos": 1681,
+    "n_neg": 1681,
+    "exact_bin": 537,
+    "fallback": {
+     "5": 80,
+     "6": 538,
+     "7": 526
+    },
+    "pos_cos_p10_p50_p90": [
+     0.9166,
+     0.9639,
+     0.9839
+    ],
+    "neg_cos_p10_p50_p90": [
+     0.8928,
+     0.9094,
+     0.936
+    ],
+    "cosine_only_auc": 0.893
+   }
+  }
+ },
+ "n_records": 54569
+}

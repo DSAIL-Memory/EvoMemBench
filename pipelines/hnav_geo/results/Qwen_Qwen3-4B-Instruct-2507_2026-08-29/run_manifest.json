@@ -1,0 +1,19 @@
+{
+ "pipeline": "hnav_geo",
+ "geometry_space": "raw",
+ "pair_screen": "geo",
+ "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+ "llm_base_url": "http://localhost:8003/v1",
+ "subsets": [
+  "sh_6k",
+  "sh_32k",
+  "sh_64k"
+ ],
+ "mechanism": "detector_suppress",
+ "operating_point_sha256": "9c3cb668706ddd3e820f99ef5cba8047f3138709cc48aa3fab901011aa616038",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "started_utc": "2026-08-29T16:15:09.087625+00:00",
+ "git_head": "81cca60fe7015b6740ba1d71469ef264ce6d82e3",
+ "dry_run": false,
+ "smoke_llm": false
+}

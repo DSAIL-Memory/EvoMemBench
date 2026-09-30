@@ -1,0 +1,19 @@
+{
+ "pipeline": "hnav_idonly",
+ "geometry_space": "raw",
+ "pair_screen": "idonly",
+ "llm_model": "Qwen/Qwen3.5-9B",
+ "llm_base_url": "http://localhost:8003/v1",
+ "subsets": [
+  "sh_6k",
+  "sh_32k",
+  "sh_64k"
+ ],
+ "mechanism": "detector_suppress",
+ "operating_point_sha256": "91a0ed845b227395dd1cd08724798773744e27d9145d2b1529abc3263fe241c7",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "started_utc": "2026-08-31T05:31:42.219035+00:00",
+ "git_head": "b511ffad08151228c1cbd9f578bb2f8427aeae7d",
+ "dry_run": false,
+ "smoke_llm": false
+}

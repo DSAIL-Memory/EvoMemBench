@@ -1,0 +1,959 @@
+{
+ "dataset_file": "In-Episode-Knowledge/INEP-KNOW/MemoryAgentBench/data/Conflict_Resolution.json",
+ "dataset_entry_index": 4,
+ "qa_pair_id_0": "factconsolidation_sh_6k_no0",
+ "nobuhiro": {
+  "index": 1,
+  "question": "What is Nobuhiro Watsuki famous for?",
+  "gold_answer": [
+   "The Fairly OddParents"
+  ],
+  "serial_91": "Nobuhiro Watsuki is famous for Rurouni Kenshin.",
+  "serial_259": "Nobuhiro Watsuki is famous for The Fairly OddParents.",
+  "native_output": "Rurouni Kenshin",
+  "oracle_suppress_output": "The Fairly OddParents",
+  "plan": {
+   "gold_serials": [
+    259
+   ],
+   "stale_serials": [
+    91
+   ],
+   "latest": 259,
+   "stale_anchor": 91,
+   "gold_is_latest": true
+  }
+ },
+ "all_clean_candidates": [
+  {
+   "index": 0,
+   "subject": "goaltender",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is goaltender associated with?",
+   "gold_answer": [
+    "pesäpallo"
+   ],
+   "old_serial": 223,
+   "old_text": "goaltender is associated with the sport of ice hockey.",
+   "new_serial": 310,
+   "new_text": "goaltender is associated with the sport of pesäpallo.",
+   "native_output": "ice hockey",
+   "suppressed_output": "pesäpallo"
+  },
+  {
+   "index": 1,
+   "subject": "Nobuhiro Watsuki",
+   "relation": "| is famous for ",
+   "question": "What is Nobuhiro Watsuki famous for?",
+   "gold_answer": [
+    "The Fairly OddParents"
+   ],
+   "old_serial": 91,
+   "old_text": "Nobuhiro Watsuki is famous for Rurouni Kenshin.",
+   "new_serial": 259,
+   "new_text": "Nobuhiro Watsuki is famous for The Fairly OddParents.",
+   "native_output": "Rurouni Kenshin",
+   "suppressed_output": "The Fairly OddParents"
+  },
+  {
+   "index": 2,
+   "subject": "rugby union",
+   "relation": "| was created in the country of ",
+   "question": "Which country was rugby union created in?",
+   "gold_answer": [
+    "India"
+   ],
+   "old_serial": 100,
+   "old_text": "rugby union was created in the country of England.",
+   "new_serial": 186,
+   "new_text": "rugby union was created in the country of India.",
+   "native_output": "England",
+   "suppressed_output": "India"
+  },
+  {
+   "index": 5,
+   "subject": "The Marriage of Figaro",
+   "relation": "The author of | is ",
+   "question": "Who is the author of The Marriage of Figaro?",
+   "gold_answer": [
+    "Thomas Kyd"
+   ],
+   "old_serial": 271,
+   "old_text": "The author of The Marriage of Figaro is Pierre Beaumarchais.",
+   "new_serial": 398,
+   "new_text": "The author of The Marriage of Figaro is Thomas Kyd.",
+   "native_output": "Pierre Beaumarchais",
+   "suppressed_output": "Thomas Kyd"
+  },
+  {
+   "index": 6,
+   "subject": "Tunisia national football team",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is Tunisia national football team associated with?",
+   "gold_answer": [
+    "basketball"
+   ],
+   "old_serial": 235,
+   "old_text": "Tunisia national football team is associated with the sport of association football.",
+   "new_serial": 418,
+   "new_text": "Tunisia national football team is associated with the sport of basketball.",
+   "native_output": "association football",
+   "suppressed_output": "basketball"
+  },
+  {
+   "index": 7,
+   "subject": "quarterback",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is quarterback associated with?",
+   "gold_answer": [
+    "Muay Thai"
+   ],
+   "old_serial": 31,
+   "old_text": "quarterback is associated with the sport of American football.",
+   "new_serial": 50,
+   "new_text": "quarterback is associated with the sport of Muay Thai.",
+   "native_output": "American football",
+   "suppressed_output": "Muay Thai"
+  },
+  {
+   "index": 8,
+   "subject": "Japan",
+   "relation": "The official language of | is ",
+   "question": "What is the official language of Japan?",
+   "gold_answer": [
+    "Swedish"
+   ],
+   "old_serial": 240,
+   "old_text": "The official language of Japan is Japanese.",
+   "new_serial": 439,
+   "new_text": "The official language of Japan is Swedish.",
+   "native_output": "Japanese",
+   "suppressed_output": "Swedish"
+  },
+  {
+   "index": 12,
+   "subject": "Robert Parish",
+   "relation": "| plays the position of ",
+   "question": "What position does Robert Parish play?",
+   "gold_answer": [
+    "quarterback"
+   ],
+   "old_serial": 330,
+   "old_text": "Robert Parish plays the position of center.",
+   "new_serial": 334,
+   "new_text": "Robert Parish plays the position of quarterback.",
+   "native_output": "center",
+   "suppressed_output": "quarterback"
+  },
+  {
+   "index": 13,
+   "subject": "Cédric Klapisch",
+   "relation": "| is a citizen of ",
+   "question": "What is the country of citizenship of Cédric Klapisch?",
+   "gold_answer": [
+    "Malaysia"
+   ],
+   "old_serial": 210,
+   "old_text": "Cédric Klapisch is a citizen of France.",
+   "new_serial": 239,
+   "new_text": "Cédric Klapisch is a citizen of Malaysia.",
+   "native_output": "France",
+   "suppressed_output": "Malaysia"
+  },
+  {
+   "index": 14,
+   "subject": "Sidereus Nuncius",
+   "relation": "The author of | is ",
+   "question": "Who is the author of Sidereus Nuncius?",
+   "gold_answer": [
+    "Samuel Beckett"
+   ],
+   "old_serial": 124,
+   "old_text": "The author of Sidereus Nuncius is Galileo Galilei.",
+   "new_serial": 401,
+   "new_text": "The author of Sidereus Nuncius is Samuel Beckett.",
+   "native_output": "Galileo Galilei",
+   "suppressed_output": "Samuel Beckett"
+  },
+  {
+   "index": 16,
+   "subject": "Kingdom of Ireland",
+   "relation": "| is affiliated with the religion of ",
+   "question": "Which religion is Kingdom of Ireland affiliated with?",
+   "gold_answer": [
+    "Zoroastrianism"
+   ],
+   "old_serial": 70,
+   "old_text": "Kingdom of Ireland is affiliated with the religion of Catholic Church.",
+   "new_serial": 260,
+   "new_text": "Kingdom of Ireland is affiliated with the religion of Zoroastrianism.",
+   "native_output": "Catholic Church",
+   "suppressed_output": "Zoroastrianism"
+  },
+  {
+   "index": 17,
+   "subject": "association football",
+   "relation": "| was created in the country of ",
+   "question": "Which country was association football created in?",
+   "gold_answer": [
+    "Italy"
+   ],
+   "old_serial": 272,
+   "old_text": "association football was created in the country of England.",
+   "new_serial": 389,
+   "new_text": "association football was created in the country of Italy.",
+   "native_output": "England",
+   "suppressed_output": "Italy"
+  },
+  {
+   "index": 19,
+   "subject": "Microsoft",
+   "relation": "The chief executive officer of | is ",
+   "question": "Who is the chief executive officer of Microsoft?",
+   "gold_answer": [
+    "Steve Jobs"
+   ],
+   "old_serial": 85,
+   "old_text": "The chief executive officer of Microsoft is Satya Nadella.",
+   "new_serial": 188,
+   "new_text": "The chief executive officer of Microsoft is Steve Jobs.",
+   "native_output": "Satya Nadella",
+   "suppressed_output": "Steve Jobs"
+  },
+  {
+   "index": 20,
+   "subject": "Harvard University",
+   "relation": "The chairperson of | is ",
+   "question": "Who is the chairperson of Harvard University?",
+   "gold_answer": [
+    "Peter Diamandis"
+   ],
+   "old_serial": 80,
+   "old_text": "The chairperson of Harvard University is Lawrence S. Bacow.",
+   "new_serial": 222,
+   "new_text": "The chairperson of Harvard University is Peter Diamandis.",
+   "native_output": "Lawrence S. Bacow",
+   "suppressed_output": "Peter Diamandis"
+  },
+  {
+   "index": 23,
+   "subject": "American Broadcasting Company",
+   "relation": "The director of | is ",
+   "question": "Who is the director of American Broadcasting Company?",
+   "gold_answer": [
+    "Ernst Heinkel"
+   ],
+   "old_serial": 64,
+   "old_text": "The director of American Broadcasting Company is Bob Iger.",
+   "new_serial": 392,
+   "new_text": "The director of American Broadcasting Company is Ernst Heinkel.",
+   "native_output": "Bob Iger",
+   "suppressed_output": "Ernst Heinkel"
+  },
+  {
+   "index": 24,
+   "subject": "Gennady Rozhdestvensky",
+   "relation": "| died in the city of ",
+   "question": "Which city did Gennady Rozhdestvensky die in?",
+   "gold_answer": [
+    "United States of America"
+   ],
+   "old_serial": 292,
+   "old_text": "Gennady Rozhdestvensky died in the city of Moscow.",
+   "new_serial": 451,
+   "new_text": "Gennady Rozhdestvensky died in the city of United States of America.",
+   "native_output": "Moscow",
+   "suppressed_output": "United States of America"
+  },
+  {
+   "index": 25,
+   "subject": "Tang Empire",
+   "relation": "The capital of | is ",
+   "question": "What is the capital of Tang Empire?",
+   "gold_answer": [
+    "Beaumont"
+   ],
+   "old_serial": 21,
+   "old_text": "The capital of Tang Empire is Chang'an.",
+   "new_serial": 177,
+   "new_text": "The capital of Tang Empire is Beaumont.",
+   "native_output": "Chang'an",
+   "suppressed_output": "Beaumont"
+  },
+  {
+   "index": 26,
+   "subject": "British Broadcasting Corporation",
+   "relation": "The director of | is ",
+   "question": "Who is the director of British Broadcasting Corporation?",
+   "gold_answer": [
+    "Narendra Modi"
+   ],
+   "old_serial": 7,
+   "old_text": "The director of British Broadcasting Corporation is Tony Hall, Baron Hall of Birkenhead.",
+   "new_serial": 428,
+   "new_text": "The director of British Broadcasting Corporation is Narendra Modi.",
+   "native_output": "Tony Hall, Baron Hall of Birkenhead",
+   "suppressed_output": "Narendra Modi"
+  },
+  {
+   "index": 28,
+   "subject": "Michael Mantler",
+   "relation": "The type of music that | plays is ",
+   "question": "What type of music does Michael Mantler play?",
+   "gold_answer": [
+    "post-punk"
+   ],
+   "old_serial": 289,
+   "old_text": "The type of music that Michael Mantler plays is jazz.",
+   "new_serial": 298,
+   "new_text": "The type of music that Michael Mantler plays is post-punk.",
+   "native_output": "jazz",
+   "suppressed_output": "post-punk"
+  },
+  {
+   "index": 29,
+   "subject": "Oscar Wilde",
+   "relation": "| died in the city of ",
+   "question": "Which city did Oscar Wilde die in?",
+   "gold_answer": [
+    "Guangzhou"
+   ],
+   "old_serial": 128,
+   "old_text": "Oscar Wilde died in the city of Paris.",
+   "new_serial": 270,
+   "new_text": "Oscar Wilde died in the city of Guangzhou.",
+   "native_output": "Paris",
+   "suppressed_output": "Guangzhou"
+  },
+  {
+   "index": 33,
+   "subject": "rap rock",
+   "relation": "| was created in the country of ",
+   "question": "Which country was rap rock created in?",
+   "gold_answer": [
+    "Russian Empire"
+   ],
+   "old_serial": 359,
+   "old_text": "rap rock was created in the country of United States of America.",
+   "new_serial": 403,
+   "new_text": "rap rock was created in the country of Russian Empire.",
+   "native_output": "United States of America",
+   "suppressed_output": "Russian Empire"
+  },
+  {
+   "index": 34,
+   "subject": "Christianity",
+   "relation": "| was founded in the city of ",
+   "question": "Where was Christianity founded?",
+   "gold_answer": [
+    "Taipei"
+   ],
+   "old_serial": 40,
+   "old_text": "Christianity was founded in the city of Jerusalem.",
+   "new_serial": 43,
+   "new_text": "Christianity was founded in the city of Taipei.",
+   "native_output": "Jerusalem",
+   "suppressed_output": "Taipei"
+  },
+  {
+   "index": 35,
+   "subject": "United States of America",
+   "relation": "The official language of | is ",
+   "question": "What is the official language of United States of America?",
+   "gold_answer": [
+    "German"
+   ],
+   "old_serial": 242,
+   "old_text": "The official language of United States of America is American English.",
+   "new_serial": 295,
+   "new_text": "The official language of United States of America is German.",
+   "native_output": "American English",
+   "suppressed_output": "German"
+  },
+  {
+   "index": 36,
+   "subject": "Past Masters",
+   "relation": "| was performed by ",
+   "question": "Who performed Past Masters?",
+   "gold_answer": [
+    "Madonna"
+   ],
+   "old_serial": 251,
+   "old_text": "Past Masters was performed by The Beatles.",
+   "new_serial": 364,
+   "new_text": "Past Masters was performed by Madonna.",
+   "native_output": "The Beatles",
+   "suppressed_output": "Madonna"
+  },
+  {
+   "index": 39,
+   "subject": "SteamOS",
+   "relation": "| was developed by ",
+   "question": "Who is the developer of SteamOS?",
+   "gold_answer": [
+    "ABB Group"
+   ],
+   "old_serial": 238,
+   "old_text": "SteamOS was developed by Valve Corporation.",
+   "new_serial": 277,
+   "new_text": "SteamOS was developed by ABB Group.",
+   "native_output": "Valve Corporation",
+   "suppressed_output": "ABB Group"
+  },
+  {
+   "index": 40,
+   "subject": "University of Bucharest",
+   "relation": "The headquarters of | is located in the city of ",
+   "question": "Which city is the headquarter of University of Bucharest located in?",
+   "gold_answer": [
+    "Ankara"
+   ],
+   "old_serial": 173,
+   "old_text": "The headquarters of University of Bucharest is located in the city of Bucharest.",
+   "new_serial": 409,
+   "new_text": "The headquarters of University of Bucharest is located in the city of Ankara.",
+   "native_output": "Bucharest",
+   "suppressed_output": "Ankara"
+  },
+  {
+   "index": 43,
+   "subject": "Australia",
+   "relation": "The capital of | is ",
+   "question": "What is the capital of Australia?",
+   "gold_answer": [
+    "Oderzo"
+   ],
+   "old_serial": 284,
+   "old_text": "The capital of Australia is Canberra.",
+   "new_serial": 388,
+   "new_text": "The capital of Australia is Oderzo.",
+   "native_output": "Canberra",
+   "suppressed_output": "Oderzo"
+  },
+  {
+   "index": 44,
+   "subject": "Malaysia",
+   "relation": "| is located in the continent of ",
+   "question": "Which continent is Malaysia located in?",
+   "gold_answer": [
+    "Antarctica"
+   ],
+   "old_serial": 373,
+   "old_text": "Malaysia is located in the continent of Asia.",
+   "new_serial": 442,
+   "new_text": "Malaysia is located in the continent of Antarctica.",
+   "native_output": "Asia",
+   "suppressed_output": "Antarctica"
+  },
+  {
+   "index": 45,
+   "subject": "A Wizard of Earthsea",
+   "relation": "The author of | is ",
+   "question": "Who is the author of A Wizard of Earthsea?",
+   "gold_answer": [
+    "Pius XII"
+   ],
+   "old_serial": 10,
+   "old_text": "The author of A Wizard of Earthsea is Ursula K. Le Guin.",
+   "new_serial": 301,
+   "new_text": "The author of A Wizard of Earthsea is Pius XII.",
+   "native_output": "Ursula K. Le Guin",
+   "suppressed_output": "Pius XII"
+  },
+  {
+   "index": 47,
+   "subject": "Our Mutual Friend",
+   "relation": "The author of | is ",
+   "question": "Who is the author of Our Mutual Friend?",
+   "gold_answer": [
+    "Charles Darwin"
+   ],
+   "old_serial": 107,
+   "old_text": "The author of Our Mutual Friend is Charles Dickens.",
+   "new_serial": 146,
+   "new_text": "The author of Our Mutual Friend is Charles Darwin.",
+   "native_output": "Charles Dickens",
+   "suppressed_output": "Charles Darwin"
+  },
+  {
+   "index": 48,
+   "subject": "basketball",
+   "relation": "| was created in the country of ",
+   "question": "Which country was basketball created in?",
+   "gold_answer": [
+    "Soviet Union"
+   ],
+   "old_serial": 216,
+   "old_text": "basketball was created in the country of United States of America.",
+   "new_serial": 348,
+   "new_text": "basketball was created in the country of Soviet Union.",
+   "native_output": "United States of America",
+   "suppressed_output": "Soviet Union"
+  },
+  {
+   "index": 50,
+   "subject": "Bengaluru",
+   "relation": "| is located in the continent of ",
+   "question": "Which continent is Bengaluru located in?",
+   "gold_answer": [
+    "Oceania"
+   ],
+   "old_serial": 4,
+   "old_text": "Bengaluru is located in the continent of Asia.",
+   "new_serial": 234,
+   "new_text": "Bengaluru is located in the continent of Oceania.",
+   "native_output": "Asia",
+   "suppressed_output": "Oceania"
+  },
+  {
+   "index": 51,
+   "subject": "Slovakia national football team",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is Slovakia national football team associated with?",
+   "gold_answer": [
+    "cricket"
+   ],
+   "old_serial": 18,
+   "old_text": "Slovakia national football team is associated with the sport of association football.",
+   "new_serial": 279,
+   "new_text": "Slovakia national football team is associated with the sport of cricket.",
+   "native_output": "association football",
+   "suppressed_output": "cricket"
+  },
+  {
+   "index": 53,
+   "subject": "Imelda Marcos",
+   "relation": "| is affiliated with the religion of ",
+   "question": "Which religion is Imelda Marcos affiliated with?",
+   "gold_answer": [
+    "atheism"
+   ],
+   "old_serial": 248,
+   "old_text": "Imelda Marcos is affiliated with the religion of Catholicism.",
+   "new_serial": 374,
+   "new_text": "Imelda Marcos is affiliated with the religion of atheism.",
+   "native_output": "Catholicism",
+   "suppressed_output": "atheism"
+  },
+  {
+   "index": 54,
+   "subject": "Dana International",
+   "relation": "The type of music that | plays is ",
+   "question": "What type of music does Dana International play?",
+   "gold_answer": [
+    "Australian hip hop"
+   ],
+   "old_serial": 243,
+   "old_text": "The type of music that Dana International plays is pop music.",
+   "new_serial": 281,
+   "new_text": "The type of music that Dana International plays is Australian hip hop.",
+   "native_output": "pop music",
+   "suppressed_output": "Australian hip hop"
+  },
+  {
+   "index": 56,
+   "subject": "Charlie Hebdo",
+   "relation": "| was created in the country of ",
+   "question": "Which country was Charlie Hebdo created in?",
+   "gold_answer": [
+    "Italy"
+   ],
+   "old_serial": 155,
+   "old_text": "Charlie Hebdo was created in the country of France.",
+   "new_serial": 358,
+   "new_text": "Charlie Hebdo was created in the country of Italy.",
+   "native_output": "France",
+   "suppressed_output": "Italy"
+  },
+  {
+   "index": 57,
+   "subject": "Elvis Presley",
+   "relation": "| is married to ",
+   "question": "Who is Elvis Presley married to?",
+   "gold_answer": [
+    "Charles the Bold"
+   ],
+   "old_serial": 120,
+   "old_text": "Elvis Presley is married to Priscilla Presley.",
+   "new_serial": 139,
+   "new_text": "Elvis Presley is married to Charles the Bold.",
+   "native_output": "Priscilla Presley",
+   "suppressed_output": "Charles the Bold"
+  },
+  {
+   "index": 58,
+   "subject": "Hermione Granger",
+   "relation": "| was performed by ",
+   "question": "Who performed Hermione Granger?",
+   "gold_answer": [
+    "Kylie Minogue"
+   ],
+   "old_serial": 413,
+   "old_text": "Hermione Granger was performed by Emma Watson.",
+   "new_serial": 425,
+   "new_text": "Hermione Granger was performed by Kylie Minogue.",
+   "native_output": "Emma Watson",
+   "suppressed_output": "Kylie Minogue"
+  },
+  {
+   "index": 59,
+   "subject": "Bo Ryan",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is Bo Ryan associated with?",
+   "gold_answer": [
+    "association football"
+   ],
+   "old_serial": 194,
+   "old_text": "Bo Ryan is associated with the sport of basketball.",
+   "new_serial": 346,
+   "new_text": "Bo Ryan is associated with the sport of association football.",
+   "native_output": "basketball",
+   "suppressed_output": "association football"
+  },
+  {
+   "index": 60,
+   "subject": "John McVie",
+   "relation": "The type of music that | plays is ",
+   "question": "What type of music does John McVie play?",
+   "gold_answer": [
+    "rap rock"
+   ],
+   "old_serial": 90,
+   "old_text": "The type of music that John McVie plays is rock music.",
+   "new_serial": 415,
+   "new_text": "The type of music that John McVie plays is rap rock.",
+   "native_output": "rock music",
+   "suppressed_output": "rap rock"
+  },
+  {
+   "index": 61,
+   "subject": "Rogério Ceni",
+   "relation": "| plays the position of ",
+   "question": "What position does Rogério Ceni play?",
+   "gold_answer": [
+    "flanker"
+   ],
+   "old_serial": 6,
+   "old_text": "Rogério Ceni plays the position of goalkeeper.",
+   "new_serial": 434,
+   "new_text": "Rogério Ceni plays the position of flanker.",
+   "native_output": "goalkeeper",
+   "suppressed_output": "flanker"
+  },
+  {
+   "index": 62,
+   "subject": "Twitter",
+   "relation": "The chief executive officer of | is ",
+   "question": "Who is the chief executive officer of Twitter?",
+   "gold_answer": [
+    "Bernard Arnault"
+   ],
+   "old_serial": 109,
+   "old_text": "The chief executive officer of Twitter is Jack Dorsey.",
+   "new_serial": 275,
+   "new_text": "The chief executive officer of Twitter is Bernard Arnault.",
+   "native_output": "Jack Dorsey",
+   "suppressed_output": "Bernard Arnault"
+  },
+  {
+   "index": 63,
+   "subject": "Kylie Minogue",
+   "relation": "| speaks the language of ",
+   "question": "What language does Kylie Minogue speak?",
+   "gold_answer": [
+    "German"
+   ],
+   "old_serial": 122,
+   "old_text": "Kylie Minogue speaks the language of English.",
+   "new_serial": 157,
+   "new_text": "Kylie Minogue speaks the language of German.",
+   "native_output": "English",
+   "suppressed_output": "German"
+  },
+  {
+   "index": 65,
+   "subject": "placekicker",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is placekicker associated with?",
+   "gold_answer": [
+    "rugby"
+   ],
+   "old_serial": 78,
+   "old_text": "placekicker is associated with the sport of American football.",
+   "new_serial": 321,
+   "new_text": "placekicker is associated with the sport of rugby.",
+   "native_output": "American football",
+   "suppressed_output": "rugby"
+  },
+  {
+   "index": 66,
+   "subject": "Stephen McNeil",
+   "relation": "| works in the field of ",
+   "question": "What kind of work does Stephen McNeil do?",
+   "gold_answer": [
+    "journalist"
+   ],
+   "old_serial": 152,
+   "old_text": "Stephen McNeil works in the field of politician.",
+   "new_serial": 320,
+   "new_text": "Stephen McNeil works in the field of journalist.",
+   "native_output": "politician",
+   "suppressed_output": "journalist"
+  },
+  {
+   "index": 67,
+   "subject": "Dave Filoni",
+   "relation": "| is employed by ",
+   "question": "Who is the employer of Dave Filoni?",
+   "gold_answer": [
+    "British Broadcasting Corporation"
+   ],
+   "old_serial": 38,
+   "old_text": "Dave Filoni is employed by Lucasfilm.",
+   "new_serial": 226,
+   "new_text": "Dave Filoni is employed by British Broadcasting Corporation.",
+   "native_output": "Lucasfilm",
+   "suppressed_output": "British Broadcasting Corporation"
+  },
+  {
+   "index": 69,
+   "subject": "Canadair",
+   "relation": "| was founded in the city of ",
+   "question": "Where was Canadair founded?",
+   "gold_answer": [
+    "Tucson"
+   ],
+   "old_serial": 237,
+   "old_text": "Canadair was founded in the city of Montreal.",
+   "new_serial": 265,
+   "new_text": "Canadair was founded in the city of Tucson.",
+   "native_output": "Montreal",
+   "suppressed_output": "Tucson"
+  },
+  {
+   "index": 70,
+   "subject": "AP1000",
+   "relation": "The company that produced | is ",
+   "question": "Which company is AP1000 produced by?",
+   "gold_answer": [
+    "Canadair"
+   ],
+   "old_serial": 196,
+   "old_text": "The company that produced AP1000 is Westinghouse Electric.",
+   "new_serial": 356,
+   "new_text": "The company that produced AP1000 is Canadair.",
+   "native_output": "Westinghouse Electric",
+   "suppressed_output": "Canadair"
+  },
+  {
+   "index": 73,
+   "subject": "Tony Blair",
+   "relation": "| is married to ",
+   "question": "Who is Tony Blair married to?",
+   "gold_answer": [
+    "Alan Jay Lerner"
+   ],
+   "old_serial": 141,
+   "old_text": "Tony Blair is married to Cherie Blair.",
+   "new_serial": 424,
+   "new_text": "Tony Blair is married to Alan Jay Lerner.",
+   "native_output": "Cherie Blair",
+   "suppressed_output": "Alan Jay Lerner"
+  },
+  {
+   "index": 77,
+   "subject": "Congolese Party of Labour",
+   "relation": "The chairperson of | is ",
+   "question": "Who is the chairperson of Congolese Party of Labour?",
+   "gold_answer": [
+    "Stephen McNeil"
+   ],
+   "old_serial": 54,
+   "old_text": "The chairperson of Congolese Party of Labour is Denis Sassou-Nguesso.",
+   "new_serial": 445,
+   "new_text": "The chairperson of Congolese Party of Labour is Stephen McNeil.",
+   "native_output": "Denis Sassou-Nguesso",
+   "suppressed_output": "Stephen McNeil"
+  },
+  {
+   "index": 81,
+   "subject": "Soviet Union",
+   "relation": "The name of the current head of state in | is ",
+   "question": "What is the name of the current head of state in Soviet Union?",
+   "gold_answer": [
+    "Elizabeth II"
+   ],
+   "old_serial": 159,
+   "old_text": "The name of the current head of state in Soviet Union is Mikhail Gorbachev.",
+   "new_serial": 365,
+   "new_text": "The name of the current head of state in Soviet Union is Elizabeth II.",
+   "native_output": "Mikhail Gorbachev",
+   "suppressed_output": "Elizabeth II"
+  },
+  {
+   "index": 82,
+   "subject": "Ferdinand von Richthofen",
+   "relation": "| is a citizen of ",
+   "question": "What is the country of citizenship of Ferdinand von Richthofen?",
+   "gold_answer": [
+    "Canada"
+   ],
+   "old_serial": 24,
+   "old_text": "Ferdinand von Richthofen is a citizen of Germany.",
+   "new_serial": 386,
+   "new_text": "Ferdinand von Richthofen is a citizen of Canada.",
+   "native_output": "Germany",
+   "suppressed_output": "Canada"
+  },
+  {
+   "index": 83,
+   "subject": "Karen Armstrong",
+   "relation": "| is affiliated with the religion of ",
+   "question": "Which religion is Karen Armstrong affiliated with?",
+   "gold_answer": [
+    "Church of Scotland"
+   ],
+   "old_serial": 266,
+   "old_text": "Karen Armstrong is affiliated with the religion of Catholic Church.",
+   "new_serial": 412,
+   "new_text": "Karen Armstrong is affiliated with the religion of Church of Scotland.",
+   "native_output": "Catholic Church",
+   "suppressed_output": "Church of Scotland"
+  },
+  {
+   "index": 84,
+   "subject": "Vito Corleone",
+   "relation": "| was created by ",
+   "question": "Who was Vito Corleone created by?",
+   "gold_answer": [
+    "Nobuhiro Watsuki"
+   ],
+   "old_serial": 256,
+   "old_text": "Vito Corleone was created by Mario Puzo.",
+   "new_serial": 390,
+   "new_text": "Vito Corleone was created by Nobuhiro Watsuki.",
+   "native_output": "Mario Puzo",
+   "suppressed_output": "Nobuhiro Watsuki"
+  },
+  {
+   "index": 85,
+   "subject": "Romania",
+   "relation": "The capital of | is ",
+   "question": "What is the capital of Romania?",
+   "gold_answer": [
+    "Rajanpur"
+   ],
+   "old_serial": 185,
+   "old_text": "The capital of Romania is Bucharest.",
+   "new_serial": 449,
+   "new_text": "The capital of Romania is Rajanpur.",
+   "native_output": "Bucharest",
+   "suppressed_output": "Rajanpur"
+  },
+  {
+   "index": 88,
+   "subject": "Sasanian Empire",
+   "relation": "| was founded by ",
+   "question": "Who founded Sasanian Empire?",
+   "gold_answer": [
+    "Walter Chrysler"
+   ],
+   "old_serial": 224,
+   "old_text": "Sasanian Empire was founded by Ardashir I.",
+   "new_serial": 264,
+   "new_text": "Sasanian Empire was founded by Walter Chrysler.",
+   "native_output": "Ardashir I",
+   "suppressed_output": "Walter Chrysler"
+  },
+  {
+   "index": 90,
+   "subject": "Surrey Senior Cup",
+   "relation": "| is associated with the sport of ",
+   "question": "Which sport is Surrey Senior Cup associated with?",
+   "gold_answer": [
+    "basketball"
+   ],
+   "old_serial": 291,
+   "old_text": "Surrey Senior Cup is associated with the sport of association football.",
+   "new_serial": 315,
+   "new_text": "Surrey Senior Cup is associated with the sport of basketball.",
+   "native_output": "association football",
+   "suppressed_output": "basketball"
+  },
+  {
+   "index": 93,
+   "subject": "Charles Messier",
+   "relation": "| is a citizen of ",
+   "question": "What is the country of citizenship of Charles Messier?",
+   "gold_answer": [
+    "Iran"
+   ],
+   "old_serial": 204,
+   "old_text": "Charles Messier is a citizen of France.",
+   "new_serial": 343,
+   "new_text": "Charles Messier is a citizen of Iran.",
+   "native_output": "France",
+   "suppressed_output": "Iran"
+  },
+  {
+   "index": 94,
+   "subject": "Rand al'Thor",
+   "relation": "| was created by ",
+   "question": "Who was Rand al'Thor created by?",
+   "gold_answer": [
+    "Ferdowsi"
+   ],
+   "old_serial": 66,
+   "old_text": "Rand al'Thor was created by Robert Jordan.",
+   "new_serial": 326,
+   "new_text": "Rand al'Thor was created by Ferdowsi.",
+   "native_output": "Robert Jordan",
+   "suppressed_output": "Ferdowsi"
+  },
+  {
+   "index": 96,
+   "subject": "Colin Irwin",
+   "relation": "| is a citizen of ",
+   "question": "What is the country of citizenship of Colin Irwin?",
+   "gold_answer": [
+    "Israel"
+   ],
+   "old_serial": 55,
+   "old_text": "Colin Irwin is a citizen of United Kingdom.",
+   "new_serial": 441,
+   "new_text": "Colin Irwin is a citizen of Israel.",
+   "native_output": "United Kingdom",
+   "suppressed_output": "Israel"
+  },
+  {
+   "index": 97,
+   "subject": "Walter Chrysler",
+   "relation": "|'s child is ",
+   "question": "Who is Walter Chrysler's child?",
+   "gold_answer": [
+    "Charles Frederick, Duke of Holstein-Gottorp"
+   ],
+   "old_serial": 61,
+   "old_text": "Walter Chrysler's child is Walter Percy Chrysler Jr..",
+   "new_serial": 231,
+   "new_text": "Walter Chrysler's child is Charles Frederick, Duke of Holstein-Gottorp.",
+   "native_output": "Walter Percy Chrysler Jr.",
+   "suppressed_output": "Charles Frederick, Duke of Holstein-Gottorp"
+  },
+  {
+   "index": 98,
+   "subject": "Charles Darwin",
+   "relation": "| is married to ",
+   "question": "Who is Charles Darwin married to?",
+   "gold_answer": [
+    "Amala Paul"
+   ],
+   "old_serial": 164,
+   "old_text": "Charles Darwin is married to Emma Darwin.",
+   "new_serial": 335,
+   "new_text": "Charles Darwin is married to Amala Paul.",
+   "native_output": "Emma Darwin",
+   "suppressed_output": "Amala Paul"
+  }
+ ]
+}

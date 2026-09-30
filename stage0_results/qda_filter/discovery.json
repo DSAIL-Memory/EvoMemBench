@@ -1,0 +1,454 @@
+{
+ "per_subset": {
+  "sh_6k": {
+   "present": true,
+   "n1_gold": 160,
+   "n0_negative": 368,
+   "n0_hard_negative": 306,
+   "n_relations_gold": 32,
+   "n_transitions_gold": 153,
+   "gold_per_relation_top10": [
+    [
+     "| is associated with the sport of ",
+     19
+    ],
+    [
+     "| is a citizen of ",
+     14
+    ],
+    [
+     "| was created in the country of ",
+     11
+    ],
+    [
+     "The author of | is ",
+     8
+    ],
+    [
+     "| died in the city of ",
+     8
+    ],
+    [
+     "| is married to ",
+     8
+    ],
+    [
+     "| was founded by ",
+     8
+    ],
+    [
+     "The capital of | is ",
+     8
+    ],
+    [
+     "| is located in the continent of ",
+     7
+    ],
+    [
+     "| was performed by ",
+     7
+    ]
+   ],
+   "gold_per_transition_top10": [
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "basketball"
+     ],
+     3
+    ],
+    [
+     [
+      "| was created in the country of ",
+      "United States of America",
+      "Soviet Union"
+     ],
+     2
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "cricket"
+     ],
+     2
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "baseball"
+     ],
+     2
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "baseball",
+      "association football"
+     ],
+     2
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "American football",
+      "rugby"
+     ],
+     2
+    ],
+    [
+     [
+      "| was born in the city of ",
+      "London",
+      "Leeds"
+     ],
+     1
+    ],
+    [
+     [
+      "The chairperson of | is ",
+      "Mahmoud Abbas",
+      "Moshe Kahlon"
+     ],
+     1
+    ],
+    [
+     [
+      "The author of | is ",
+      "Ursula K. Le Guin",
+      "Pius XII"
+     ],
+     1
+    ],
+    [
+     [
+      "| was created in the country of ",
+      "England",
+      "India"
+     ],
+     1
+    ]
+   ],
+   "split": "calibration",
+   "stage4b_eligible": false
+  },
+  "sh_32k": {
+   "present": true,
+   "n1_gold": 829,
+   "n0_negative": 9364,
+   "n0_hard_negative": 8410,
+   "n_relations_gold": 37,
+   "n_transitions_gold": 705,
+   "gold_per_relation_top10": [
+    [
+     "| is a citizen of ",
+     95
+    ],
+    [
+     "| is associated with the sport of ",
+     72
+    ],
+    [
+     "| is affiliated with the religion of ",
+     56
+    ],
+    [
+     "The author of | is ",
+     43
+    ],
+    [
+     "| was created in the country of ",
+     41
+    ],
+    [
+     "| plays the position of ",
+     37
+    ],
+    [
+     "| was founded by ",
+     36
+    ],
+    [
+     "| was created by ",
+     33
+    ],
+    [
+     "| was performed by ",
+     29
+    ],
+    [
+     "| is married to ",
+     28
+    ]
+   ],
+   "gold_per_transition_top10": [
+    [
+     [
+      "| is affiliated with the religion of ",
+      "Catholic Church",
+      "Methodism"
+     ],
+     16
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "basketball"
+     ],
+     10
+    ],
+    [
+     [
+      "| was performed by ",
+      "The Beatles",
+      "Madonna"
+     ],
+     8
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "baseball",
+      "association football"
+     ],
+     6
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "baseball"
+     ],
+     6
+    ],
+    [
+     [
+      "| is a citizen of ",
+      "United States of America",
+      "United Kingdom"
+     ],
+     6
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "basketball",
+      "association football"
+     ],
+     5
+    ],
+    [
+     [
+      "| speaks the language of ",
+      "English",
+      "German"
+     ],
+     5
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "cricket"
+     ],
+     5
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "baseball",
+      "cricket"
+     ],
+     5
+    ]
+   ],
+   "split": "calibration",
+   "stage4b_eligible": true
+  },
+  "sh_64k": {
+   "present": true,
+   "n1_gold": 1681,
+   "n0_negative": 42050,
+   "n0_hard_negative": 39215,
+   "n_relations_gold": 37,
+   "n_transitions_gold": 1302,
+   "gold_per_relation_top10": [
+    [
+     "| is a citizen of ",
+     222
+    ],
+    [
+     "| is associated with the sport of ",
+     134
+    ],
+    [
+     "| is affiliated with the religion of ",
+     121
+    ],
+    [
+     "The author of | is ",
+     99
+    ],
+    [
+     "| plays the position of ",
+     95
+    ],
+    [
+     "| was founded by ",
+     72
+    ],
+    [
+     "| was created in the country of ",
+     71
+    ],
+    [
+     "| was performed by ",
+     59
+    ],
+    [
+     "| was created by ",
+     58
+    ],
+    [
+     "| is married to ",
+     55
+    ]
+   ],
+   "gold_per_transition_top10": [
+    [
+     [
+      "| is affiliated with the religion of ",
+      "Catholic Church",
+      "Methodism"
+     ],
+     36
+    ],
+    [
+     [
+      "| is a citizen of ",
+      "United States of America",
+      "United Kingdom"
+     ],
+     22
+    ],
+    [
+     [
+      "| was performed by ",
+      "The Beatles",
+      "Madonna"
+     ],
+     18
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "basketball"
+     ],
+     17
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "baseball"
+     ],
+     14
+    ],
+    [
+     [
+      "| is affiliated with the religion of ",
+      "Catholic Church",
+      "Church of Scotland"
+     ],
+     12
+    ],
+    [
+     [
+      "| was created in the country of ",
+      "United States of America",
+      "United Kingdom"
+     ],
+     11
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "baseball",
+      "association football"
+     ],
+     10
+    ],
+    [
+     [
+      "| is associated with the sport of ",
+      "association football",
+      "cricket"
+     ],
+     10
+    ],
+    [
+     [
+      "| speaks the language of ",
+      "English",
+      "German"
+     ],
+     9
+    ]
+   ],
+   "split": "confirmatory",
+   "stage4b_eligible": true
+  },
+  "sh_262k": {
+   "present": false
+  }
+ },
+ "serial_order": {
+  "available_for_gold": true,
+  "available_for_negatives": true,
+  "source": "fact_a_id/fact_b_id (fact index == serial); fact_a is the earlier serial on all records \u2014 verified in code",
+  "n_records_checked": 54569,
+  "n_explicitly_tagged": 2682,
+  "explicit_tags_all_consistent": true,
+  "mu0_fit": "estimated from fit negatives (order IS available; the protocol's mu0:=0 fallback was not needed)"
+ },
+ "context_structure": {
+  "note": "each subset is a single benchmark context; pairs within a subset share facts, so splits are by subset (calibration = sh_6k+sh_32k, confirmatory = sh_64k), exactly the committed geometry_filter convention",
+  "sh_262k": "absent from the gold conflict dataset by construction (audit selection frame); skipped"
+ },
+ "existing_splits_reused": [
+  "record['split'] calibration/confirmatory",
+  "record['in_eval_set'] balanced cosine-matched eval set",
+  "gfdata.calibration_positive_sets seen-subject/-transition lists",
+  "gfdata.relation_fold deterministic 2-fold relation split"
+ ],
+ "created_splits": {
+  "seed": 0,
+  "rule": "fit-split tier=='negative' records permuted with default_rng(0); first 20% conformal-calibration, remainder halved into half A (whitening) / half B (parallel-analysis pool)",
+  "n_conformal_neg": 1946,
+  "n_half_a": 3893,
+  "n_half_b": 3893
+ },
+ "abtt": {
+  "artifact": "stage0_results/abtt/abtt_whitening_D128.json",
+  "applied_as": "explicit orthonormal complement basis Q (2432 x 2560); artifact never re-fit",
+  "n_prime": 2432
+ },
+ "exclusions": {
+  "n_records_dropped": 0,
+  "note": "no pair is dropped anywhere; quarantined tiers (discovered_unverified, rejected) are simply never gold and never negatives, matching the dataset rules"
+ },
+ "provenance": {
+  "git_commit": "2f87c16cdf985138794638b2de0a0f2ebec7a9c3",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "pipeline": "qda_filter",
+  "stage": "discovery"
+ }
+}

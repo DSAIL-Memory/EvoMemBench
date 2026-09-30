@@ -1,0 +1,874 @@
+% =============================================================================
+%  Read-Time Removal of Superseded Facts in Agent Memory Using Embedding Geometry
+%  Revised manuscript (addresses the internal review of the first draft).
+%
+%  Build:   pdflatex hnav_geo_manuscript && pdflatex hnav_geo_manuscript
+%  Figures: ./figures/*.pdf (file names unchanged from the first draft).
+%  Every number in this file is traced to a committed artifact in
+%  paper/PROVENANCE.md of the project repository.
+%
+%  Items the authors must still settle before submission are printed in red
+%  by \confirm{...}; search the PDF for "[CONFIRM" to find them all.
+% =============================================================================
+% The achemso class is kept so the draft builds exactly as before. Replace it
+% with the target journal's class (e.g. sagej for a SAGE title) at submission;
+% the body uses only standard LaTeX, so the swap touches the preamble only.
+\documentclass[journal=jcisd8,manuscript=article]{achemso}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{url}
+\def\UrlBreaks{\do\/\do\-}   % allow model ids to break at / and -
+\usepackage{xcolor}
+
+\graphicspath{{./figures/}{./}}
+
+% The jcisd8 configuration switches section numbers off, which would leave every
+% Section~\ref{...} empty. Keep this line while the achemso class is in use.
+\SectionNumbersOn
+
+% --- body helpers -------------------------------------------------------------
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}          % identifiers, model ids
+\newcommand{\sub}[1]{\textsf{sh\_#1}}                    % benchmark subset names
+\newcommand{\confirm}[1]{\textcolor{red}{[CONFIRM: #1]}} % must be resolved by authors
+\newcommand{\geo}{H-Nav-GEO}
+
+\title{Read-Time Removal of Superseded Facts in Agent Memory Using Embedding Geometry}
+
+\author{Ege Kutlu}
+\affiliation{Institute for Data Science \& Artificial Intelligence, Bo\u{g}azi\c{c}i University, \.{I}stanbul, T\"{u}rkiye}
+
+\author{\c{S}ener \"Oz\"onder}
+\affiliation{Institute for Data Science \& Artificial Intelligence, Bo\u{g}azi\c{c}i University, \.{I}stanbul, T\"{u}rkiye}
+\email{sener.ozonder@bogazici.edu.tr}
+
+\begin{document}
+\captionsetup[figure]{font=footnotesize}
+\captionsetup[table]{font=footnotesize}
+
+\maketitle
+
+% -----------------------------------------------------------------------------
+\begin{abstract}
+Agents that keep their memories in a vector store accumulate superseded versions of the same fact, and retrieval returns the old and new versions together. We study how small language models (2B--9B parameters) handle this on the single-hop FactConsolidation task of MemoryAgentBench. When the queried fact has two versions in the store, accuracy collapses, and 94\% of the wrong answers on the smallest store are the superseded value. We propose \geo{}, a read-time filter that identifies competing versions from fact embeddings. It combines a cosine computed after removing the dominant shared directions of the embedding space with a logistic probe on the difference vector of the two facts, verifies the surviving pairs with a bidirectional natural-language-inference cross-encoder, and deletes all but the most recent version before generation. No schema, fact parser or generative-model call is used at inference, so the deletion plan is identical for every answering model. Across five answering models and three store sizes, accuracy improves in all 15 conditions, by 3 to 47 percentage points; 11 of the improvements remain significant after Holm correction. On the largest store, evaluated with parameters frozen from the two smaller ones, the gains are 3 to 11 points. On questions whose fact has a single version, the net change is at most one question per condition. On cosine-matched pairs, discrimination between true updates and look-alike facts rises from an AUROC of 0.893 for raw cosine to 0.972. We release the 54,569 LLM-adjudicated fact pairs used to train and evaluate the detector.
+\end{abstract}
+
+\noindent\textbf{Keywords:} agent memory; knowledge conflict; retrieval-augmented generation; small language models; sentence embeddings; embedding post-processing; natural language inference.
+
+% =============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Language-model agents that persist across sessions keep a memory of facts about their user, their environment and their task. The memory is usually a vector store: each record is embedded when it is written and retrieved by similarity when it is needed \cite{lewis2020rag,park2023generative,packer2023memgpt,zhang2024memorysurvey}. Such a store is not static. People change employers, values are corrected and schedules move, so the store comes to hold several versions of the same fact. A plain vector store keeps every version, and a similarity retriever has no reason to prefer the newer one, because both are equally close to a query about that fact. Both versions therefore reach the prompt.
+
+Memory systems that address this mostly do so at write time, with a language model in the loop. Mem0 asks an LLM to decide whether each new memory should be added, should update an existing one or should delete it \cite{chhikara2025mem0}; Zep maintains a temporal knowledge graph whose edges are invalidated when a contradicting fact arrives \cite{rasmussen2025zep}; A-MEM rewrites linked notes as new ones come in \cite{xu2025amem}. Each of these costs a generative call per write and assumes that the extraction step recognises which stored record a new statement revises. Deployments built around a small local model often cannot afford that step, and a store that has already accumulated versions still needs a way to be read correctly.
+
+This paper begins with a measurement of what small models do when both versions reach them. On the single-hop FactConsolidation subsets of MemoryAgentBench \cite{hu2026memoryagentbench}, each stored fact may be restated later with a different value, and the prompt tells the model that the later statement wins. The reference model of our study, Qwen3-4B-Instruct-2507, answers all 26 questions whose fact has a single version correctly and only 4 of the 74 whose fact has two versions. Across the five answering models we test, 94\% of the wrong answers on these two-version questions are the superseded value of the queried fact (Section~\ref{sec:failure}). The model finds the right memory and reports the wrong version of it.
+
+One qualification belongs at the start. In this benchmark the earlier version is usually the real-world fact and the later version a counterfactual edit, so a model that prefers the earlier version also prefers what it already believes. When we remove the earlier record and leave only the newer one, the models answer with the newer value on 43 to 54 of 54 questions at the smallest store (Section~\ref{sec:failure}). The failure therefore needs both versions in context; what we cannot separate on this benchmark is whether the models favour the earlier record for its position or for its agreement with their prior.
+
+Either way, the remedy suggested by the measurement is to remove the superseded version before the model reads the page. That requires deciding, for two retrieved records, whether they are versions of the same fact, and deciding it without a schema, because a real memory store holds free text. The decision is harder than it looks. Two versions of a fact share almost the entire sentence and differ only in the updated value, so their embeddings are close. A different fact that shares the relation and changes only the subject is built from the same material and is just as close. Figure~\ref{fig:geometry} shows one case. Relative to ``Thomas Kyd was born in the city of London'', the later version ``\ldots\ Leeds'' has cosine 0.984, and the look-alike ``Thomas Arne was born in the city of London'' has cosine 0.834; a random pair of facts in the store has mean cosine 0.605. Across a whole store the two populations overlap: in the largest store we use, 65,782 non-conflicting pairs lie above the lowest cosine of any true version pair, 39 for each of the 1,687 version pairs identified by the benchmark's fact templates (Section~\ref{sec:components}). A natural-language-inference (NLI) model does not resolve the ambiguity either. Given ``Thomas Kyd was born in the city of London'' and the constructed probe ``Marlowe was born in the city of London'', which can both be true, a DeBERTa-v3 NLI cross-encoder reports contradiction with probability above 0.999 in both directions.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=1.2\linewidth]{figures/fig1_anatomy_v2.pdf}
+    }
+    \caption{Structural similarity becomes geometric proximity. (A) Facts in the benchmark follow a subject--relation--object template. Relative to serial 0, the later version (serial 306) changes only the object and the look-alike (serial 342) changes only the subject. The slot colouring is for exposition; \geo{} does not parse facts at inference. (B) The same facts as unit vectors, with angles drawn to scale from the measured cosines: the version pair at $10.3^{\circ}$ (cosine 0.984), the look-alike at $33.5^{\circ}$ (0.834), and a random pair of facts at the store's mean of 0.605 ($52.8^{\circ}$). The shaded cap marks the candidate threshold $\cos\ge 0.94$; this look-alike lies outside it, but many do not: in \sub{64k}, 65,782 non-conflicting pairs lie above the lowest cosine of any version pair.}
+    \label{fig:geometry}
+\end{figure}
+
+We therefore use similarity only to decide where to look. Raw cosine defines a neighbourhood of candidate pairs; inside that neighbourhood the decision is made by asking what kind of change separates the two facts. We call the resulting detector \geo{}. H-Nav is the name of the memory-governance layer developed in this project, by which we mean any component that decides what a memory store presents to the model, and GEO denotes its geometric identity screen. The screen computes two quantities from the two fact vectors. The first is a cosine computed after the store mean and its 128 leading principal directions have been projected out, the all-but-the-top (ABTT) post-processing of Mu and Viswanath~\cite{mu2018abtt}; we call it the ABTT cosine. The second is the output of a logistic probe applied to the coordinate-wise magnitude of the normalised difference vector, trained to separate edits of the object from edits of the subject. Pairs that pass both are linked into groups, the pairs inside each group are verified by the NLI cross-encoder, and within each group of verified pairs every member except the one with the highest recency key is deleted from the page. No schema, fact parser or generative call is involved at inference, and the fitted parameters are learned once, offline.
+
+We evaluate the detector by substituting the answering model. Retrieval, embeddings, prompts, generation settings, scoring and the deletion plan are held fixed, and only the answering model changes. Five instruction-tuned models from three families (Gemma, Phi and Qwen), from 2B to 9B parameters, are run at three store sizes. All detector parameters are fitted on the two smaller stores and applied unchanged to the largest. Only the largest store exercises retrieval: at the two smaller sizes the benchmark's retriever returns every chunk, so those conditions are effectively long-context reading with the full store in the prompt. \geo{} improves accuracy in all 15 model-by-store conditions, by 3 to 47 points; 11 of the 15 improvements remain significant after Holm correction, and on the largest store the gains are 3 to 11 points. On questions whose fact has only one version, the net change is at most one question per condition. With the page cleaned, two governed 4B-class models match or exceed the unmodified 9B model in all three conditions.
+
+The contributions are:
+\begin{enumerate}
+  \item a characterisation of how small models fail on evolving memory: they select the superseded value of the right fact, and they stop doing so when the superseded record is removed (Section~\ref{sec:failure});
+  \item \geo{}, a read-time detector that identifies competing versions from embeddings with a schema-free screen and an NLI verifier, and repairs the page by deletion (Section~\ref{sec:method});
+  \item a controlled five-model evaluation in which the intervention is identical across models, together with comparisons against a schema-keyed oracle, a screen without the probe, and two placement edits (Sections~\ref{sec:design}--\ref{sec:analysis});
+  \item a dataset of 54,569 fact pairs adjudicated by an LLM, with dual labels and cosine-matched evaluation sets (Section~\ref{sec:gold}).
+\end{enumerate}
+
+Section~\ref{sec:related} reviews related work and Section~\ref{sec:problem} defines the setting and the failure. Section~\ref{sec:method} presents the method and Section~\ref{sec:design} the experimental design. Section~\ref{sec:results} reports results, Section~\ref{sec:analysis} analyses what varies across models, why each component is needed and where the remaining errors come from, and Section~\ref{sec:discussion} discusses scope and limitations.
+
+% =============================================================================
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Knowledge conflicts in retrieval-augmented generation}
+
+Retrieval-augmented generation conditions a language model on retrieved passages \cite{lewis2020rag,guu2020realm,karpukhin2020dpr,gao2023ragsurvey}, and a large body of work studies what happens when those passages disagree with the model or with each other. Longpre et al.~\cite{longpre2021entity} showed that reading-comprehension models ignore substituted entities in context and fall back on memorised answers. Chen et al.~\cite{chen2022rich} found that models relying on several sources tend to follow the most relevant passage and proposed calibrating them to flag conflicts. With larger models the picture changes but does not simplify: Xie et al.~\cite{xie2024chameleon} report that LLMs accept coherent counter-memory evidence, yet show a strong confirmation bias toward their parametric memory when supporting and contradicting evidence appear together, which is the situation our benchmark creates. ClashEval quantifies the same tug-of-war between prior and retrieved evidence \cite{wu2024clasheval}, CONFLICTBANK separates misinformation, temporal and semantic conflicts \cite{su2024conflictbank}, and Xu et al.~\cite{xu2024conflictsurvey} survey the area. Proposed remedies include prompting for context faithfulness \cite{zhou2023contextfaithful}, training models to detect and articulate conflicts \cite{wang2024resolving}, and training for robustness to irrelevant or misleading context \cite{shi2023distracted,yoran2024robust,chen2024rgb}. Temporal question answering adds the dimension of time to the same problem \cite{dhingra2022timeaware,zhang2021situatedqa,kasai2023realtimeqa}. In contrast to these settings, both statements in our case come from the system's own memory, the store supplies an explicit recency order, and the required operation is supersession by that order rather than adjudication against world knowledge. We also act on the retrieved page instead of on the model.
+
+\subsection{Memory for language-model agents}
+
+Agent architectures keep long-term memory outside the model and retrieve from it: the memory stream of generative agents scores records by recency, importance and relevance \cite{park2023generative}; MemoryBank adds a forgetting curve \cite{zhong2024memorybank}; MemGPT pages memory in and out of the context window \cite{packer2023memgpt}. Mem0, Zep and A-MEM, discussed in the introduction, consolidate memories at write time with a generative model \cite{chhikara2025mem0,rasmussen2025zep,xu2025amem}. Benchmarks for long-term memory include LoCoMo \cite{maharana2024locomo} and LongMemEval, whose knowledge-update category tests exactly the revision of stored facts \cite{wu2025longmemeval}. MemoryAgentBench introduced FactConsolidation as a selective-forgetting task and found that current memory agents struggle to revise incrementally presented facts \cite{hu2026memoryagentbench}. EvoMemBench reuses it as its in-episode knowledge-revision setting and reports FactConsolidation single-hop scores of 18--54\% for common explicit-memory and retrieval systems \cite{wang2026evomembench}. Reddy and Challaram~\cite{reddy2026freshness} reach a diagnosis close to ours from the assembly side: selecting the maximum serial after candidate extraction substantially improves FactConsolidation, which places the bottleneck after retrieval. Their recipe assumes that the fact key can be extracted; \geo{} infers which records are versions of each other from embeddings and only then applies recency.
+
+A separate line of work edits facts inside model parameters \cite{meng2022rome,meng2023memit}. Its benchmarks, such as MQuAKE, pair real facts with counterfactual edits \cite{zhong2023mquake,cohen2024ripple}, and FactConsolidation follows the same counterfactual design, which is why the superseded value in our store is usually the real-world one. We change the external memory, not the parameters.
+
+\subsection{Geometry and post-processing of sentence embeddings}
+
+Contextual representations are anisotropic: they occupy a narrow cone, so unrelated inputs have high cosine similarity \cite{ethayarajh2019contextual,gao2019degeneration,cai2021isotropy}. Several post-processing methods counter this. Removing the common component \cite{arora2017sif} or the mean together with a few dominant principal directions \cite{mu2018abtt} is the simplest; whitening rescales the covariance to the identity \cite{su2021whitening,huang2021whiteningbert}; flow-based mapping to a Gaussian \cite{li2020bertflow} and cluster-wise corrections \cite{rajaee2021cluster} are alternatives, and a few rogue dimensions can dominate cosine similarity on their own \cite{timkey2021roguedims}. Contrastive training improves the uniformity of the space \cite{gao2021simcse,wang2020alignment}. Sentence encoders used for retrieval \cite{reimers2019sbert}, including the Qwen3-Embedding family that we use \cite{zhang2025qwen3embedding}, inherit a large shared component. We apply ABTT, not whitening: the mean and the top 128 principal directions are removed and the covariance is not rescaled.
+
+\subsection{Difference vectors and probing}
+
+Vector offsets between embeddings encode relations \cite{mikolov2013regularities}, and classifiers on difference vectors identify lexical relations \cite{vylomova2016differences}. Levy et al.~\cite{levy2015supervised} warned that such classifiers can memorise properties of the individual words rather than learn the relation, a caveat that our relation-disjoint evaluation confirms for the slot probe (Section~\ref{sec:components}). Linear probes are a standard tool for reading information from representations \cite{alain2017probes,belinkov2022probing}, with control tasks needed to tell learned structure from memorisation \cite{hewitt2019control}; relational structure in language models is often close to linear \cite{hernandez2024linearity}.
+
+\subsection{NLI as a consistency check, and deduplication}
+
+NLI models trained on SNLI and MultiNLI \cite{bowman2015snli,williams2018mnli}, including DeBERTa-v3 cross-encoders \cite{he2023debertav3}, are widely used to verify factual consistency \cite{honovich2022true,laban2022summac}, and contrastive evidence makes fact verification sensitive to single-token changes \cite{schuster2021vitaminc}. That sensitivity is the problem here: two facts that differ in one slot look contradictory to an NLI model whichever slot differs. Embedding-based deduplication removes near-duplicates from corpora \cite{abbas2023semdedup,lee2022dedup}; applied to a fact store, it would remove look-alikes along with versions, which is the error the identity screen is designed to avoid.
+
+% =============================================================================
+\section{Problem Setting}
+\label{sec:problem}
+
+\subsection{Evolving memory and supersession}
+\label{sec:setting}
+
+We model an agent's memory as an append-only store of short records $f_1,f_2,\dots$, each with an embedding $v_i\in\mathbb{R}^d$ and a recency key $s_i$, such as a serial number, a timestamp or a version counter. A record asserts a value for a subject and a relation; we call the subject--relation pair its \emph{key} and the value its \emph{object}. Record $f_j$ \emph{supersedes} $f_i$ when both have the same key, their objects differ and $s_j>s_i$. Two records form a \emph{version pair} when one supersedes the other, and a \emph{look-alike pair} when they share the relation but differ in the subject; more generally, a \emph{cross-key pair} is any pair with different keys. Supersession is a convention of the store: the newer record wins whether or not it is true of the world. At query time a retriever returns a page of records, and the answering model reads the page and answers.
+
+We impose three constraints that follow from the target setting, a small model serving an agent. No generative call may be added at read time. No schema, relation template or entity extractor may be assumed, since a real store holds free text. The mechanism may use only a text embedding per record and the recency key, both of which agent memory stores normally hold. In the benchmark used here the per-fact embeddings are not part of the retrieval pipeline and must be computed separately (Section~\ref{sec:embed}).
+
+\subsection{The benchmark}
+\label{sec:benchmark}
+
+We use the Conflict Resolution data of MemoryAgentBench \cite{hu2026memoryagentbench}, single-hop FactConsolidation subsets at 6K, 32K and 64K tokens (\sub{6k}, \sub{32k} and \sub{64k}). Each subset is one numbered list of facts, which serves as the memory, and 100 questions. A later fact may restate an earlier fact's subject and relation with a different object; the expected answer is normally the object of the highest-serial fact, and the prompt states this rule. For conflicted facts the later version is typically a counterfactual edit, so the older version is usually the real-world value. Scoring is the benchmark's substring exact match. The subsets overlap: every fact of \sub{6k} also appears in \sub{32k}, and 2,244 of the 2,310 facts of \sub{32k} also appear in \sub{64k}.
+
+\begin{table}[H]\centering
+\caption{The three stores. The benchmark retrieves the top 10 chunks, so at \sub{6k} and \sub{32k} the whole store is on the page; only \sub{64k} exercises retrieval.}
+\label{tab:stores}
+\begin{tabular}{lrrrr}\toprule
+subset & facts & chunks & chunks retrieved & conflicted / unique questions\\\midrule
+\sub{6k}  & 455   & 2  & 2  & 74 / 26\\
+\sub{32k} & 2,310 & 9  & 9  & 65 / 35\\
+\sub{64k} & 4,580 & 17 & 10 & 66 / 34\\\bottomrule
+\end{tabular}\end{table}
+
+The benchmark's pipeline splits the fact list into chunks of 4,096 tokens, embeds each chunk, retrieves the ten chunks most similar to the question and places them in the prompt in rank order. We leave that pipeline untouched and edit only the retrieved page. Table~\ref{tab:stores} shows the consequence: at \sub{6k} and \sub{32k} every chunk is retrieved, so the page is the whole store, and only at \sub{64k} does retrieval select a subset (10 of 17 chunks).
+
+For analysis only, each question is assigned offline to a stratum by parsing the fact text with the benchmark's templates. A question is \emph{conflicted} if its key carries at least two distinct objects in the store and \emph{unique} otherwise. The conflicted stratum is the population the method is designed for. The unique stratum serves as a check that the method does no harm, with a caveat: the unique facts we inspected are real-world facts, so a model can often answer them from parametric knowledge even without the record.
+
+\subsection{The failure mode}
+\label{sec:failure}
+
+Table~\ref{tab:errors} breaks down the native answers at \sub{6k}. On conflicted questions the five models answer between 4 and 22 of 74 correctly, while they answer 23 to 26 of the 26 unique questions correctly. Of the 301 wrong answers on conflicted questions, 283 (94\%) contain another value of the queried key, that is, a superseded value; the rest are values that do not belong to the key, and none is empty. The reference model shows the same pattern in eight earlier native runs at \sub{6k}: 26 of 26 unique questions correct in every run, 0 to 5 of 74 conflicted questions correct, and 572 of 575 conflicted errors containing a superseded value.
+
+\begin{table}[H]\centering
+\caption{Native errors on the 74 conflicted questions of \sub{6k}, and a within-question control. ``Clean page'': the 54 conflicted questions for which the deletion plan removes every superseded version of the queried key and keeps the newest, so the edited page states only the current value. The set is fixed by the plan and is identical for all models.}
+\label{tab:errors}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrr@{\hspace{1.5em}}rrr}\toprule
+ & \multicolumn{4}{c}{all conflicted questions ($n=74$), native} & \multicolumn{3}{c}{clean-page questions ($n=54$)}\\
+\cmidrule(lr){2-5}\cmidrule(lr){6-8}
+model & correct & wrong & of which & of which & native & after deletion & after deletion\\
+ & & & superseded & other value & superseded & superseded & correct\\\midrule
+gemma-3-4b-it          & 22 & 52 & 49 & 3  & 37 & 1 & 46\\
+gemma-4-E2B-it         & 16 & 58 & 45 & 13 & 33 & 1 & 43\\
+Phi-4-mini-instruct    & 14 & 60 & 60 & 0  & 45 & 6 & 45\\
+Qwen3-4B-Instruct-2507 & 4  & 70 & 69 & 1  & 50 & 2 & 51\\
+Qwen3.5-9B             & 13 & 61 & 60 & 1  & 42 & 0 & 54\\\bottomrule
+\end{tabular}}\end{table}
+
+The right-hand columns of Table~\ref{tab:errors} address an obvious alternative explanation. Because the superseded value is usually the real-world value, a model could produce it from parametric knowledge without reading the store at all. On the 54 questions where the edited page states only the current value, the models give the superseded value 33 to 50 times natively but 0 to 6 times after deletion, and answer correctly 43 to 54 times. When the older record is absent the models read the counterfactual value and report it; they fail when both records are present. The benchmark does not let us separate two reasons for choosing the older record, its earlier position and its agreement with the model's prior, and the finding of Xie et al.~\cite{xie2024chameleon} that models favour prior-consistent evidence when both kinds are present suggests the second contributes. The practical conclusion does not depend on the reason: removing the superseded record removes most of the error. At \sub{32k} prior-driven answers are more common for some models; after deletion, gemma-3-4b-it still gives the superseded value on 17 of the 48 clean-page questions (Section~\ref{sec:placement}).
+
+\subsection{The identity decision}
+\label{sec:identity}
+
+\geo{} separates two questions that a cosine threshold conflates. The first is neighbourhood membership: are two retrieved facts similar enough to be versions of one fact? Raw cosine answers this well and is used as a permissive candidate generator. The second is version identity: does the difference between two nearby vectors correspond to a change of object under the same key, or to a change of subject that leaves most of the sentence intact? Both kinds of pair inherit their proximity from the shared template, and above the lowest version-pair cosine the non-conflicting pairs outnumber the version pairs 39 to 1. Under the constraints of Section~\ref{sec:setting} the identity decision has to be made from the vectors.
+
+% =============================================================================
+\section{Method}
+\label{sec:method}
+
+\subsection{Overview}
+\label{sec:overview}
+
+For each question \geo{} performs the following steps, none of which calls a generative model.
+\begin{enumerate}
+\item \textbf{Page.} The benchmark's retriever produces the page as usual.
+\item \textbf{Pool.} The 50 facts on the page with the highest cosine to the query form the candidate pool.
+\item \textbf{Candidate pairs.} Every pair in the pool with raw cosine $\ge 0.94$ is a candidate.
+\item \textbf{Identity screen.} Two geometric scores are computed from the pair's vectors (Sections~\ref{sec:abtt} and~\ref{sec:probe}) and compared with two thresholds (Section~\ref{sec:margins}).
+\item \textbf{NLI verification.} Pairs that pass the screen are linked into connected components. Every pair of facts inside a component is scored by an NLI cross-encoder in both directions and is verified only if both directions indicate contradiction (Section~\ref{sec:nli}).
+\item \textbf{Grouping and deletion.} Verified pairs are joined into connected groups; each group keeps its member with the highest recency key and the other members are deleted from the page (Section~\ref{sec:group}).
+\item The edited page is sent to the answering model with the benchmark's unchanged prompt.
+\end{enumerate}
+
+Steps 1--6 depend only on the store, the retriever and the frozen detector. The resulting deletion plan is therefore the same for every answering model, which we verified by hashing the per-question plans of all five models' runs.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=1.15\linewidth]{figures/fig2_pipeline_v2.pdf}
+    }
+    \caption{\geo{} at read time. (a) The benchmark's retriever produces the page; the 50 facts closest to the query form the pool; pairs above raw cosine 0.94 become candidates, version pairs and look-alikes alike. The identity screen separates them using only the two vectors, NLI verifies the survivors, and every member of a verified group except the highest serial is deleted before the answering model reads the page. (b) The screen for one pair: the ABTT cosine (store mean and 128 shared directions removed) and a linear probe on the magnitude profile of the difference vector must both exceed their thresholds before the bidirectional NLI check. The look-alike pair 0--342 is shown to illustrate the probe threshold; with raw cosine 0.834 it would not become a candidate in operation. No generative model runs before the answering model, and the plan was identical across the five answering models.}
+    \label{fig:pipeline}
+\end{figure}
+
+The ordering of the steps reflects a division of labour. Cosine decides where to look, the identity screen decides whether two nearby records are versions of the same fact, NLI checks that their contents are incompatible, and the recency key decides which version to keep. No answering-model behaviour enters any of these decisions.
+
+\subsection{Per-fact embeddings}
+\label{sec:embed}
+
+Each fact and each query is embedded with Qwen3-Embedding-4B \cite{zhang2025qwen3embedding} in float32 (2,560 dimensions, inputs up to 8,192 tokens, unit-normalised). We use mean pooling over the attention mask rather than the model's recommended last-token pooling, because the benchmark's own retriever embeds its chunks with that pooling; keeping it means that the detector operates in the same space as the benchmark's retrieval. The benchmark embeds 4,096-token chunks, not facts, so the per-fact embeddings are an additional computation: one vector per fact and per query (4,680 vectors for \sub{64k}), paid once when a fact is written and cached thereafter. Splitting the benchmark's numbered list into facts and reading each fact's serial number from the text are the only benchmark-specific steps, and neither involves the fact's content.
+
+\subsection{Signal 1: the ABTT cosine}
+\label{sec:abtt}
+
+Embeddings of short factual statements share a large common component. In our encoder, random pairs of facts have a mean cosine of about 0.60 (Figure~\ref{fig:geometry}B), which inflates every similarity and compresses the differences that matter. Following Mu and Viswanath~\cite{mu2018abtt}, we subtract the mean $\mu$ of a set of fact vectors, project out the $D=128$ leading principal directions, collected as the orthonormal columns of $P\in\mathbb{R}^{2560\times128}$, and renormalise:
+\begin{equation}
+\hat w(v)=\frac{(I-PP^{\top})(v-\mu)}{\lVert (I-PP^{\top})(v-\mu)\rVert},\qquad
+\cos_{\mathrm{ABTT}}(a,b)=\hat w(v_a)^{\top}\hat w(v_b).
+\end{equation}
+The statistics $(\mu,P)$ are fitted once on the 2,765 fact vectors of the two calibration stores and frozen. Because \sub{6k} is contained in \sub{32k}, these are 2,310 distinct facts, with the 455 facts of \sub{6k} counted twice. $D=128$ was chosen on the calibration stores from a sweep over $D$ between 16 and 192; it is an interior optimum on both.
+
+Centring alone brings the mean cosine of random pairs from 0.60 to approximately zero, but this is expected of any centred set of vectors and is not evidence of isotropy. The relevant effect is on the ranking of candidate pairs at high precision. Raw cosine already ranks version pairs above other candidates almost perfectly on average, so ABTT raises the ranking AUROC only from about 0.99 by 0.002 to 0.005. At the precision a deleting detector needs, the difference is large: recall at precision 1.000 rises from 0.075 to 0.513 on \sub{6k} and from 0.007 to 0.291 on \sub{32k}, and recall at precision $\ge0.99$ rises from 0.075 to 0.719 and from 0.007 to 0.521 (Figure~\ref{fig:mechanism}A).
+
+\subsection{Signal 2: the slot probe}
+\label{sec:probe}
+
+The second signal reads what changed. Let $d=v_b-v_a$ and $\hat d=d/\lVert d\rVert$. A candidate pair is unordered, so we discard the sign and use the coordinate-wise magnitude profile $|\hat d|\in\mathbb{R}^{2560}$, which does not depend on the order of the pair. A logistic regression on this profile,
+\begin{equation}
+\operatorname{probe}(a,b)=w^{\top}|\hat d|+b_0,
+\end{equation}
+is trained to separate object edits from subject edits. The positives are the 989 version pairs of the calibration stores in the gold conflict dataset (Section~\ref{sec:gold}). The negatives are the 8,716 calibration pairs of that dataset that were judged not to conflict and that share the relation template but differ in the subject; 5,124 of them also share the object. The template parser is used here, offline, to select training pairs; it is never used at inference, where the probe sees only the two vectors. The probe uses balanced class weights and $C=1$ (scikit-learn \cite{pedregosa2011sklearn}).
+
+\subsection{Thresholds}
+\label{sec:margins}
+
+Each score is expressed as a margin in units of its standard deviation relative to an anchor:
+\begin{equation}
+m_w=\frac{\cos_{\mathrm{ABTT}}-T_w}{s_w},\qquad m_p=\frac{\operatorname{probe}-T_p}{s_p}.
+\end{equation}
+The anchors and scales are computed on the 1,525 distinct pairs with raw cosine $\ge0.88$ found in the 50-fact pools of the calibration questions (193 in \sub{6k} and 1,332 in \sub{32k}). The scales $s_w$ and $s_p$ are the standard deviations of the two scores over these pairs. For the anchors we restrict to the pairs that pass the NLI check and sweep $T_w$ over 200 quantiles of the ABTT cosine; for each $T_w$ we set $T_p$ just above the largest probe score of any cross-key pair with ABTT cosine $\ge T_w$, so that no cross-key pair passes, and we keep the $(T_w,T_p)$ with the highest recall of version pairs. This gives $T_w=0.6397$, $s_w=0.3483$, $T_p=-0.0764$ and $s_p=1.0675$.
+
+A pair passes the screen if $m_w\ge\tau_w$ and $m_p\ge\tau_p$. The operating point, $\tau_w=-0.40$ and $\tau_p=+0.20$, is equivalent to the raw thresholds
+\begin{equation}
+\cos_{\mathrm{ABTT}}\ge0.500\quad\text{and}\quad\operatorname{probe}\ge0.137,
+\end{equation}
+a loose ABTT cosine combined with a strict probe. For threshold-free evaluation (Section~\ref{sec:pairlevel}) a pair is scored by $\min(m_w,m_p)$. The operating point was selected on the calibration pools from a declared grid over the candidate cosine ($0.90$, $0.92$, $0.94$), the NLI threshold ($0.5$, $0.9$, $0.99$), the span-check setting and a set of $(\tau_w,\tau_p)$ combinations. The rule maximises pool recall of version pairs subject to zero harmful deletions, where a deletion is harmful if it leaves a key without its current value on the page. Harm and recall are computed from the parsed fact table; no answering model, accuracy or benchmark answer enters the selection.
+
+Three cosine levels appear in this paper and serve different purposes. The dataset of Section~\ref{sec:gold} covers pairs with raw cosine $\ge0.80$, a frame that contains all 2,682 template-tagged version pairs of the three stores. The anchors and scales use pool pairs with raw cosine $\ge0.88$, looser than the operating threshold so that they are estimated on the negatives that lie near it. The candidate threshold of 0.94 is the value chosen by the selection rule. Because 24--26\% of the version pairs in the dataset have raw cosine below 0.94, the candidate threshold alone limits pair recall to about three quarters (Section~\ref{sec:pairlevel}).
+
+\subsection{NLI verification}
+\label{sec:nli}
+
+Pairs that pass the screen are linked into connected components, and every pair of facts within a component, including pairs that did not themselves pass the screen but are connected through others, is scored by the cross-encoder \url{cross-encoder/nli-deberta-v3-large} (435M parameters) \cite{he2023debertav3}. A pair is verified only if the contradiction probability is at least 0.90 in both directions; a one-directional contradiction or an entailment is rejected, because two versions of a fact disagree symmetrically about the same slot. NLI verifies content, not identity: it assigns high contradiction to many look-alikes (Section~\ref{sec:components}), which is why the geometric screen precedes it.
+
+\subsection{Grouping and deletion}
+\label{sec:group}
+
+Verified pairs are treated as edges, and connected components are conflict groups. In each group the member with the highest serial is kept and every other member is deleted from the page; nothing is added or reordered, so the prompt becomes shorter. Connected components do not respect keys. A single cross-key pair that passes the screen places two keys in one component; NLI, which readily verifies look-alikes, can then verify pairs across the two keys, and the resulting group spans both. Keeping only its newest member can then remove a key's current value. This happened on the largest store (Section~\ref{sec:pools}).
+
+The frozen artifact also contains a span check inherited from an earlier design: a group is kept only if some member's leave-one-out QR residual against the span of the other pool candidates is below $r_{\min}=0.44$. At the operating point this check never binds. It is applied to the components of screened pairs, in which every member has a partner in the pool with cosine at least 0.94, and the residual of a unit vector against any span that contains a unit vector at cosine $c$ to it is at most $\sqrt{1-c^{2}}\le0.341$. We report the check for fidelity to the evaluated artifact; removing it would not change any plan.
+
+\subsection{Fitting and freezing}
+\label{sec:freeze}
+
+Every learned quantity (the ABTT statistics, the probe, the anchors and scales, and the operating point) is fitted on \sub{6k} and \sub{32k} only; the fitting code refuses other data. The artifact is stored with a SHA-256 fingerprint over its arrays and scalars, and the evaluation runner refuses to score if the fingerprint differs. Appendix~\ref{app:params} lists the frozen values.
+
+% =============================================================================
+\section{Experimental Design}
+\label{sec:design}
+
+\subsection{Calibration and frozen transfer}
+\label{sec:splits}
+
+\sub{6k} and \sub{32k} form the calibration split: every fitted quantity is learned there from detection quality alone and frozen. \sub{64k} is then evaluated with the frozen artifact and no \sub{64k}-specific adjustment. Because the stores overlap, \sub{64k} is not fact-disjoint from calibration: 2,244 of its 4,580 facts occur verbatim in the calibration stores, and 800 of its 1,681 version pairs in the dataset were positives in probe training. We therefore call \sub{64k} a frozen-transfer condition and not a held-out test. To measure what happens on facts the detector has not seen, we separate the 66 conflicted \sub{64k} questions by whether the fact carrying the expected answer occurs verbatim in either calibration store: for 24 it does and for 42 it does not. We call the latter the novel-fact slice. It is novel at the level of facts, not of language: it uses the same templates and relations as calibration.
+
+A deployment would estimate the unsupervised ABTT statistics on its own store and would calibrate the probe once per encoder and domain. That configuration, with statistics re-estimated on the target store, is not evaluated here.
+
+Accuracy on the calibration stores is a legitimate measurement of the page edit for every model, since the frozen operating point was selected without any answering model. It is not free of development bias, and we state the development history plainly. The reference model, Qwen3-4B-Instruct-2507, was used throughout the project. Earlier designs were evaluated by its answer accuracy on the calibration questions, among them a 162-cell sweep of chunk-reranking operating points (Section~\ref{sec:components}) and several schema-keyed and parser-free detectors. Five earlier detector variants were also evaluated end to end on \sub{64k} with the reference model before \geo{} was designed. \geo{}'s parameters were fitted on calibration data only, but its design was not blind to those earlier \sub{64k} outcomes. The four other answering models were added after every parameter had been frozen.
+
+\subsection{Preregistration and run record}
+\label{sec:prereg}
+
+Two preregistered rules were not met, and one run was repeated. First, the preregistration for \geo{} named as its primary endpoint an overall accuracy above 64 of 100 for the reference model on \sub{64k}, the score of a schema-keyed detector with the NLI check (Section~\ref{sec:reference}); \geo{} reached 56. Second, the campaign protocol declared a run void if any deletion on \sub{64k} left a key without its current value. The \geo{} plan for \sub{64k} contains 8 such deletions (Section~\ref{sec:pools}), and because the plan is the same for all models, all five \sub{64k} cells carry this flag. We report these cells, marked accordingly, because the violation is a property of the detector at transfer and not of any run. Third, the first gemma-3-4b-it run used an 8-bit floating-point (fp8) KV cache inherited from the reference configuration and produced degenerate output, including 4 of 26 correct unique questions where other models scored 26 of 26. A serving diagnostic that varied only the cache type (0 of 10 probe questions correct with fp8, 9 of 10 with BF16) identified the cause, and all three gemma-3-4b-it subsets were run again with a BF16 cache. The voided run is retained in the repository. Every other cell was run once.
+
+\subsection{The gold conflict dataset}
+\label{sec:gold}
+
+To train the probe and evaluate pair-level discrimination we built an adjudicated dataset of fact pairs. The frame is every pair with raw cosine $\ge0.80$ under the campaign embeddings across the three stores, 87,102 pairs. Of these, 54,569 (62.6\%) were adjudicated by GPT-5 mini through the API, under a fixed schema and with the order of the two facts randomised to limit position bias \cite{wang2024fairevaluators,zheng2023judging}. Coverage is complete for the 2,682 pairs that the template parser tags as supersessions, for same-key pairs the parser could not tag, for structural adversaries (the same subject under different templates, and alias candidates) and for a seeded random sample of 4,000 pairs; the remaining pairs were adjudicated in a shuffled order until a fixed budget was exhausted, which reached 34.5\% of them without bias. The 32,533 unadjudicated pairs are excluded.
+
+The judge records whether the two facts refer to the same subject, whether they express the same relation, and whether the two values can hold at once. From these fields each pair receives two labels. \code{gold_update} marks a version pair under the benchmark's convention: the same key with different objects, so that the later record supersedes the earlier. \code{gold_strict} additionally requires that the two values cannot hold simultaneously, and implies \code{gold_update}. The gold set consists of 2,388 \emph{core} pairs, which are gold under both labels, and 282 pairs that are gold under update semantics only because the judge considered the values compatible (for example a city and its country). Twelve tagged pairs were rejected because the judge refuted the slot alignment, and 105 pairs that the judge alone flagged as conflicts are quarantined and excluded from both classes until independently checked. The remaining 51,782 pairs are negatives. Labels were not validated against human annotation; LLM annotation has been shown to be competitive with crowd workers on text-annotation tasks \cite{gilardi2023chatgpt}, but this remains a limitation (Section~\ref{sec:limitations}).
+
+For evaluation, each store receives a balanced set of version pairs and negatives, with negatives matched to positives in cosine bins of width 0.01 (160, 829 and 1,681 pairs per class for \sub{6k}, \sub{32k} and \sub{64k}). Matching cannot remove the cosine signal entirely, because verified negatives above cosine 0.95 are rare. The dataset therefore records the AUROC of raw cosine on each balanced set (0.960, 0.911 and 0.893) and an overlap band, cosine 0.87--0.97, inside which cosine is uninformative; any detector should be compared with that baseline and inside that band. The 1,681 version pairs of \sub{64k} are the 1,687 template-tagged pairs of Section~\ref{sec:intro} minus the six whose alignment the judge rejected.
+
+\subsection{Answering models and serving}
+\label{sec:models}
+
+\begin{table}[H]\centering
+\caption{Answering models and serving configurations. Qwen3-4B-Instruct-2507 is the reference model used during development; the other four were added after all detector parameters were frozen. The KV-cache type differs between models by necessity (Section~\ref{sec:prereg}) and is fixed within each model across all arms.}
+\label{tab:models}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lllll}\toprule
+model & family & parameters & server & KV cache\\\midrule
+gemma-3-4b-it \cite{gemma2025gemma3}            & Gemma & 4B & vLLM 0.9.1 & BF16\\
+gemma-4-E2B-it \cite{gemma4card}                & Gemma & 2B effective & vLLM 0.28.0 & BF16\\
+Phi-4-mini-instruct \cite{abouelenin2025phi4mini} & Phi & 3.8B & vLLM 0.9.1 & fp8\\
+Qwen3-4B-Instruct-2507 \cite{yang2025qwen3}     & Qwen & 4B & vLLM 0.9.1 & fp8\\
+Qwen3.5-9B \cite{qwen35card}                    & Qwen & 9B & vLLM 0.28.0, thinking disabled & BF16\\\bottomrule
+\end{tabular}}\end{table}
+
+All models are served with vLLM \cite{kwon2023vllm} (Table~\ref{tab:models}) at temperature 0, with the benchmark's generation length of ten tokens, one sequence at a time, prefix caching disabled and eager execution. Before a model is measured, a preflight check measures the longest \sub{64k} prompt with the model's own tokenizer and chat template (43K to 50K tokens across models), serves the model with a context window that fits it, confirms that no reasoning tokens are emitted and checks determinism on a short prompt.
+
+These settings make a run reproducible within itself: sending every native prompt a second time yields identical outputs in all 15 cells. They do not make separately launched runs identical. In earlier determinism checks with the reference model at \sub{6k}, two runs with identical settings differed on 1 of 100 answers with one vLLM engine and on 7 of 100 with the other, and across eight earlier native runs under several server configurations overall accuracy ranged from 26 to 31. The campaign's native score of 30 lies inside that range. Every campaign cell is a single run, so differences of a few questions within one cell should be read against a between-run variation of this size.
+
+\subsection{Arms}
+\label{sec:arms}
+
+Every run answers the 100 questions of a subset under five arms: \emph{native}, the benchmark's page unedited; \emph{native repeat}, the identical prompts sent again, which measures within-run determinism; \emph{\geo{} (delete)}, the method; and two placement arms, \emph{move newest to end} and \emph{move newest to front}, which use the same detector and the same groups but move the newest member of each group instead of deleting the others, so that nothing is removed. The placement arms test whether the benefit comes from removing information or from repositioning it.
+
+Three reference detectors were run with the same harness and page source, outside the five-arm campaign. The \emph{schema-keyed oracle} forms groups from the keys produced by the template parser (candidates at raw cosine $\ge0.90$, no NLI) and keeps the newest member of each key; it was run on all five models. It cannot be applied to free text and serves as an upper reference. A second schema-keyed detector adds the NLI check to the parsed keys; we use its result for the reference model on \sub{64k}, against which the preregistered endpoint of \geo{} was set. The \emph{screen without the probe} uses the ABTT cosine and the NLI check with no parser and no probe, and was run on the reference model only.
+
+\subsection{Metrics and statistics}
+\label{sec:stats}
+
+Accuracy is the benchmark's substring exact match, reported overall and per stratum. Each arm is compared with native by the exact McNemar test on the discordant questions $(b,c)$, where $b$ counts questions answered correctly only by native and $c$ those answered correctly only by the arm \cite{mcnemar1947}. We apply the Holm procedure across the 15 model-by-subset tests \cite{holm1979}. Models are not pooled into a single test, since the five models answer the same questions under the same plans. Consistency across models is summarised by a one-sided sign test per subset. Pair-level AUROCs are reported with 95\% intervals from 1,000 bootstrap resamples \cite{efron1993bootstrap}; these intervals are unpaired, so overlapping intervals of two screens on the same pairs do not by themselves indicate a difference or its absence.
+
+% =============================================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Pair-level discrimination}
+\label{sec:pairlevel}
+
+Table~\ref{tab:pairlevel} compares the screens on the balanced \sub{64k} set of 1,681 version pairs and 1,681 cosine-matched negatives. Raw cosine reaches an AUROC of 0.893 on the full set and 0.850 inside the overlap band. The combined screen reaches 0.972 and 0.966. Most of the gain comes from the ABTT cosine, which alone reaches 0.965; the combined screen is slightly higher, but the difference was not tested with a paired procedure and the unpaired intervals overlap. The probe alone is weaker (0.913). As noted in Section~\ref{sec:splits}, 800 of the 1,681 version pairs in this set were probe training positives and 370 of the negatives come from calibration pools, so the table measures the frozen detector on a partly familiar store.
+
+\begin{table}[H]\centering
+\caption{Pair-level discrimination on the \sub{64k} cosine-matched set (1,681 version pairs, 1,681 negatives; 95\% bootstrap intervals, unpaired). The set is not fact-disjoint from calibration. The overlap band (raw cosine 0.87--0.97) is where cosine is uninformative.}
+\label{tab:pairlevel}
+\begin{tabular}{lcc}\toprule
+screen & balanced AUROC [95\% CI] & overlap-band AUROC\\\midrule
+raw cosine & 0.893 [0.882, 0.904] & 0.850\\
+ABTT cosine alone & 0.965 [0.959, 0.970] & 0.952\\
+slot probe alone & 0.913 [0.904, 0.923] & 0.902\\
+\geo{} screen (both) & 0.972 [0.967, 0.976] & 0.966\\\bottomrule
+\end{tabular}\end{table}
+
+The probe's contribution shows at low false-positive rates. On the harder confirmatory task, 1,681 version pairs against all 39,215 same-relation, different-subject negatives of \sub{64k}, the combined screen and the ABTT cosine have nearly the same AUROC (0.998 and 0.999) and average precision (0.978 and 0.979). At a false-positive rate of $10^{-4}$, the combined screen recovers 72.0\% of version pairs whose object transition (the pair of old and new values) occurs in calibration (95\% interval 69.2--74.6\%, $n=1{,}045$) and 48.1\% of those whose transition does not (44.3--52.0\%, $n=636$), against 50.7\% and 40.4\% for the ABTT cosine alone. These intervals are conditional on the threshold; a false-positive rate of $10^{-4}$ corresponds to about four negatives, so the threshold itself is estimated from very few points and the tail figures should be read as indicative. Of the 527,062 version-pair/negative comparisons that raw cosine orders the wrong way, the combined screen orders 95.9\% correctly.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=1.15\linewidth]{figures/fig3a_pairlevel_v2.pdf}
+    }
+    % If the graphic has a second panel, label it "B" in the graphic and describe it here.
+    \caption{Pair-level discrimination of the four screens on the \sub{64k} cosine-matched set: balanced AUROC with 95\% bootstrap intervals and AUROC inside the overlap band (raw cosine 0.87--0.97). The set is not fact-disjoint from calibration (Section~\ref{sec:splits}).}
+    \label{fig:pairlevel}
+\end{figure}
+
+\subsection{Detection inside the retrieved pools}
+\label{sec:pools}
+
+On the 200 calibration questions, the frozen operating point verified 2,157 version pairs and made 2,157 deletions, all of them superseded facts according to the parsed fact table; no pair it verified was a cross-key pair. With no errors in 2,157 deletions, the 95\% upper bound on the per-deletion error rate on the calibration pools is about 0.14\% \cite{hanley1983zero}. Pool recall of version pairs was 0.790 (0.798 on \sub{6k} and 0.780 on \sub{32k}), and at least one superseded version of the queried key was removed in 104 of the 139 conflicted questions. The screen without the probe reached a pool recall of 0.444 at the same zero-error criterion. Without any identity screen, bidirectional NLI applied to all pairs above raw cosine 0.94 verified cross-key pairs at a rate of 33--39\% of all verified pairs in an earlier calibration sweep.
+
+Transfer to \sub{64k} did not preserve the zero error rate. Of the 532 deletions in the \sub{64k} plan, 8 (1.5\%; 95\% interval 0.7--2.9\%) were harmful: in five questions, a group spanning two keys left one key without its current value on the page, affecting three distinct keys in total. In none of the five questions was the erased key the one the question asked about. The rate is well above the calibration bound, and this is the transfer degradation that triggered the void flag of Section~\ref{sec:prereg}.
+
+\subsection{End-to-end accuracy across five answering models}
+\label{sec:e2e}
+
+Tables~\ref{tab:sh6k}--\ref{tab:sh64k} and Figure~\ref{fig:e2e} give accuracy for every model and store. The A/A floor was zero discordant questions in all 15 cells.
+
+\begin{table}[H]\centering\small
+\caption{\sub{6k} (calibration; $n=100$). Net = $c-b$; $p$ is the exact McNemar $p$-value before correction.}
+\label{tab:sh6k}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrll}\toprule
+model & native & \geo{} & net $(b/c)$ & $p$ & conflicted ($n=74$) & unique ($n=26$)\\\midrule
+gemma-3-4b-it          & 45 & 76 & +31 (2/33) & $3.7\times10^{-8}$  & 22 $\to$ 53 & 23 $\to$ 23\\
+gemma-4-E2B-it         & 40 & 72 & +32 (3/35) & $6.7\times10^{-8}$  & 16 $\to$ 48 & 24 $\to$ 24\\
+Phi-4-mini-instruct    & 40 & 76 & +36 (0/36) & $2.9\times10^{-11}$ & 14 $\to$ 50 & 26 $\to$ 26\\
+Qwen3-4B-Instruct-2507 & 30 & 77 & +47 (1/48) & $1.8\times10^{-13}$ & 4 $\to$ 51  & 26 $\to$ 26\\
+Qwen3.5-9B             & 39 & 81 & +42 (0/42) & $4.5\times10^{-13}$ & 13 $\to$ 55 & 26 $\to$ 26\\\bottomrule
+\end{tabular}}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{\sub{32k} (calibration; $n=100$).}
+\label{tab:sh32k}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrll}\toprule
+model & native & \geo{} & net $(b/c)$ & $p$ & conflicted ($n=65$) & unique ($n=35$)\\\midrule
+gemma-3-4b-it          & 38 & 45 & +7 (5/12)  & 0.143 & 11 $\to$ 18 & 27 $\to$ 27\\
+gemma-4-E2B-it         & 44 & 58 & +14 (3/17) & $2.6\times10^{-3}$ & 17 $\to$ 31 & 27 $\to$ 27\\
+Phi-4-mini-instruct    & 50 & 66 & +16 (3/19) & $8.6\times10^{-4}$ & 16 $\to$ 33 & 34 $\to$ 33\\
+Qwen3-4B-Instruct-2507 & 53 & 77 & +24 (1/25) & $8.0\times10^{-7}$ & 19 $\to$ 43 & 34 $\to$ 34\\
+Qwen3.5-9B             & 61 & 86 & +25 (2/27) & $1.6\times10^{-6}$ & 27 $\to$ 52 & 34 $\to$ 34\\\bottomrule
+\end{tabular}}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{\sub{64k} (frozen transfer; $n=100$). (A) All questions. All five cells carry the void flag of Section~\ref{sec:prereg}. (B) Conflicted questions split by whether the fact carrying the expected answer occurs in a calibration store; percentages are accuracy within each slice.}
+\label{tab:sh64k}
+\textbf{A. Overall and by stratum}\par\smallskip
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrll}\toprule
+model & native & \geo{} & net $(b/c)$ & $p$ & conflicted ($n=66$) & unique ($n=34$)\\\midrule
+gemma-3-4b-it          & 33 & 36 & +3 (1/4)   & 0.375 & 14 $\to$ 17 & 19 $\to$ 19\\
+gemma-4-E2B-it         & 37 & 41 & +4 (3/7)   & 0.344 & 21 $\to$ 25 & 16 $\to$ 16\\
+Phi-4-mini-instruct    & 46 & 52 & +6 (3/9)   & 0.146 & 16 $\to$ 22 & 30 $\to$ 30\\
+Qwen3-4B-Instruct-2507 & 45 & 56 & +11 (2/13) & $7.4\times10^{-3}$ & 17 $\to$ 29 & 28 $\to$ 27\\
+Qwen3.5-9B             & 51 & 62 & +11 (1/12) & $3.4\times10^{-3}$ & 24 $\to$ 36 & 27 $\to$ 26\\\bottomrule
+\end{tabular}}
+\par\medskip
+\textbf{B. Seen versus novel answer facts (conflicted questions)}\par\smallskip
+\begin{tabular}{lcc}\toprule
+model & seen in calibration ($n=24$) & novel ($n=42$)\\\midrule
+gemma-3-4b-it          & 3 $\to$ 3 \;(12.5\% $\to$ 12.5\%) & 11 $\to$ 14 \;(26.2\% $\to$ 33.3\%)\\
+gemma-4-E2B-it         & 6 $\to$ 8 \;(25.0\% $\to$ 33.3\%) & 15 $\to$ 17 \;(35.7\% $\to$ 40.5\%)\\
+Phi-4-mini-instruct    & 4 $\to$ 6 \;(16.7\% $\to$ 25.0\%) & 12 $\to$ 16 \;(28.6\% $\to$ 38.1\%)\\
+Qwen3-4B-Instruct-2507 & 3 $\to$ 6 \;(12.5\% $\to$ 25.0\%) & 14 $\to$ 23 \;(33.3\% $\to$ 54.8\%)\\
+Qwen3.5-9B             & 8 $\to$ 10 \;(33.3\% $\to$ 41.7\%) & 16 $\to$ 26 \;(38.1\% $\to$ 61.9\%)\\\bottomrule
+\end{tabular}\end{table}
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        % The right-hand panel of the graphic must read "sh_64k (frozen transfer)", not "held-out".
+        \includegraphics[width=1.15\linewidth]{figures/fig4_e2e.pdf}
+    }
+    \caption{Overall accuracy (of 100) of the native baseline and \geo{} for five answering models at three store sizes; asterisks mark $p<0.05$ (exact McNemar). \sub{6k} and \sub{32k} are the calibration stores; \sub{64k} is evaluated with the frozen detector and is not fact-disjoint from calibration. The A/A floor was zero in all 15 cells. \geo{} is positive in all 15 cells; 11 remain significant after Holm correction.}
+    \label{fig:e2e}
+\end{figure}
+
+\textbf{Consistency.} Accuracy improves in all 15 cells, by 3 to 47 points overall, and conflicted-stratum accuracy improves in all 15. Eleven improvements are significant at the 5\% level, five of five at \sub{6k}, four of five at \sub{32k} and two of five at \sub{64k}, and all eleven remain significant after Holm correction across the 15 tests. In the four cells that are not significant, the discordant counts still favour \geo{} (12 to 5, 4 to 1, 9 to 3 and 7 to 3). Every model improves at every store size; a one-sided sign test over the five models gives $p=1/32$ per subset.
+
+\textbf{Size of the effect.} At \sub{6k}, where the whole store is on the page, gains range from 31 to 47 points and conflicted accuracy rises by factors of 2.4 (gemma-3-4b-it) to 12.8 (Qwen3-4B-Instruct-2507). At \sub{64k}, with frozen parameters and partial retrieval, gains are 3 to 11 points, significant for the two Qwen models ($p=7.4\times10^{-3}$ and $3.4\times10^{-3}$).
+
+\textbf{Novel facts.} On the 42 novel-fact questions of \sub{64k}, accuracy rises for all five models, by 4.8 to 23.8 points. On the 24 questions whose answer fact appears in calibration, the rise is 0 to 12.5 points. The novel-slice gain is the larger of the two for four models and smaller for gemma-4-E2B-it (4.8 against 8.3 points). The slices are small and the gains are counted as net changes, but the pattern does not suggest that the effect depends on facts the detector was fitted on. The slice shares templates and relations with calibration, so it does not test transfer to new kinds of facts.
+
+\textbf{Questions without a competing version.} On the unique stratum the net change is at most one question in every cell. The deletion plan still edits these pages, since the detector fires on 99 or 100 of the 100 questions of each store, and individual answers do change: the largest number of flips is three in each direction (gemma-4-E2B-it at \sub{64k}; Appendix~\ref{app:flips}). Given that unique facts are typically real-world facts (Section~\ref{sec:benchmark}), this stratum is a weaker test of harm than it appears, and the plan-level count of key erasures in Section~\ref{sec:pools} is the more direct measure.
+
+\textbf{Retrieval limits the largest store.} At \sub{64k} the benchmark retrieves 10 of 17 chunks. In 22 of the 66 conflicted questions the current fact is not on the page, and every model answers all 22 incorrectly under both native and \geo{} pages. These questions account for 22 of the remaining conflicted errors of each model, between 45\% (gemma-3-4b-it, 49 errors) and 73\% (Qwen3.5-9B, 30 errors). The detector fired on 99 of 100 questions but formed 5.3 verified pairs per question, against 11.5 at \sub{6k}.
+
+\subsection{Comparison with reference detectors}
+\label{sec:reference}
+
+Table~\ref{tab:reference} places \geo{} between the native page and the schema-keyed oracle. The oracle identifies versions from parsed keys, which is exact on this template-generated benchmark and unavailable on free text. Across the 15 cells, \geo{} recovers between 50\% and 81\% of the oracle's gain over native (70--74\% at \sub{6k}, 50--81\% at \sub{32k} and 50--61\% at \sub{64k}). The schema-keyed detector with the NLI check scored 64 on \sub{64k} with the reference model. Its \sub{64k} plan contains 735 deletions; 527 of \geo{}'s 532 deletions are among them, and the five that are not are the deletions that removed a key's current value (Section~\ref{sec:pools}). For the reference model, removing the probe from the screen lowers accuracy from 77 to 54 at \sub{6k} and from 77 to 72 at \sub{32k}; at \sub{64k} the screen without the probe scores 59 against 56, but its plan contains five key erasures of its own.
+
+\begin{table}[H]\centering\small
+\caption{Accuracy (of 100) of the native page, \geo{} and the schema-keyed oracle, which uses parsed keys and cannot be applied to free text. The last row is the reference model with the probe removed from the screen (ABTT cosine and NLI only).}
+\label{tab:reference}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrr@{\hspace{1.2em}}rrr@{\hspace{1.2em}}rrr}\toprule
+ & \multicolumn{3}{c}{\sub{6k}} & \multicolumn{3}{c}{\sub{32k}} & \multicolumn{3}{c}{\sub{64k}}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+model & native & \geo{} & oracle & native & \geo{} & oracle & native & \geo{} & oracle\\\midrule
+gemma-3-4b-it          & 45 & 76 & 89 & 38 & 45 & 52 & 33 & 36 & 38\\
+gemma-4-E2B-it         & 40 & 72 & 83 & 44 & 58 & 63 & 37 & 41 & 45\\
+Phi-4-mini-instruct    & 40 & 76 & 89 & 50 & 66 & 72 & 46 & 52 & 57\\
+Qwen3-4B-Instruct-2507 & 30 & 77 & 95 & 53 & 77 & 85 & 45 & 56 & 66\\
+Qwen3.5-9B             & 39 & 81 & 99 & 61 & 86 & 92 & 51 & 62 & 69\\\midrule
+Qwen3-4B, screen without probe & \multicolumn{3}{c}{54} & \multicolumn{3}{c}{72} & \multicolumn{3}{c}{59}\\\bottomrule
+\end{tabular}}\end{table}
+
+Several baselines that a reader might expect were not run end to end: raw cosine with recency, NLI alone with recency, an LLM-based consolidation step in the style of Mem0, and a page sorted by serial number. The detection-level results above indicate how the first two would behave, since without an identity screen a third or more of the verified pairs are cross-key pairs, but we have no end-to-end numbers for them. A page sorted by serial number requires splitting chunks into facts and reordering the whole page by an explicit serial, which a free-text store does not provide in comparable form; it is a natural baseline for this benchmark but not for the setting the method targets.
+
+\subsection{Deletion versus placement}
+\label{sec:placement}
+
+Table~\ref{tab:placement} compares the three page edits, which share the same detector and groups. Deletion improves on native in all 15 cells. Moving the newest version to the front is below native in five cells and equal in one, and moving it to the end is below native in one and equal in one. The placement edits also vary in sign between models: moving to the front gains 27 points for gemma-3-4b-it at \sub{6k} and loses 7 for Phi-4-mini-instruct at the same store.
+
+\begin{table}[H]\centering\small
+\caption{Accuracy (of 100) under the three page edits; the groups are identical within each subset. A dagger marks a placement edit that exceeds deletion.}
+\label{tab:placement}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrr}\toprule
+model & subset & native & delete superseded (\geo{}) & move newest to end & move newest to front\\\midrule
+gemma-3-4b-it & \sub{6k} & 45 & 76 & 38 & 72\\
+gemma-3-4b-it & \sub{32k} & 38 & 45 & 58$^\dagger$ & 58$^\dagger$\\
+gemma-3-4b-it & \sub{64k} & 33 & 36 & 36 & 43$^\dagger$\\
+gemma-4-E2B-it & \sub{6k} & 40 & 72 & 42 & 45\\
+gemma-4-E2B-it & \sub{32k} & 44 & 58 & 46 & 57\\
+gemma-4-E2B-it & \sub{64k} & 37 & 41 & 37 & 44$^\dagger$\\
+Phi-4-mini-instruct & \sub{6k} & 40 & 76 & 50 & 33\\
+Phi-4-mini-instruct & \sub{32k} & 50 & 66 & 76$^\dagger$ & 43\\
+Phi-4-mini-instruct & \sub{64k} & 46 & 52 & 55$^\dagger$ & 46\\
+Qwen3-4B-Instruct-2507 & \sub{6k} & 30 & 77 & 34 & 28\\
+Qwen3-4B-Instruct-2507 & \sub{32k} & 53 & 77 & 58 & 45\\
+Qwen3-4B-Instruct-2507 & \sub{64k} & 45 & 56 & 49 & 44\\
+Qwen3.5-9B & \sub{6k} & 39 & 81 & 54 & 46\\
+Qwen3.5-9B & \sub{32k} & 61 & 86 & 83 & 68\\
+Qwen3.5-9B & \sub{64k} & 51 & 62 & 55 & 55\\\bottomrule
+\end{tabular}}\end{table}
+
+A placement edit beats deletion in six arm--cell combinations, spread over five cells: both placement edits for gemma-3-4b-it at \sub{32k}, moving to the front for gemma-3-4b-it and gemma-4-E2B-it at \sub{64k}, and moving to the end for Phi-4-mini-instruct at \sub{32k} and \sub{64k}. None of these involves the Qwen models, and all occur at the two larger stores. The largest case is gemma-3-4b-it at \sub{32k}, where moving the newest version to the end gains 20 points and deletion gains 7.
+
+The per-question outputs show what happens in that case. Moving to the end is correct and deletion wrong on 18 conflicted questions. In 17 of them deletion had already removed every superseded version of the queried key, so the edited page stated only the current value. Under deletion, gemma-3-4b-it nonetheless answered with the superseded value on 7 of these questions, although that value no longer appeared on the page as a value of the key, and with a value not associated with the key on the other 10. The pattern is the same for Phi-4-mini-instruct at \sub{32k}, where 10 of the 11 such questions had a clean page. For these models the remaining difficulty at 30K tokens is not choosing between versions but finding and trusting a single counterfactual statement in a long page, and placing that statement next to the question helps, in line with the position effects documented for long contexts \cite{liu2024lostmiddle}. Deletion and placement address different failures and could be combined; an arm that deletes superseded versions and moves the newest to the end was not run and is an obvious next experiment.
+
+\subsection{Cost}
+\label{sec:cost}
+
+\begin{table}[H]\centering\small
+\caption{Plan statistics per subset, identical for every answering model. Prompt change is measured in characters.}
+\label{tab:cost}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrl}\toprule
+subset & questions with a deletion & facts deleted & verified pairs (per question) & prompt change & chunks retrieved / total\\\midrule
+\sub{6k}  & 100/100 & 1,152 & 1,152 (11.5) & $-2.87\%$ & 2/2\\
+\sub{32k} & 100/100 & 1,005 & 1,005 (10.1) & $-0.51\%$ & 9/9\\
+\sub{64k} & 99/100  & 532   & 534 (5.3)    & $-0.22\%$ & 10/17\\\bottomrule
+\end{tabular}}\end{table}
+
+\geo{} adds no generative call. Its costs are the per-fact embeddings (Section~\ref{sec:embed}), a projection per fact for the ABTT cosine, two dot products in 2,560 dimensions per candidate pair, and the NLI passes. The NLI scores are cached per pair of fact texts, because the store is shared by all questions and the same pairs recur across questions. For the 100 questions of each subset, the NLI table covered every distinct directed pair that appeared in a candidate component, 410, 4,868 and 8,956 directed passes at \sub{6k}, \sub{32k} and \sub{64k}, with a 435M-parameter cross-encoder; without caching, a question costs two passes for every pair of facts inside a screened component. The fitting cost (2,765 fact vectors for ABTT, 9,705 edits for the probe and 1,525 pool pairs for the anchors) is paid once and does not depend on the answering model. The prompt becomes slightly shorter (Table~\ref{tab:cost}). We did not measure wall-clock latency; on a deployed system it would be dominated by the NLI passes and the per-fact embeddings.
+
+% =============================================================================
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{What changes with the answering model}
+\label{sec:substitution}
+
+Memory, retrieval, embeddings, prompts, generation settings, scoring and the detector are fixed; only the answering model varies. The deletion plan is identical across the five models: the same 1,152, 1,005 and 532 deletions, the same serials and the same questions. The direction of the effect is also constant, positive in all 15 cells.
+
+What varies is where each model starts and where it ends. Native accuracy ranges from 30 to 61. At \sub{6k}, however, conflicted accuracy after deletion falls in a narrow range, 48 to 55 of 74, although native conflicted accuracy ranges from 4 to 22. The gain is therefore largest where the native model fails most: ordered by native conflicted accuracy (4, 13, 14, 16 and 22 of 74), the conflicted gains are 47, 42, 36, 32 and 31, a perfect inverse ranking. At the larger stores, where retrieval and long pages add difficulty, the governed accuracies spread out again, to 45--86 at \sub{32k} and 36--62 at \sub{64k}.
+
+The fixed plan also allows a comparison across model sizes within one harness (Table~\ref{tab:scale}, Figure~\ref{fig:scale}). With governed pages, Qwen3-4B-Instruct-2507 is at or above the unmodified Qwen3.5-9B in all three conditions: 77 against 39 at \sub{6k} ($b/c=2/40$, $p=4\times10^{-10}$), 77 against 61 at \sub{32k} ($8/24$, $p=0.007$) and 56 against 51 at \sub{64k} ($9/14$, $p=0.40$). Phi-4-mini-instruct with governed pages is also at or above the native 9B model in all three, significantly only at \sub{6k}. These comparisons pair different models on the same questions and therefore include differences in serving configuration (Table~\ref{tab:models}); they show that on this task cleaning the page is worth at least as much as the difference between these 4B-class models and the 9B model.
+
+\begin{table}[H]\centering\small
+\caption{Mean accuracy over the three evaluated conditions (\sub{6k}, \sub{32k}, \sub{64k}), native and with \geo{}. Each value is the mean of three measured cells.}
+\label{tab:scale}
+\begin{tabular}{lrrr}\toprule
+model & parameters & native mean & \geo{} mean\\\midrule
+gemma-3-4b-it          & 4B & 38.7 & 52.3\\
+gemma-4-E2B-it         & 2B effective & 40.3 & 57.0\\
+Phi-4-mini-instruct    & 3.8B & 45.3 & 64.7\\
+Qwen3-4B-Instruct-2507 & 4B & 42.7 & 70.0\\
+Qwen3.5-9B             & 9B & 50.3 & 76.3\\\bottomrule
+\end{tabular}\end{table}
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=1.15\linewidth]{figures/fig6a_scale.pdf}
+    }
+    \caption{Mean accuracy over the three evaluated conditions, native and with \geo{}, per answering model (values in Table~\ref{tab:scale}). The answering weights are unchanged and no generative call is added.}
+    \label{fig:scale}
+\end{figure}
+
+\subsection{Why each component is needed}
+\label{sec:components}
+
+\textbf{Cosine is necessary but not sufficient.} Version pairs occupy a narrow band of raw cosine, with means of 0.955, 0.956 and 0.956 in the three stores. On \sub{64k}, however, 65,782 non-conflicting pairs lie above the lowest cosine of any of the 1,687 template-tagged version pairs, 39 for each version pair. A cosine threshold that admits most version pairs admits far more look-alikes, which is the store-level form of Figure~\ref{fig:geometry}.
+
+\textbf{NLI does not establish identity.} The cross-encoder scores the constructed pair ``Thomas Kyd was born in the city of London'' and ``Marlowe was born in the city of London'' as contradictory with probability 0.9995 and 0.9998 in the two directions. Among 453 cross-key pairs in the calibration pools, 447 pass the bidirectional 0.90 threshold. Two facts about different subjects do not contradict each other, but the model reads the shared template and the differing token as disagreement. NLI is therefore used after the identity screen, to confirm that two versions actually differ in content.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        % Relabel "whitened cosine" as "ABTT cosine" in the graphic, and replace any
+        % "held-out" label in panel B by "frozen transfer".
+        \includegraphics[width=1.15\linewidth]{figures/fig7_mechanism.pdf}
+    }
+    \caption{Evidence for the two geometric components. (A) Recall at fixed precision when ranking candidate pairs on the calibration stores, raw cosine against the ABTT cosine. The AUROC changes by only 0.002 to 0.005, but recall at precision 1.000 rises from 0.075 to 0.513 (\sub{6k}) and from 0.007 to 0.291 (\sub{32k}). (B) AUROC of the slot probe on the \sub{64k} balanced set (95\% bootstrap intervals; not fact-disjoint from calibration) when its 2,560-dimensional input is compressed to 64 or 256 principal components; grey ticks are the calibration stores, which are in-sample.}
+    \label{fig:mechanism}
+\end{figure}
+
+\textbf{ABTT matters at high precision.} Removing the shared directions changes the global ranking little and the high-precision tail a great deal (Section~\ref{sec:abtt}, Figure~\ref{fig:mechanism}A). A detector that deletes records operates in that tail, and the gain grows as the precision requirement tightens, from 0.056 in recall at precision $\ge0.90$ to a factor of 9.6 (\sub{6k}) and 72 (\sub{32k}) at precision $\ge0.99$.
+
+\textbf{The difference vector identifies the changed slot, within known relations.} A multinomial probe on $|\hat d|$ distinguishes six kinds of change (object only, subject only, subject and object, relation and object, subject and relation, all three) with macro-F1 0.70, where chance is about 0.17, and separates object from subject changes with AUROC 0.96. A probe on signed differences with randomised orientation stays at chance, as it must for unordered pairs. This ability does not extend to unseen relations: when whole relations are held out, macro-F1 falls to 0.21, close to chance. The probe learns relation-conditioned geometry rather than a general slot code, the pattern that Levy et al.~\cite{levy2015supervised} described for difference-vector classifiers. Its unseen-transition tail (48.1\% at a false-positive rate of $10^{-4}$) shows transfer to new values within known relations, not to new relations. Compressing the probe input to 64 or 256 principal components lowers the \sub{64k} AUROC from 0.913 to 0.73 and 0.82 (Figure~\ref{fig:mechanism}B), and a full-covariance quadratic scorer does not improve on the linear probe, so the distinction is spread across many coordinates and the full profile is used.
+
+\textbf{Edit facts, not chunks.} An earlier design reordered whole chunks, promoting the chunk that carried the newest version of a conflicted fact. With a detector at precision 1.0 on the calibration stores, none of 81 operating points produced a net gain in the reference model's accuracy; summed over them, the reordering corrected 228 answers and broke 441. A chunk holds about 250 facts, so moving one to repair a single conflict rearranges hundreds of unrelated facts.
+
+\subsection{Where the remaining errors come from}
+\label{sec:residual}
+
+Figure~\ref{fig:deletion}B follows each conflicted question of the reference model through the pipeline. The plan-level states are the same for all models; only the outcome depends on the model.
+
+\begin{figure}[H]
+    \centering
+    \makebox[\linewidth][c]{%
+        \includegraphics[width=1.15\linewidth]{figures/fig8_placement_v2.pdf}
+    }
+    \caption{(A) Net change against native under the three page edits of Table~\ref{tab:placement}. Deletion is positive in all 15 cells; the placement edits change sign between models. (B) Conflicted questions of the reference model by what the plan did to the queried key, with the answer outcome: current fact not in the pool, newest version kept as the surviving member of a verified group, key not acted on, or the fact carrying the expected answer deleted. The last category contains only questions whose expected answer is itself superseded in the store (Section~\ref{sec:residual}). The committed artifacts do not record whether an untouched key was stopped by the cosine threshold, the identity screen or the NLI check.}
+    \label{fig:deletion}
+\end{figure}
+
+A conflicted question ends in one of four states. In the intended state the newest version survives as the kept member of a verified group: 54 of 74 questions at \sub{6k}, 48 of 65 at \sub{32k} and 16 of 66 at \sub{64k}. The detector may leave the key untouched: 20, 15 and 27 questions. The current fact may not reach the pool at all: 22 questions at \sub{64k} and none at the smaller stores, where the whole store is on the page. Finally, the fact carrying the expected answer may be deleted: none at \sub{6k}, two at \sub{32k} and one at \sub{64k}. This last category does not contradict the zero error rate of Section~\ref{sec:pools}. In all three questions the benchmark's expected answer is the object of an earlier fact that a later fact of the same key supersedes; for example, the store states that Noel Pemberton Billing worked in London (serial 707) and later that he worked in Washington, D.C.\ (serial 1929), and the expected answer is London. Deleting the earlier fact is correct under the stated rule and costs the answer. The reference model's remaining conflicted errors are 23, 22 and 37, and at \sub{64k} 22 of the 37 are the retrieval misses described in Section~\ref{sec:e2e}.
+
+This decomposition explains why the gain narrows at \sub{64k}. \geo{} acts after retrieval; when the current fact is not on the page, no page edit can recover it. The key-untouched category also grows at \sub{64k}, to 27 of the 44 questions whose current fact reached the pool. Part of this is structural, since a version pair can only be detected when both members are on the page, and part may reflect lower recall of the transferred parameters; the artifacts do not allow the two to be separated.
+
+% =============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Scope of the evidence}
+\label{sec:scope}
+
+The evidence covers five small instruction-tuned models from three families, served with two vLLM versions and, for one model, with thinking disabled, on one benchmark at three store sizes. Within that scope the effect is consistent: every model improves at every size, with a plan that cannot vary with the model. Beyond it, several properties of the benchmark limit what can be claimed. Its facts are generated from a small set of sentence templates, so a template parser solves the identity problem exactly (Section~\ref{sec:parser}). The slot probe learns relation-conditioned geometry and does not transfer to held-out relations (Section~\ref{sec:components}). The novel-fact slice is novel only in its facts. And only one encoder was used; the fitted parameters are coordinates in its space and would have to be refitted, with the same procedure, for another encoder.
+
+Our working hypothesis is that the two properties the detector exploits, a large shared component in the embeddings of short statements and a systematic difference between object edits and subject edits, recur in other English encoders and in stores written in free text, so that the method carries over after refitting. The present experiments do not test it. The natural tests are a paraphrased version of the store with varied templates, the knowledge-update questions of LongMemEval \cite{wu2025longmemeval}, and a second encoder.
+
+\subsection{Model scale}
+\label{sec:scale}
+
+Within our harness, governed 4B-class models match or exceed an unmodified 9B model on all three conditions (Section~\ref{sec:substitution}). Published FactConsolidation single-hop scores for larger models are 60\% (GPT-4o) and 78\% (GPT-5-mini) in MemoryAgentBench \cite{hu2026memoryagentbench}, and 65\% (DeepSeek-V3.2), 77\% (GPT-5-mini) and 96\% (Gemini-3-Flash) in EvoMemBench \cite{wang2026evomembench}. Those averages include the 262K condition, which we do not run, and use different pipelines, so they are not comparable with our three-condition means (52 to 76 with \geo{}), and we draw no conclusion from them. Whether governance also helps large models, and how much of the gap between small and large models remains once both are governed, would require running larger models in the same harness.
+
+\subsection{Why identity is decided geometrically}
+\label{sec:parser}
+
+On this benchmark a regular-expression parser recovers each fact's key exactly, and the schema-keyed oracle of Table~\ref{tab:reference} does better than \geo{} in every cell. The preregistered primary endpoint for \geo{}, to exceed the 64 of 100 scored on \sub{64k} by the schema-keyed detector with the NLI check, was not met (56). A parser of this kind has no counterpart in a real memory store: it needs hand-written templates for every domain or an extraction call per write, which is the cost and the dependency this work avoids. We therefore study identity without a parser. With vectors alone, \geo{} makes 527 of that detector's 735 deletions on \sub{64k} (72\%) and recovers half to four fifths of the schema-keyed oracle's accuracy gain (Table~\ref{tab:reference}). Whether this share holds on stores where the oracle cannot be built is the open question of Section~\ref{sec:scope}.
+
+\subsection{Read time and write time}
+\label{sec:readwrite}
+
+The same detector could run at write time, deleting or marking a superseded record when its successor is stored, which is what write-time consolidation systems do with a generative model \cite{chhikara2025mem0,rasmussen2025zep}. For an exact detector the two placements would be equivalent. For an imperfect one they differ in reversibility: a read-time deletion affects one page and leaves the store intact and auditable, whereas a wrong write-time deletion, such as the key erasures of Section~\ref{sec:pools}, destroys a record permanently. Read time is also where a store that already holds several versions can be repaired without rewriting it. An earlier stage of this project measured a write-time gate driven by retrieval-uncertainty signals and found that it would act on almost no writes after its safety checks; that result concerns that gate and says nothing about write-time supersession with an identity detector, which we did not evaluate.
+
+\subsection{The excluded 262K subset}
+\label{sec:excluded}
+
+MemoryAgentBench also provides a 262K-token single-hop subset. Its prompts exceed the context windows of several of the answering models, which would turn a comparison of memory handling into a comparison of context length, so it was excluded before the campaign and the evaluation runner refuses it. We make no claim about it.
+
+\subsection{Limitations}
+\label{sec:limitations}
+
+\begin{itemize}
+\item \textbf{One templated benchmark.} All results come from FactConsolidation, whose facts follow fixed templates; the method's intended advantage, identity without a schema on free text, is not tested by it.
+\item \textbf{Relation-conditioned probe.} The slot probe does not generalise to relations absent from training (macro-F1 0.21 relation-disjoint), and it needs adjudicated pairs for each encoder and domain.
+\item \textbf{Multi-valued and time-scoped relations.} The benchmark's relations are single-valued. In a real store, ``the user speaks Turkish'' followed by ``the user speaks English'' is an object edit under the same key that does not supersede anything, and the NLI verifier, which already scores look-alikes as contradictions, would not reliably reject it. The method would delete a valid fact. Relations whose values are scoped in time raise the same problem.
+\item \textbf{Key merges at transfer.} On \sub{64k}, 8 of 532 deletions (1.5\%) were harmful because groups spanned two keys, against none of 2,157 on calibration; this triggered the preregistered void flag. A grouping that does not chain across keys is needed.
+\item \textbf{Annotation.} The dataset was labelled by a single LLM judge without human validation; agreement with human annotators is unmeasured, and known judge errors exist in the quarantined tier. The dataset derives from MemoryAgentBench and is redistributed under its licence \confirm{licence of the MemoryAgentBench data}.
+\item \textbf{Single runs.} Each cell was run once. Runs are deterministic within themselves, but separately configured runs of the reference model varied by up to five points overall at \sub{6k}.
+\item \textbf{Missing baselines.} Raw cosine or NLI alone with recency, LLM-based consolidation and a serial-sorted page were not run end to end, nor was deletion combined with moving the newest version to the end.
+\item \textbf{Retrieval.} Only \sub{64k} exercises retrieval, and there a third of the conflicted questions lose the current fact before \geo{} acts.
+\item \textbf{Development history.} The reference model and \sub{64k} were used during development (Section~\ref{sec:splits}); the four other models and the novel-fact slice are the least development-biased evidence.
+\item \textbf{Cost.} Wall-clock latency was not measured.
+\end{itemize}
+
+% =============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Small language models reading an evolving memory fail in a specific way: they retrieve the right fact and report its superseded version, and they stop doing so when the superseded record is removed. We have shown that the superseded record can be identified at read time without a schema and without a generative call, using a cosine computed after removing the shared directions of the embedding space, a probe on the difference between the two fact vectors, and an NLI check, and that deleting it improves accuracy for every one of five answering models at every one of three store sizes, including a larger store evaluated with frozen parameters. Because the deletion plan does not depend on the answering model, the intervention changes only the page, and every model we tested benefits from it. The evidence has clear limits: the probe's geometry is conditioned on the benchmark's relation templates, the grouping merged keys when transferred to a larger store, and the benchmark is one that a template parser solves exactly. Whether the method holds on free-text memory is the next question to answer.
+
+% =============================================================================
+\section*{Data and Code Availability}
+
+The detector, the frozen artifact with its fingerprint, the campaign outputs for all five answering models, the gold conflict dataset with its builder and a test that re-derives its tier counts and AUROCs from the raw adjudication files, and the scripts that regenerate every table are available at \url{https://github.com/kutluege/EvoMemBench} \confirm{public release and archival DOI}. A file in the repository maps every number in this paper to the artifact it comes from.
+
+\section*{Author Contributions}
+
+\confirm{CRediT roles, e.g.\ E.K.: conceptualisation, methodology, software, investigation, data curation, writing (original draft); \c{S}.\"O.: conceptualisation, supervision, resources, writing (review and editing)}
+
+\section*{Funding}
+
+\confirm{funding statement, or ``This research received no specific grant from any funding agency.''}
+
+\section*{Declaration of Competing Interests}
+
+\confirm{The authors declare no competing interests.}
+
+\section*{Use of Generative AI}
+
+GPT-5 mini was used as the annotator of the gold conflict dataset, as described in Section~\ref{sec:gold}. \confirm{declare any AI assistance used in writing code or preparing the manuscript, and state that the authors reviewed all content and take responsibility for it.}
+
+\section*{Acknowledgements}
+
+The numerical calculations reported in this paper were partially performed at the Barcelona Supercomputing Center (BSC) and at TUBITAK ULAKBIM, High Performance and Grid Computing Center.
+
+% =============================================================================
+\appendix
+
+\section{Frozen parameters}
+\label{app:params}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.20\linewidth}>{\raggedright\arraybackslash}p{0.46\linewidth}>{\raggedright\arraybackslash}p{0.26\linewidth}}
+\caption{Frozen parameters of \geo{}.}\label{tab:frozen}\\
+\toprule component & value & fitted on\\\midrule\endfirsthead
+\toprule component & value & fitted on\\\midrule\endhead
+encoder & Qwen3-Embedding-4B, float32, 2,560 dimensions, mean pooling, unit norm, inputs up to 8,192 tokens & ---\\
+candidate pool & 50 facts on the page with the highest cosine to the query & ---\\
+candidate pair & raw cosine $\ge0.94$ & selection grid, calibration\\
+ABTT & mean and 128 leading principal directions removed, renormalised & 2,765 fact vectors (2,310 distinct), calibration\\
+slot probe & logistic regression on $|\hat d|$, $C=1$, balanced class weights & 989 version pairs, 8,716 same-relation different-subject pairs, calibration\\
+anchors and scales & $T_w=0.6397$, $s_w=0.3483$, $T_p=-0.0764$, $s_p=1.0675$ & 1,525 pool pairs at raw cosine $\ge0.88$ (193 + 1,332)\\
+decision & $m_w\ge-0.40$ and $m_p\ge+0.20$, i.e.\ $\cos_{\mathrm{ABTT}}\ge0.500$ and probe $\ge0.137$ & selection grid, calibration\\
+NLI & \url{cross-encoder/nli-deberta-v3-large}, contradiction $\ge0.90$ in both directions & ---\\
+span check & leave-one-out QR residual $<0.44$ (non-binding, Section~\ref{sec:group}) & ---\\
+fingerprint & SHA-256 \code{335b4540...} over arrays and scalars & ---\\\bottomrule
+\end{longtable}
+
+\section{Answer changes on the unique stratum}
+\label{app:flips}
+
+\begin{table}[H]\centering\small
+\caption{Unique-stratum questions answered correctly only by native ($b$) and only by \geo{} ($c$), per cell.}
+\label{tab:flips}
+\begin{tabular}{lccc}\toprule
+model & \sub{6k} ($n=26$) & \sub{32k} ($n=35$) & \sub{64k} ($n=34$)\\\midrule
+gemma-3-4b-it          & 0/0 & 1/1 & 1/1\\
+gemma-4-E2B-it         & 1/1 & 2/2 & 3/3\\
+Phi-4-mini-instruct    & 0/0 & 1/0 & 0/0\\
+Qwen3-4B-Instruct-2507 & 0/0 & 0/0 & 1/0\\
+Qwen3.5-9B             & 0/0 & 0/0 & 1/0\\\bottomrule
+\end{tabular}\end{table}
+
+% =============================================================================
+\begin{thebibliography}{99}
+
+\bibitem{abbas2023semdedup} Abbas, A.; Tirumala, K.; Simig, D.; Ganguli, S.; Morcos, A.~S. SemDeDup: Data-Efficient Learning at Web-Scale through Semantic Deduplication. \emph{arXiv} \textbf{2023}, arXiv:2303.09540.
+
+\bibitem{abouelenin2025phi4mini} Abouelenin, A.; et al. Phi-4-Mini Technical Report: Compact yet Powerful Multimodal Language Models via Mixture-of-LoRAs. \emph{arXiv} \textbf{2025}, arXiv:2503.01743.
+
+\bibitem{alain2017probes} Alain, G.; Bengio, Y. Understanding Intermediate Layers Using Linear Classifier Probes. In \emph{ICLR 2017 Workshop Track}; 2017. arXiv:1610.01644.
+
+\bibitem{arora2017sif} Arora, S.; Liang, Y.; Ma, T. A Simple but Tough-to-Beat Baseline for Sentence Embeddings. In \emph{International Conference on Learning Representations (ICLR)}; 2017.
+
+\bibitem{belinkov2022probing} Belinkov, Y. Probing Classifiers: Promises, Shortcomings, and Advances. \emph{Comput. Linguist.} \textbf{2022}, \emph{48}, 207--219.
+
+\bibitem{bowman2015snli} Bowman, S.~R.; Angeli, G.; Potts, C.; Manning, C.~D. A Large Annotated Corpus for Learning Natural Language Inference. In \emph{Proceedings of EMNLP}; 2015; pp 632--642.
+
+\bibitem{cai2021isotropy} Cai, X.; Huang, J.; Bian, Y.; Church, K. Isotropy in the Contextual Embedding Space: Clusters and Manifolds. In \emph{International Conference on Learning Representations (ICLR)}; 2021.
+
+\bibitem{chen2022rich} Chen, H.-T.; Zhang, M.~J.~Q.; Choi, E. Rich Knowledge Sources Bring Complex Knowledge Conflicts: Recalibrating Models to Reflect Conflicting Evidence. In \emph{Proceedings of EMNLP}; 2022; pp 2292--2307.
+
+\bibitem{chen2024rgb} Chen, J.; Lin, H.; Han, X.; Sun, L. Benchmarking Large Language Models in Retrieval-Augmented Generation. In \emph{Proceedings of the AAAI Conference on Artificial Intelligence}; 2024; Vol. 38, pp 17754--17762.
+
+\bibitem{chhikara2025mem0} Chhikara, P.; Khant, D.; Aryan, S.; Singh, T.; Yadav, D. Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory. \emph{arXiv} \textbf{2025}, arXiv:2504.19413.
+
+\bibitem{cohen2024ripple} Cohen, R.; Biran, E.; Yoran, O.; Globerson, A.; Geva, M. Evaluating the Ripple Effects of Knowledge Editing in Language Models. \emph{Trans. Assoc. Comput. Linguist.} \textbf{2024}, \emph{12}, 283--298.
+
+\bibitem{dhingra2022timeaware} Dhingra, B.; Cole, J.~R.; Eisenschlos, J.~M.; Gillick, D.; Eisenstein, J.; Cohen, W.~W. Time-Aware Language Models as Temporal Knowledge Bases. \emph{Trans. Assoc. Comput. Linguist.} \textbf{2022}, \emph{10}, 257--273.
+
+\bibitem{efron1993bootstrap} Efron, B.; Tibshirani, R.~J. \emph{An Introduction to the Bootstrap}; Chapman \& Hall: New York, 1993.
+
+\bibitem{ethayarajh2019contextual} Ethayarajh, K. How Contextual are Contextualized Word Representations? Comparing the Geometry of BERT, ELMo, and GPT-2 Embeddings. In \emph{Proceedings of EMNLP-IJCNLP}; 2019; pp 55--65.
+
+\bibitem{gao2019degeneration} Gao, J.; He, D.; Tan, X.; Qin, T.; Wang, L.; Liu, T.-Y. Representation Degeneration Problem in Training Natural Language Generation Models. In \emph{International Conference on Learning Representations (ICLR)}; 2019.
+
+\bibitem{gao2021simcse} Gao, T.; Yao, X.; Chen, D. SimCSE: Simple Contrastive Learning of Sentence Embeddings. In \emph{Proceedings of EMNLP}; 2021; pp 6894--6910.
+
+\bibitem{gao2023ragsurvey} Gao, Y.; Xiong, Y.; Gao, X.; et al. Retrieval-Augmented Generation for Large Language Models: A Survey. \emph{arXiv} \textbf{2023}, arXiv:2312.10997.
+
+\bibitem{gemma2025gemma3} Gemma Team. Gemma 3 Technical Report. \emph{arXiv} \textbf{2025}, arXiv:2503.19786.
+
+\bibitem{gemma4card} Google. gemma-4-E2B-it, model card. \url{https://huggingface.co/google/gemma-4-E2B-it} \confirm{access date}.
+
+\bibitem{gilardi2023chatgpt} Gilardi, F.; Alizadeh, M.; Kubli, M. ChatGPT Outperforms Crowd Workers for Text-Annotation Tasks. \emph{Proc. Natl. Acad. Sci. U.S.A.} \textbf{2023}, \emph{120}, e2305016120.
+
+\bibitem{guu2020realm} Guu, K.; Lee, K.; Tung, Z.; Pasupat, P.; Chang, M.-W. REALM: Retrieval-Augmented Language Model Pre-Training. In \emph{Proceedings of ICML}; PMLR, 2020; Vol. 119, pp 3929--3938.
+
+\bibitem{hanley1983zero} Hanley, J.~A.; Lippman-Hand, A. If Nothing Goes Wrong, Is Everything All Right? Interpreting Zero Numerators. \emph{JAMA} \textbf{1983}, \emph{249}, 1743--1745.
+
+\bibitem{he2023debertav3} He, P.; Gao, J.; Chen, W. DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing. In \emph{International Conference on Learning Representations (ICLR)}; 2023.
+
+\bibitem{hernandez2024linearity} Hernandez, E.; Sharma, A.~S.; Haklay, T.; Meng, K.; Wattenberg, M.; Andreas, J.; Belinkov, Y.; Bau, D. Linearity of Relation Decoding in Transformer Language Models. In \emph{International Conference on Learning Representations (ICLR)}; 2024.
+
+\bibitem{hewitt2019control} Hewitt, J.; Liang, P. Designing and Interpreting Probes with Control Tasks. In \emph{Proceedings of EMNLP-IJCNLP}; 2019; pp 2733--2743.
+
+\bibitem{holm1979} Holm, S. A Simple Sequentially Rejective Multiple Test Procedure. \emph{Scand. J. Stat.} \textbf{1979}, \emph{6}, 65--70.
+
+\bibitem{honovich2022true} Honovich, O.; Aharoni, R.; Herzig, J.; Taitelbaum, H.; Kukliansy, D.; Cohen, V.; Scialom, T.; Szpektor, I.; Hassidim, A.; Matias, Y. TRUE: Re-evaluating Factual Consistency Evaluation. In \emph{Proceedings of NAACL}; 2022; pp 3905--3920.
+
+\bibitem{hu2026memoryagentbench} Hu, Y.; Wang, Y.; McAuley, J. Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions. \emph{arXiv} \textbf{2026}, arXiv:2507.05257v4.
+
+\bibitem{huang2021whiteningbert} Huang, J.; Tang, D.; Zhong, W.; Lu, S.; Shou, L.; Gong, M.; Jiang, D.; Duan, N. WhiteningBERT: An Easy Unsupervised Sentence Embedding Approach. In \emph{Findings of EMNLP}; 2021; pp 238--244.
+
+\bibitem{karpukhin2020dpr} Karpukhin, V.; O\u{g}uz, B.; Min, S.; Lewis, P.; Wu, L.; Edunov, S.; Chen, D.; Yih, W.-t. Dense Passage Retrieval for Open-Domain Question Answering. In \emph{Proceedings of EMNLP}; 2020; pp 6769--6781.
+
+\bibitem{kasai2023realtimeqa} Kasai, J.; Sakaguchi, K.; Takahashi, Y.; Le~Bras, R.; Asai, A.; Yu, X.; Radev, D.; Smith, N.~A.; Choi, Y.; Inui, K. RealTime QA: What's the Answer Right Now? In \emph{Advances in Neural Information Processing Systems (Datasets and Benchmarks Track)}; 2023.
+
+\bibitem{kwon2023vllm} Kwon, W.; Li, Z.; Zhuang, S.; Sheng, Y.; Zheng, L.; Yu, C.~H.; Gonzalez, J.~E.; Zhang, H.; Stoica, I. Efficient Memory Management for Large Language Model Serving with PagedAttention. In \emph{Proceedings of the 29th Symposium on Operating Systems Principles (SOSP)}; 2023; pp 611--626.
+
+\bibitem{laban2022summac} Laban, P.; Schnabel, T.; Bennett, P.~N.; Hearst, M.~A. SummaC: Re-Visiting NLI-based Models for Inconsistency Detection in Summarization. \emph{Trans. Assoc. Comput. Linguist.} \textbf{2022}, \emph{10}, 163--177.
+
+\bibitem{lee2022dedup} Lee, K.; Ippolito, D.; Nystrom, A.; Zhang, C.; Eck, D.; Callison-Burch, C.; Carlini, N. Deduplicating Training Data Makes Language Models Better. In \emph{Proceedings of ACL}; 2022; pp 8424--8445.
+
+\bibitem{levy2015supervised} Levy, O.; Remus, S.; Biemann, C.; Dagan, I. Do Supervised Distributional Methods Really Learn Lexical Inference Relations? In \emph{Proceedings of NAACL-HLT}; 2015; pp 970--976.
+
+\bibitem{lewis2020rag} Lewis, P.; Perez, E.; Piktus, A.; Petroni, F.; Karpukhin, V.; Goyal, N.; K\"uttler, H.; Lewis, M.; Yih, W.-t.; Rockt\"aschel, T.; Riedel, S.; Kiela, D. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. In \emph{Advances in Neural Information Processing Systems}; 2020; Vol. 33, pp 9459--9474.
+
+\bibitem{li2020bertflow} Li, B.; Zhou, H.; He, J.; Wang, M.; Yang, Y.; Li, L. On the Sentence Embeddings from Pre-trained Language Models. In \emph{Proceedings of EMNLP}; 2020; pp 9119--9130.
+
+\bibitem{liu2024lostmiddle} Liu, N.~F.; Lin, K.; Hewitt, J.; Paranjape, A.; Bevilacqua, M.; Petroni, F.; Liang, P. Lost in the Middle: How Language Models Use Long Contexts. \emph{Trans. Assoc. Comput. Linguist.} \textbf{2024}, \emph{12}, 157--173.
+
+\bibitem{longpre2021entity} Longpre, S.; Perisetla, K.; Chen, A.; Ramesh, N.; DuBois, C.; Singh, S. Entity-Based Knowledge Conflicts in Question Answering. In \emph{Proceedings of EMNLP}; 2021; pp 7052--7063.
+
+\bibitem{maharana2024locomo} Maharana, A.; Lee, D.-H.; Tulyakov, S.; Bansal, M.; Barbieri, F.; Fang, Y. Evaluating Very Long-Term Conversational Memory of LLM Agents. In \emph{Proceedings of ACL}; 2024.
+
+\bibitem{mcnemar1947} McNemar, Q. Note on the Sampling Error of the Difference between Correlated Proportions or Percentages. \emph{Psychometrika} \textbf{1947}, \emph{12}, 153--157.
+
+\bibitem{meng2022rome} Meng, K.; Bau, D.; Andonian, A.; Belinkov, Y. Locating and Editing Factual Associations in GPT. In \emph{Advances in Neural Information Processing Systems}; 2022; Vol. 35, pp 17359--17372.
+
+\bibitem{meng2023memit} Meng, K.; Sharma, A.~S.; Andonian, A.; Belinkov, Y.; Bau, D. Mass-Editing Memory in a Transformer. In \emph{International Conference on Learning Representations (ICLR)}; 2023.
+
+\bibitem{mikolov2013regularities} Mikolov, T.; Yih, W.-t.; Zweig, G. Linguistic Regularities in Continuous Space Word Representations. In \emph{Proceedings of NAACL-HLT}; 2013; pp 746--751.
+
+\bibitem{mu2018abtt} Mu, J.; Viswanath, P. All-but-the-Top: Simple and Effective Postprocessing for Word Representations. In \emph{International Conference on Learning Representations (ICLR)}; 2018.
+
+\bibitem{packer2023memgpt} Packer, C.; Wooders, S.; Lin, K.; Fang, V.; Patil, S.~G.; Stoica, I.; Gonzalez, J.~E. MemGPT: Towards LLMs as Operating Systems. \emph{arXiv} \textbf{2023}, arXiv:2310.08560.
+
+\bibitem{park2023generative} Park, J.~S.; O'Brien, J.~C.; Cai, C.~J.; Morris, M.~R.; Liang, P.; Bernstein, M.~S. Generative Agents: Interactive Simulacra of Human Behavior. In \emph{Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology (UIST)}; 2023.
+
+\bibitem{pedregosa2011sklearn} Pedregosa, F.; et al. Scikit-learn: Machine Learning in Python. \emph{J. Mach. Learn. Res.} \textbf{2011}, \emph{12}, 2825--2830.
+
+\bibitem{qwen35card} Qwen Team. Qwen3.5-9B, model card. \url{https://huggingface.co/Qwen/Qwen3.5-9B} \confirm{access date}.
+
+\bibitem{rajaee2021cluster} Rajaee, S.; Pilehvar, M.~T. A Cluster-based Approach for Improving Isotropy in Contextual Embedding Space. In \emph{Proceedings of ACL-IJCNLP (Short Papers)}; 2021; pp 575--584.
+
+\bibitem{rasmussen2025zep} Rasmussen, P.; Paliychuk, P.; Beauvais, T.; Ryan, J.; Chalef, D. Zep: A Temporal Knowledge Graph Architecture for Agent Memory. \emph{arXiv} \textbf{2025}, arXiv:2501.13956.
+
+\bibitem{reddy2026freshness} Reddy, V.; Challaram, S. Don't Ask the LLM to Track Freshness: A Deterministic Recipe for Memory Conflict Resolution. \emph{arXiv} \textbf{2026}, arXiv:2606.01435.
+
+\bibitem{reimers2019sbert} Reimers, N.; Gurevych, I. Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. In \emph{Proceedings of EMNLP-IJCNLP}; 2019; pp 3982--3992.
+
+\bibitem{schuster2021vitaminc} Schuster, T.; Fisch, A.; Barzilay, R. Get Your Vitamin C! Robust Fact Verification with Contrastive Evidence. In \emph{Proceedings of NAACL}; 2021; pp 624--643.
+
+\bibitem{shi2023distracted} Shi, F.; Chen, X.; Misra, K.; Scales, N.; Dohan, D.; Chi, E.~H.; Sch\"arli, N.; Zhou, D. Large Language Models Can Be Easily Distracted by Irrelevant Context. In \emph{Proceedings of ICML}; PMLR, 2023; Vol. 202, pp 31210--31227.
+
+\bibitem{su2021whitening} Su, J.; Cao, J.; Liu, W.; Ou, Y. Whitening Sentence Representations for Better Semantics and Faster Retrieval. \emph{arXiv} \textbf{2021}, arXiv:2103.15316.
+
+\bibitem{su2024conflictbank} Su, Z.; Zhang, J.; Qu, X.; et al. CONFLICTBANK: A Benchmark for Evaluating Knowledge Conflicts in Large Language Models. \emph{arXiv} \textbf{2024}, arXiv:2408.12076.
+
+\bibitem{timkey2021roguedims} Timkey, W.; van Schijndel, M. All Bark and No Bite: Rogue Dimensions in Transformer Language Models Obscure Representational Quality. In \emph{Proceedings of EMNLP}; 2021; pp 4527--4546.
+
+\bibitem{vylomova2016differences} Vylomova, E.; Rimell, L.; Cohn, T.; Baldwin, T. Take and Took, Gaggle and Goose, Book and Read: Evaluating the Utility of Vector Differences for Lexical Relation Learning. In \emph{Proceedings of ACL}; 2016; pp 1671--1682.
+
+\bibitem{wang2024fairevaluators} Wang, P.; Li, L.; Chen, L.; Cai, Z.; Zhu, D.; Lin, B.; Cao, Y.; Liu, Q.; Liu, T.; Sui, Z. Large Language Models are not Fair Evaluators. In \emph{Proceedings of ACL}; 2024.
+
+\bibitem{wang2020alignment} Wang, T.; Isola, P. Understanding Contrastive Representation Learning through Alignment and Uniformity on the Hypersphere. In \emph{Proceedings of ICML}; PMLR, 2020; Vol. 119, pp 9929--9939.
+
+\bibitem{wang2024resolving} Wang, Y.; Feng, S.; Wang, H.; Shi, W.; Balachandran, V.; He, T.; Tsvetkov, Y. Resolving Knowledge Conflicts in Large Language Models. In \emph{Conference on Language Modeling (COLM)}; 2024.
+
+\bibitem{wang2026evomembench} Wang, Y.; Zhang, Z.; Chi, M.; et al. EvoMemBench: Benchmarking Agent Memory from a Self-Evolving Perspective. \emph{arXiv} \textbf{2026}, arXiv:2605.18421v2.
+
+\bibitem{williams2018mnli} Williams, A.; Nangia, N.; Bowman, S. A Broad-Coverage Challenge Corpus for Sentence Understanding through Inference. In \emph{Proceedings of NAACL-HLT}; 2018; pp 1112--1122.
+
+\bibitem{wu2025longmemeval} Wu, D.; Wang, H.; Yu, W.; Zhang, Y.; Chang, K.-W.; Yu, D. LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory. In \emph{International Conference on Learning Representations (ICLR)}; 2025.
+
+\bibitem{wu2024clasheval} Wu, K.; Wu, E.; Zou, J. ClashEval: Quantifying the Tug-of-War between an LLM's Internal Prior and External Evidence. In \emph{Advances in Neural Information Processing Systems (Datasets and Benchmarks Track)}; 2024.
+
+\bibitem{xie2024chameleon} Xie, J.; Zhang, K.; Chen, J.; Lou, R.; Su, Y. Adaptive Chameleon or Stubborn Sloth: Revealing the Behavior of Large Language Models in Knowledge Conflicts. In \emph{International Conference on Learning Representations (ICLR)}; 2024.
+
+\bibitem{xu2024conflictsurvey} Xu, R.; Qi, Z.; Guo, Z.; Wang, C.; Wang, H.; Zhang, Y.; Xu, W. Knowledge Conflicts for LLMs: A Survey. In \emph{Proceedings of EMNLP}; 2024; pp 8541--8565.
+
+\bibitem{xu2025amem} Xu, W.; Liang, Z.; Mei, K.; Gao, H.; Tan, J.; Zhang, Y. A-MEM: Agentic Memory for LLM Agents. \emph{arXiv} \textbf{2025}, arXiv:2502.12110.
+
+\bibitem{yang2025qwen3} Yang, A.; et al. Qwen3 Technical Report. \emph{arXiv} \textbf{2025}, arXiv:2505.09388.
+
+\bibitem{yoran2024robust} Yoran, O.; Wolfson, T.; Ram, O.; Berant, J. Making Retrieval-Augmented Language Models Robust to Irrelevant Context. In \emph{International Conference on Learning Representations (ICLR)}; 2024.
+
+\bibitem{zhang2021situatedqa} Zhang, M.~J.~Q.; Choi, E. SituatedQA: Incorporating Extra-Linguistic Contexts into QA. In \emph{Proceedings of EMNLP}; 2021; pp 7371--7387.
+
+\bibitem{zhang2025qwen3embedding} Zhang, Y.; Li, M.; Long, D.; et al. Qwen3 Embedding: Advancing Text Embedding and Reranking Through Foundation Models. \emph{arXiv} \textbf{2025}, arXiv:2506.05176.
+
+\bibitem{zhang2024memorysurvey} Zhang, Z.; Bo, X.; Ma, C.; et al. A Survey on the Memory Mechanism of Large Language Model based Agents. \emph{arXiv} \textbf{2024}, arXiv:2404.13501.
+
+\bibitem{zheng2023judging} Zheng, L.; Chiang, W.-L.; Sheng, Y.; et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. In \emph{Advances in Neural Information Processing Systems (Datasets and Benchmarks Track)}; 2023.
+
+\bibitem{zhong2024memorybank} Zhong, W.; Guo, L.; Gao, Q.; Ye, H.; Wang, Y. MemoryBank: Enhancing Large Language Models with Long-Term Memory. In \emph{Proceedings of the AAAI Conference on Artificial Intelligence}; 2024; Vol. 38, pp 19724--19731.
+
+\bibitem{zhong2023mquake} Zhong, Z.; Wu, Z.; Manning, C.~D.; Potts, C.; Chen, D. MQuAKE: Assessing Knowledge Editing in Language Models via Multi-Hop Questions. In \emph{Proceedings of EMNLP}; 2023; pp 15686--15702.
+
+\bibitem{zhou2023contextfaithful} Zhou, W.; Zhang, S.; Poon, H.; Chen, M. Context-faithful Prompting for Large Language Models. In \emph{Findings of EMNLP}; 2023; pp 14544--14556.
+
+\end{thebibliography}
+
+\end{document}

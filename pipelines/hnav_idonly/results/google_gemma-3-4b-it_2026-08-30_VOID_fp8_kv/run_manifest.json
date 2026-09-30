@@ -1,0 +1,19 @@
+{
+ "pipeline": "hnav_idonly",
+ "geometry_space": "raw",
+ "pair_screen": "idonly",
+ "llm_model": "google/gemma-3-4b-it",
+ "llm_base_url": "http://localhost:8003/v1",
+ "subsets": [
+  "sh_6k",
+  "sh_32k",
+  "sh_64k"
+ ],
+ "mechanism": "detector_suppress",
+ "operating_point_sha256": "91a0ed845b227395dd1cd08724798773744e27d9145d2b1529abc3263fe241c7",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "started_utc": "2026-08-30T18:01:34.247734+00:00",
+ "git_head": "d34c10fcd5f79682a4c0a5bba15e00fe9eedadbe",
+ "dry_run": false,
+ "smoke_llm": false
+}

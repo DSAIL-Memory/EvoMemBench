@@ -1,0 +1,33 @@
+{
+ "artifact": "CES + ABTT-cosine fusion screen (logistic)",
+ "mu": [
+  -0.515594073711233,
+  0.03770522825157323
+ ],
+ "sd": [
+  0.2424693983806028,
+  0.09317212006124705
+ ],
+ "w": [
+  3.0067872461451404,
+  1.8752655061624448
+ ],
+ "b": -12.104735431993028,
+ "ces_artifact": "stage0_results/geometry_filter/ces_subspaces_k20.json",
+ "ces_fingerprint": "34e3abc10168444a6c9275773e85c2231595a3394f4346035dac3f11ccda05ab",
+ "whitening_artifact": "stage0_results/abtt/abtt_whitening_D128.json",
+ "whitening_fingerprint": "3fdacc1fcc479efb721730a6b5bbc01f35821531c69b1f6b212f9c12d3c89980",
+ "fingerprint": "2ffb0c85e80b20e16eda014ee67eae199804e9759f27f3a78224840be0bd23ee",
+ "provenance": {
+  "fit_subsets": [
+   "sh_6k",
+   "sh_32k"
+  ],
+  "n_pos": 989,
+  "n_neg": 8716,
+  "form": "balanced logistic on z-standardized (ces, abtt_cos); chosen over max-z on CALIBRATION tails only (tpr@1e-4 0.942 vs 0.547 in-sample)",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "git_head": "41d5e8ae065284919c33d03414257bb20c3c786e",
+  "seed": 20260824
+ }
+}

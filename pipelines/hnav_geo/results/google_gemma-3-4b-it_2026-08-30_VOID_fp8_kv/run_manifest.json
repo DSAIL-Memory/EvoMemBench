@@ -1,0 +1,19 @@
+{
+ "pipeline": "hnav_geo",
+ "geometry_space": "raw",
+ "pair_screen": "geo",
+ "llm_model": "google/gemma-3-4b-it",
+ "llm_base_url": "http://localhost:8003/v1",
+ "subsets": [
+  "sh_6k",
+  "sh_32k",
+  "sh_64k"
+ ],
+ "mechanism": "detector_suppress",
+ "operating_point_sha256": "9c3cb668706ddd3e820f99ef5cba8047f3138709cc48aa3fab901011aa616038",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "started_utc": "2026-08-30T18:44:59.651299+00:00",
+ "git_head": "d34c10fcd5f79682a4c0a5bba15e00fe9eedadbe",
+ "dry_run": false,
+ "smoke_llm": false
+}

@@ -1,0 +1,169 @@
+{
+ "task": "T13",
+ "thresholds": {
+  "cos_pair": 0.8,
+  "r_min": 0.5999999999999999,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.9
+ },
+ "r_min_label": "loose",
+ "pair_filter": false,
+ "ces": null,
+ "mechanisms": [
+  "suppress",
+  "demote_late"
+ ],
+ "selection_rule": {
+  "require": [
+   "pair_filter == 'False' (pinned by the arm)",
+   "n_suppressed_harmful == 0"
+  ],
+  "maximise": "pair_recall_pool",
+  "tie_break": [
+   "higher cos_pair",
+   "higher nli_contradiction",
+   "tighter r_min (frozen<loose<off)",
+   "stricter ambiguity_mode (all<any<none)"
+  ],
+  "fit_on": "detection quality only - no LLM, no accuracy, no gold answer",
+  "split": "sh_6k + sh_32k (calibration) ONLY"
+ },
+ "metrics": {
+  "n_questions": 200,
+  "tp": 1214,
+  "fp": 0,
+  "gt_pool": 2732,
+  "gt_page": 99200,
+  "n_suppressed": 1214,
+  "n_suppressed_superseded": 1214,
+  "n_suppressed_same_value": 0,
+  "n_suppressed_harmful": 0,
+  "n_demoted": 1214,
+  "n_demoted_is_latest": 1214,
+  "n_conflicted": 139,
+  "n_conflicted_hit": 64,
+  "n_conflicted_gold_cut": 1,
+  "n_unique": 61,
+  "n_unique_touched": 61,
+  "n_touched": 197,
+  "n_ambiguous_pass": 200,
+  "pair_precision": 1.0,
+  "pair_recall_pool": 0.4443631039531479,
+  "pair_recall_page": 0.012237903225806451,
+  "fact_precision": 1.0,
+  "question_recall_conflicted": 0.460431654676259,
+  "coverage": 0.985
+ },
+ "by_subset": {
+  "sh_6k": {
+   "n_questions": 100,
+   "tp": 630,
+   "fp": 0,
+   "gt_pool": 1444,
+   "gt_page": 16000,
+   "n_suppressed": 630,
+   "n_suppressed_superseded": 630,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 630,
+   "n_demoted_is_latest": 630,
+   "n_conflicted": 74,
+   "n_conflicted_hit": 27,
+   "n_conflicted_gold_cut": 0,
+   "n_unique": 26,
+   "n_unique_touched": 26,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.4362880886426593,
+   "pair_recall_page": 0.039375,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.36486486486486486,
+   "coverage": 1.0
+  },
+  "sh_32k": {
+   "n_questions": 100,
+   "tp": 584,
+   "fp": 0,
+   "gt_pool": 1288,
+   "gt_page": 83200,
+   "n_suppressed": 584,
+   "n_suppressed_superseded": 584,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 584,
+   "n_demoted_is_latest": 584,
+   "n_conflicted": 65,
+   "n_conflicted_hit": 37,
+   "n_conflicted_gold_cut": 1,
+   "n_unique": 35,
+   "n_unique_touched": 35,
+   "n_touched": 97,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.453416149068323,
+   "pair_recall_page": 0.007019230769230769,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.5692307692307692,
+   "coverage": 0.97
+  }
+ },
+ "ambiguity_note": "ambiguity_mode='none' disables the frozen Stage-0 nmargin/H_z precondition. Declared, not incidental: those two signals are the only gate input computed from CHUNK embeddings, which were truncated at 512 of ~4096 tokens (T12) and are not yet re-fit; they are also the dominant recall bottleneck (question-level recall collapses from 0.97 to 0.16 with the screen on); and the volume-limiting role they played is now carried by the identity screen plus bidirectional NLI at the measured precision recorded here. A campaign run after the embeddings are re-fit must revisit this.",
+ "provenance": {
+  "generated_at_utc": "2026-08-26T23:36:34+00:00",
+  "git_head": "74e8264e7ec53fd6eb0dce5081188bce0a10e2aa",
+  "fit_subsets": [
+   "sh_32k",
+   "sh_6k"
+  ],
+  "confirmatory_refused": [
+   "sh_64k",
+   "sh_262k"
+  ],
+  "prepass": {
+   "sh_6k": "stage1_prepass_sh_6k_benchmarkpage_abtt.json",
+   "sh_32k": "stage1_prepass_sh_32k_benchmarkpage_abtt.json"
+  },
+  "prepass_unstamped_nli_config": [],
+  "embed_cache_namespace": [
+   "Qwen_Qwen3-Embedding-4B|float32|L8192"
+  ],
+  "max_pair_cosine_error_vs_prepass": 6.661338147750939e-16,
+  "geometry_space": "abtt",
+  "pair_screen": "none",
+  "whitening_artifact": "stage0_results/abtt/abtt_whitening_D128.json",
+  "whitening_fingerprint": "3fdacc1fcc479efb721730a6b5bbc01f35821531c69b1f6b212f9c12d3c89980",
+  "grid": {
+   "cos_pair": [
+    0.3,
+    0.45,
+    0.6,
+    0.7,
+    0.8,
+    0.9
+   ],
+   "r_min": [
+    "frozen",
+    "loose",
+    "off"
+   ],
+   "ambiguity_mode": [
+    "all",
+    "any",
+    "none"
+   ],
+   "nli_contradiction": [
+    0.5,
+    0.9,
+    0.99
+   ],
+   "pair_filter": [
+    true,
+    false
+   ],
+   "ces_tau": null
+  }
+ }
+}

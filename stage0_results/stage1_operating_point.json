@@ -1,0 +1,163 @@
+{
+ "task": "T13",
+ "thresholds": {
+  "cos_pair": 0.9,
+  "r_min": 0.44,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.9
+ },
+ "r_min_label": "loose",
+ "pair_filter": true,
+ "mechanisms": [
+  "suppress",
+  "demote_late"
+ ],
+ "selection_rule": {
+  "require": [
+   "pair_filter is True",
+   "n_suppressed_harmful == 0"
+  ],
+  "maximise": "pair_recall_pool",
+  "tie_break": [
+   "higher cos_pair",
+   "higher nli_contradiction",
+   "tighter r_min (frozen<loose<off)",
+   "stricter ambiguity_mode (all<any<none)"
+  ],
+  "fit_on": "detection quality only - no LLM, no accuracy, no gold answer",
+  "split": "sh_6k + sh_32k (calibration) ONLY"
+ },
+ "metrics": {
+  "n_questions": 200,
+  "tp": 2673,
+  "fp": 0,
+  "gt_pool": 2732,
+  "gt_page": 99200,
+  "n_suppressed": 2673,
+  "n_suppressed_superseded": 2673,
+  "n_suppressed_same_value": 0,
+  "n_suppressed_harmful": 0,
+  "n_demoted": 2673,
+  "n_demoted_is_latest": 2673,
+  "n_conflicted": 139,
+  "n_conflicted_hit": 133,
+  "n_conflicted_gold_cut": 2,
+  "n_unique": 61,
+  "n_unique_touched": 61,
+  "n_touched": 200,
+  "n_ambiguous_pass": 200,
+  "pair_precision": 1.0,
+  "pair_recall_pool": 0.9784040995607614,
+  "pair_recall_page": 0.026945564516129034,
+  "fact_precision": 1.0,
+  "question_recall_conflicted": 0.9568345323741008,
+  "coverage": 1.0
+ },
+ "by_subset": {
+  "sh_6k": {
+   "n_questions": 100,
+   "tp": 1416,
+   "fp": 0,
+   "gt_pool": 1444,
+   "gt_page": 16000,
+   "n_suppressed": 1416,
+   "n_suppressed_superseded": 1416,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1416,
+   "n_demoted_is_latest": 1416,
+   "n_conflicted": 74,
+   "n_conflicted_hit": 72,
+   "n_conflicted_gold_cut": 0,
+   "n_unique": 26,
+   "n_unique_touched": 26,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.9806094182825484,
+   "pair_recall_page": 0.0885,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.972972972972973,
+   "coverage": 1.0
+  },
+  "sh_32k": {
+   "n_questions": 100,
+   "tp": 1257,
+   "fp": 0,
+   "gt_pool": 1288,
+   "gt_page": 83200,
+   "n_suppressed": 1257,
+   "n_suppressed_superseded": 1257,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1257,
+   "n_demoted_is_latest": 1257,
+   "n_conflicted": 65,
+   "n_conflicted_hit": 61,
+   "n_conflicted_gold_cut": 2,
+   "n_unique": 35,
+   "n_unique_touched": 35,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.9759316770186336,
+   "pair_recall_page": 0.015108173076923076,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.9384615384615385,
+   "coverage": 1.0
+  }
+ },
+ "ambiguity_note": "ambiguity_mode='none' disables the frozen Stage-0 nmargin/H_z precondition. Declared, not incidental: those two signals are the only gate input computed from CHUNK embeddings, which were truncated at 512 of ~4096 tokens (T12) and are not yet re-fit; they are also the dominant recall bottleneck (question-level recall collapses from 0.97 to 0.16 with the screen on); and the volume-limiting role they played is now carried by the identity screen plus bidirectional NLI at the measured precision recorded here. A campaign run after the embeddings are re-fit must revisit this.",
+ "provenance": {
+  "generated_at_utc": "2026-08-15T15:30:15+00:00",
+  "git_head": "bdb3717451a8d7bfe31ec7e09fdadf597c1db17c",
+  "fit_subsets": [
+   "sh_32k",
+   "sh_6k"
+  ],
+  "confirmatory_refused": [
+   "sh_64k",
+   "sh_262k"
+  ],
+  "prepass": {
+   "sh_6k": "hnav/_out/stage1_prepass_sh_6k.json",
+   "sh_32k": "hnav/_out/stage1_prepass_sh_32k.json"
+  },
+  "prepass_unstamped_nli_config": [
+   "sh_6k",
+   "sh_32k"
+  ],
+  "embed_cache_namespace": [
+   "Qwen_Qwen3-Embedding-4B|float32"
+  ],
+  "max_pair_cosine_error_vs_prepass": 8.881784197001252e-16,
+  "grid": {
+   "cos_pair": [
+    0.9,
+    0.92,
+    0.94
+   ],
+   "r_min": [
+    "frozen",
+    "loose",
+    "off"
+   ],
+   "ambiguity_mode": [
+    "all",
+    "any",
+    "none"
+   ],
+   "nli_contradiction": [
+    0.5,
+    0.9,
+    0.99
+   ],
+   "pair_filter": [
+    true,
+    false
+   ]
+  }
+ }
+}

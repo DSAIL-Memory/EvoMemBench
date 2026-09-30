@@ -1,0 +1,12 @@
+{
+ "name": "hnav_idonly",
+ "description": "H-Nav read-time conflict detector with symbolic identity ALONE: the shipped same-key screen with the bidirectional-NLI contradiction gate waived (nli_contradiction 0.0). Tests whether the semantic gate - not identity - was the binding constraint on detection recall (E2E-4). Harm is zero by construction: same-key-only groups can never drop a key's newest value.",
+ "geometry_space": "raw",
+ "pair_screen": "idonly",
+ "operating_point": "stage0_results/stage1/idonly_operating_point.json",
+ "operating_point_sha256": "91a0ed845b227395dd1cd08724798773744e27d9145d2b1529abc3263fe241c7",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "subsets": ["sh_6k", "sh_32k", "sh_64k"],
+ "frozen_thresholds_for_reference": {"cos_pair": 0.90, "nli_contradiction": 0.0, "r_min": 0.44, "ambiguity_mode": "none", "pair_filter": "idonly"},
+ "preregistration": "stage0_results/stage1/IDONLY_PREREG.md. Selection on sh_6k+sh_32k only over the shipped cosine/r_min/ambiguity axes with the NLI axis extended to {0.0, 0.5, 0.90}; zero-harm rule unchanged, shipped tie-breaks (which prefer the STRICTER nli, so the arm can only move if relaxing actually adds recall). Chosen: cos_pair 0.90, nli 0.0 - pair precision 1.000, pool recall 0.9952 (parser arm 0.9784), conflicted-question recall 137/139, 0 harmful of 2,719 suppressions. GI1 passed. sh_64k untouched until the single wet shot."
+}

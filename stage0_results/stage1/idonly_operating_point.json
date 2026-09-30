@@ -1,0 +1,168 @@
+{
+ "task": "T13",
+ "thresholds": {
+  "cos_pair": 0.9,
+  "r_min": 0.44,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.0
+ },
+ "r_min_label": "loose",
+ "pair_filter": "idonly",
+ "ces": null,
+ "mechanisms": [
+  "suppress",
+  "demote_late"
+ ],
+ "selection_rule": {
+  "require": [
+   "pair_filter == 'idonly' (pinned by the arm)",
+   "n_suppressed_harmful == 0"
+  ],
+  "maximise": "pair_recall_pool",
+  "tie_break": [
+   "higher cos_pair",
+   "higher nli_contradiction",
+   "tighter r_min (frozen<loose<off)",
+   "stricter ambiguity_mode (all<any<none)"
+  ],
+  "fit_on": "detection quality only - no LLM, no accuracy, no gold answer",
+  "split": "sh_6k + sh_32k (calibration) ONLY"
+ },
+ "metrics": {
+  "n_questions": 200,
+  "tp": 2719,
+  "fp": 0,
+  "gt_pool": 2732,
+  "gt_page": 99200,
+  "n_suppressed": 2719,
+  "n_suppressed_superseded": 2719,
+  "n_suppressed_same_value": 0,
+  "n_suppressed_harmful": 0,
+  "n_demoted": 2719,
+  "n_demoted_is_latest": 2719,
+  "n_conflicted": 139,
+  "n_conflicted_hit": 137,
+  "n_conflicted_gold_cut": 2,
+  "n_unique": 61,
+  "n_unique_touched": 61,
+  "n_touched": 200,
+  "n_ambiguous_pass": 200,
+  "pair_precision": 1.0,
+  "pair_recall_pool": 0.9952415812591509,
+  "pair_recall_page": 0.027409274193548386,
+  "fact_precision": 1.0,
+  "question_recall_conflicted": 0.9856115107913669,
+  "coverage": 1.0
+ },
+ "by_subset": {
+  "sh_6k": {
+   "n_questions": 100,
+   "tp": 1437,
+   "fp": 0,
+   "gt_pool": 1444,
+   "gt_page": 16000,
+   "n_suppressed": 1437,
+   "n_suppressed_superseded": 1437,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1437,
+   "n_demoted_is_latest": 1437,
+   "n_conflicted": 74,
+   "n_conflicted_hit": 73,
+   "n_conflicted_gold_cut": 0,
+   "n_unique": 26,
+   "n_unique_touched": 26,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.9951523545706371,
+   "pair_recall_page": 0.0898125,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.9864864864864865,
+   "coverage": 1.0
+  },
+  "sh_32k": {
+   "n_questions": 100,
+   "tp": 1282,
+   "fp": 0,
+   "gt_pool": 1288,
+   "gt_page": 83200,
+   "n_suppressed": 1282,
+   "n_suppressed_superseded": 1282,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1282,
+   "n_demoted_is_latest": 1282,
+   "n_conflicted": 65,
+   "n_conflicted_hit": 64,
+   "n_conflicted_gold_cut": 2,
+   "n_unique": 35,
+   "n_unique_touched": 35,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.9953416149068323,
+   "pair_recall_page": 0.015408653846153846,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.9846153846153847,
+   "coverage": 1.0
+  }
+ },
+ "ambiguity_note": "ambiguity_mode='none' disables the frozen Stage-0 nmargin/H_z precondition. Declared, not incidental: those two signals are the only gate input computed from CHUNK embeddings, which were truncated at 512 of ~4096 tokens (T12) and are not yet re-fit; they are also the dominant recall bottleneck (question-level recall collapses from 0.97 to 0.16 with the screen on); and the volume-limiting role they played is now carried by the identity screen plus bidirectional NLI at the measured precision recorded here. A campaign run after the embeddings are re-fit must revisit this.",
+ "provenance": {
+  "generated_at_utc": "2026-08-30T01:06:59+00:00",
+  "git_head": "7de6ad867e7cdc2a71bb980e11c008008b76f9ca",
+  "fit_subsets": [
+   "sh_32k",
+   "sh_6k"
+  ],
+  "confirmatory_refused": [
+   "sh_64k",
+   "sh_262k"
+  ],
+  "prepass": {
+   "sh_6k": "stage1_prepass_sh_6k_benchmarkpage.json",
+   "sh_32k": "stage1_prepass_sh_32k_benchmarkpage.json"
+  },
+  "prepass_unstamped_nli_config": [],
+  "embed_cache_namespace": [
+   "Qwen_Qwen3-Embedding-4B|float32",
+   "Qwen_Qwen3-Embedding-4B|float32|L8192"
+  ],
+  "max_pair_cosine_error_vs_prepass": 2.2488737660975033e-07,
+  "geometry_space": "raw",
+  "pair_screen": "idonly",
+  "whitening_artifact": null,
+  "whitening_fingerprint": null,
+  "grid": {
+   "cos_pair": [
+    0.9,
+    0.92,
+    0.94
+   ],
+   "r_min": [
+    "frozen",
+    "loose",
+    "off"
+   ],
+   "ambiguity_mode": [
+    "all",
+    "any",
+    "none"
+   ],
+   "nli_contradiction": [
+    0.0,
+    0.5,
+    0.9
+   ],
+   "pair_filter": [
+    true,
+    false
+   ],
+   "ces_tau": null,
+   "geo_tau": null
+  }
+ }
+}

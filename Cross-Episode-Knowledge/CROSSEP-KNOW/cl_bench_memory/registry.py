@@ -30,8 +30,28 @@ except ImportError:
     _MEMORYOS_AVAILABLE = False
 
 
+# ── [HNAV] shadow-mode hook ──────────────────────────────────────────────────
+# Wraps the constructed backend in HNavMemoryWrapper when HNAV_MODE is
+# shadow/live. Returns the backend itself when off, and never raises.
+def _hnav_wrap(memory):
+    try:
+        import sys as _sys, pathlib as _pathlib
+        _root = str(_pathlib.Path(__file__).resolve().parents[3])
+        if _root not in _sys.path:
+            _sys.path.insert(0, _root)
+        from hnav.adapters.clbench_adapter import wrap_memory
+        return wrap_memory(memory)
+    except Exception:
+        return memory
+
+
 def build_memory(memory_type: str, **kwargs):
     """Instantiate the memory backend for ``memory_type``."""
+    return _hnav_wrap(_build_memory(memory_type, **kwargs))
+
+
+def _build_memory(memory_type: str, **kwargs):
+    """Original build_memory body — unchanged."""
     if memory_type == "mem0":
         return Mem0Memory(**kwargs)
     if memory_type == "bm25":

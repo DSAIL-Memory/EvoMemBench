@@ -1,0 +1,25 @@
+# hnav_idonly — google/gemma-4-E2B-it
+
+Run 2026-08-31T01:21:49.537910+00:00 · git `b511ffad0815` · endpoint `http://localhost:8003/v1` · mechanism `detector_suppress`
+
+| subset | role | stratum | n | native | H-Nav | net | McNemar p |
+|---|---|---|---|---|---|---|---|
+| sh_6k | calibration split | all | 100 | 40 | 83 | +43 | 6.981e-11 |
+| sh_6k | calibration split | conflicted | 74 | 16 | 59 | +43 | 1.604e-11 |
+| sh_6k | calibration split | unique | 26 | 24 | 24 | +0 | 1 |
+| sh_32k | calibration split | all | 100 | 44 | 63 | +19 | 0.0001565 |
+| sh_32k | calibration split | conflicted | 65 | 17 | 36 | +19 | 2.098e-05 |
+| sh_32k | calibration split | unique | 35 | 27 | 27 | +0 | 1 |
+| sh_64k | held-out | all | 100 | 37 | 45 | +8 | 0.07681 |
+| sh_64k | held-out | conflicted | 66 | 21 | 31 | +10 | 0.006348 |
+| sh_64k | held-out | unique | 34 | 16 | 14 | -2 | 0.625 |
+
+## Guards
+
+- `sh_6k`: VALID · A/A discordant 0 · token Δ -3.5247960952910904% · harm {"n_harmed": 3, "counts": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 3}, "by_stratum": {"conflicted": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 2}, "unique": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 1}}, "protective_claim_void": true, "voiding_questions": [74], "harms": [{"index": 25, "stratum": "conflicted", "class": "information_loss", "native_output": "Answer: Beaumont", "arm_output": "Tehran", "target_serial": 177, "gold_cut": false}, {"index": 74, "stratum": "unique", "class": "information_loss", "native_output": "The author of Endymion is John Keats", "arm_output": "The Witcher", "target_serial": 180, "gold_cut": false}, {"index": 97, "stratum": "conflicted", "class": "information_loss", "native_output": "Charles Frederick, Duke of Holstein-Gottorp", "arm_output": "Walter Chrysler's child: Charles Frederick, Duke", "target_serial": 231, "gold_cut": false}]}
+- `sh_32k`: VALID · A/A discordant 0 · token Δ -0.6423438869658674% · harm {"n_harmed": 3, "counts": {"gold_cut": 1, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 2}, "by_stratum": {"conflicted": {"gold_cut": 1, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 0}, "unique": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 2}}, "protective_claim_void": true, "voiding_questions": [55, 96], "harms": [{"index": 9, "stratum": "conflicted", "class": "gold_cut", "native_output": "Rome", "arm_output": "Watertown", "target_serial": 1291, "gold_cut": true}, {"index": 55, "stratum": "unique", "class": "information_loss", "native_output": "Finnish", "arm_output": "Danish", "target_serial": 2227, "gold_cut": false}, {"index": 96, "stratum": "unique", "class": "information_loss", "native_output": "Constantinople", "arm_output": "Tehran", "target_serial": 781, "gold_cut": false}]}
+    - WARNING: void condition 2_native_in_band is out of band ({"native_overall": 0.44, "band": [0.3, 0.5], "unique_native": 0.7714285714285715, "unique_floor": 0.8}) - the band was preregistered for Qwen3-4B on sh_64k and must be re-preregistered for this model/subset; NOT treated as a validity failure
+- `sh_64k`: VALID · A/A discordant 0 · token Δ -0.31396289925065496% · harm {"n_harmed": 4, "counts": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 4}, "by_stratum": {"conflicted": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 1}, "unique": {"gold_cut": 0, "malformed_generation": 0, "refusal_after_edit": 0, "information_loss": 3}}, "protective_claim_void": true, "voiding_questions": [44, 82, 89], "harms": [{"index": 44, "stratum": "unique", "class": "information_loss", "native_output": "Helsinki", "arm_output": "Memory 1:\n1. Anorthosis", "target_serial": 886, "gold_cut": false}, {"index": 53, "stratum": "conflicted", "class": "information_loss", "native_output": "Texas Legends is associated with cricket", "arm_output": "Association football", "target_serial": 4065, "gold_cut": false}, {"index": 82, "stratum": "unique", "class": "information_loss", "native_output": "S\u00e3o Paulo is located in the continent of South America", "arm_output": "Antarctica", "target_serial": 4049, "gold_cut": false}, {"index": 89, "stratum": "unique", "class": "information_loss", "native_output": "Answer: Leo XIII", "arm_output": "Memory 1:\n1 The chief executive officer", "target_serial": 567, "gold_cut": false}]}
+    - WARNING: void condition 2_native_in_band is out of band ({"native_overall": 0.37, "band": [0.3, 0.5], "unique_native": 0.47058823529411764, "unique_floor": 0.8}) - the band was preregistered for Qwen3-4B on sh_64k and must be re-preregistered for this model/subset; NOT treated as a validity failure
+
+Strata from `stage0_results/question_strata.json` (parse-derived, model-independent). The conflicted stratum is the primary endpoint; the unique stratum is the do-no-harm check. Subsets are reported separately and are never pooled. One shot per model per subset: a void is reported, not re-rolled.

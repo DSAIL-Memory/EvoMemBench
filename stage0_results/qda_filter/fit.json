@@ -1,0 +1,57 @@
+{
+ "provenance": {
+  "git_commit": "2f87c16cdf985138794638b2de0a0f2ebec7a9c3",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "pipeline": "qda_filter",
+  "stage": "fit"
+ },
+ "gates": {
+  "G1": {
+   "V1_balanced_sh64k": 0.9337275870110742,
+   "V0_balanced_sh64k": 0.9755888767662941,
+   "V0_global_pooled_balanced_sh64k": 0.8725122188323783,
+   "abs_diff": 0.041861289755219966,
+   "pass": false,
+   "note": "V1 is the POOLED whitened-space quantization; V0 is the relation-aware raw-space CES \u2014 the preregistered comparison as stated in the task. The pooled-CES row shows how much of any V1-V0 gap is relation identity, not whitening."
+  },
+  "G2": {
+   "delta_balanced": {
+    "delta": -0.10612857916858509,
+    "lo": -0.11833411424391523,
+    "hi": -0.09452732378994545,
+    "p_delta_le_0": 1.0,
+    "n_boot": 1000
+   },
+   "ci_half_width": 0.011903395226984886,
+   "band_V2": 0.7971965829469158,
+   "band_V0": 0.9690457557450668,
+   "pass": false
+  },
+  "G3": {
+   "signflip": true,
+   "holdout_ok": true,
+   "pass": true,
+   "rule": "V3 := V2 when failed"
+  }
+ },
+ "beta": {
+  "beta": -3306.2017240196565,
+  "coef_score": 0.0027914938172219784,
+  "coef_norm": -9.229241671089516
+ },
+ "v5": {
+  "cv_auroc_fit_split": 0.9766379571640472,
+  "coef": [
+   0.0021210875761152174,
+   0.37322349469272065,
+   -9.621012559362576
+  ],
+  "intercept": -12.988445571493774,
+  "n_params": 4
+ },
+ "ordered_term_in_score": true
+}

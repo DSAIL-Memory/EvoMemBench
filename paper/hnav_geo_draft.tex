@@ -1,0 +1,533 @@
+\documentclass[journal=jcisd8,manuscript=article]{achemso}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+
+% Revision markup: removed text remains visible with strikethrough; added text is red.
+\newcommand{\del}[1]{{\color{black}\sout{#1}}}
+\newcommand{\add}[1]{{\color{red}#1}}
+
+\graphicspath{{./figures/}{./}}
+
+\title{Embedding Vector Based Conflict Removal in RAG Systems}
+
+
+\author{Ege Kutlu}
+\affiliation{Institute for Data Science \& Artificial Intelligence, Bo\u{g}azi\c{c}i University, \.{I}stanbul, T\"{u}rkiye}
+
+\author{\c{S}ener \"Oz\"onder}
+\affiliation{Institute for Data Science \& Artificial Intelligence, Bo\u{g}azi\c{c}i University, \.{I}stanbul, T\"{u}rkiye}
+\email{sener.ozonder@bogazici.edu.tr}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Agent memory evolves. When a stored fact is later updated, a vector memory holds both versions, and retrieval hands both to the language model. We show that this is the dominant failure mode of small language models (2B--9B parameters) performing retrieval-augmented generation over an evolving store: on a canonical conflict-resolution benchmark the models answer almost perfectly when the queried fact has a single version and fail systematically when it has two, returning the superseded value of the correct fact. We propose H-Nav-GEO, a read-time governance layer that detects competing versions of the same fact from their embeddings alone and deletes the superseded versions from the retrieved page before the model reads it. The detector combines two geometric signals computed on the fact vectors, a whitened cosine that removes the shared component inflating every similarity in the store, and a learned slot probe on the sign-invariant edit direction that distinguishes an object-slot update from a subject swap, followed by verification with a small natural-language inference cross-encoder. No fact parser, no schema, and no large-language-model call are used at inference; the suppression plan is byte-identical for every answering model. In a controlled substitution study with five answering models from four architecture families at three store sizes, H-Nav-GEO raised overall answer accuracy above the native baseline in all 15 model-by-subset cells (significant at the 5 \% level in 11), by up to 47 points, while leaving the no-conflict stratum unchanged to within one question and shortening the prompt. For the reference 4B model, mean accuracy over the evaluated 6K--64K single-hop conditions rises from 42.7 \% to 70.0 \%. This falls inside the 60--78 \% FC-SH range reported for proprietary frontier-class GPT-4o and GPT-5-mini baselines on the same benchmark family, although those literature values aggregate a broader context-length suite and are a contextual comparison rather than a controlled head-to-head result. At the pair level, the detector lifts discrimination between true conflicts and cosine-matched look-alikes from an AUROC of 0.893 for raw cosine to 0.972, precisely in the similarity band where cosine is uninformative. We release the audited gold conflict dataset of 54,569 fact pairs used to train and evaluate the detector.
+\end{abstract}
+
+% Body-local helpers: the supplied preamble is unchanged.
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\placeholderfigure}[2]{%
+  \begin{figure}[H]\centering
+  \fbox{\parbox[c][4.2cm][c]{0.90\linewidth}{\centering\textbf{#1}\\[0.6em]#2}}
+  \caption{#1}\end{figure}}
+
+
+\noindent\textbf{Keywords:} agent memory; knowledge conflict; retrieval-augmented generation; small language models; sentence embeddings; anisotropy; memory governance.
+
+\section{Introduction}
+
+Language-model agents that persist across sessions accumulate memory: facts about the user, the world, and the task, written over time into a vector store and retrieved when relevant. Because the world changes and earlier statements get corrected, an evolving memory inevitably comes to hold \emph{competing versions of the same fact}. A person changes employer; a value is corrected; a schedule is moved. Nothing in a standard vector store removes the old version when the new one arrives, and nothing in a standard retriever prefers one over the other: both are similar to the query, so both are retrieved and both are placed in front of the model.
+
+This paper starts from a measurement of what small language models do in that situation, and the measurement is stark. On the single-hop \emph{Conflict Resolution} task of MemoryAgentBench, where each stored fact may be superseded by a later fact about the same subject and relation and the benchmark's own prompt instructs the model that the later fact wins, a 4B-parameter instruction model answers 26 of 26 questions correctly when the queried fact has one version and 4 of 74 when it has two (Section~\ref{sec:failure}). Across 575 wrong answers on two-version questions in eight independent runs, 572 return the \emph{stale value of the correct fact}. The model finds the right memory and reads the wrong version out of it. The same pattern appears on every one of the five answering models we study. The benchmark's headline accuracy is, in effect, an accuracy on the questions that contain no conflict.
+
+The failure is therefore not one of retrieval and not one of knowledge. It is a failure of in-context version resolution, and it suggests a remedy that does not require a bigger model: remove the superseded version before the model reads the page. Doing so requires deciding, for a pair of retrieved facts, whether they are two versions of the same thing. The obvious tool, embedding cosine similarity, is necessary but far from sufficient: on the largest store we study, 65,782 pairs of \emph{unrelated} facts sit above the similarity floor of the true conflicts, 39 look-alikes for every conflict (Section~\ref{sec:components}). The two sentences ``Thomas Kyd was born in the city of London'' and ``Thomas Kyd was born in the city of Paris'' are a supersession; ``Thomas Kyd was born in the city of London'' and ``Marlowe was born in the city of London'' are two facts that must both stay. Both pairs have cosine well above 0.9. A natural-language-inference model does not help with this distinction either; it scores the second pair as a contradiction with probability 0.999 in both directions. Existing memory systems resolve it by extracting a schema, subject and relation, with an LLM call at write time, or by not resolving it at all.
+
+We propose \textbf{H-Nav-GEO}, a detector that makes the identity decision from the two fact vectors alone. It reads \emph{what changed} between the two facts rather than \emph{how similar} they are: the unit difference vector, with signs removed so that the order of the two facts does not matter, is fed to a logistic probe trained to separate object-slot edits from subject swaps; and the cosine is recomputed after removing the store's mean and its 128 dominant shared directions, so that the similarity measures what is specific to the two facts rather than the template they share. Pairs that clear both signals are verified by a small NLI cross-encoder, chained into groups, and every group member except the most recent is deleted from the page. The entire procedure involves no schema, no fact parser and no large-language-model call at inference; its parameters are fitted once, offline, on a calibration split, and frozen.
+
+We evaluate H-Nav-GEO in a controlled answering-model substitution: memory, retrieval, embeddings, prompts, generation settings, scoring and the suppression plan itself are held fixed, and only the answering model changes. Five models from four architecture families, spanning 2B to 9B parameters, are each run once at three store sizes. H-Nav-GEO improves overall accuracy in every one of the 15 cells, by +3 to +47 points, with the improvement concentrated exactly where the failure lives: on the conflicted stratum, accuracy rises by a factor of 2.4 to 12.8 at the smallest store. The stratum with no conflict, where the method should do nothing, moves by at most one question in any cell. Because deletion only removes text, the prompt gets shorter as accuracy goes up.
+
+This intervention also changes how the apparent model-scale gap should be interpreted. For the reference Qwen3-4B model, the mean over the three evaluated FC-SH conditions moves from 42.7 \% natively to 70.0 \% with H-Nav-GEO. Published benchmark aggregates place GPT-4o at 60 \% and GPT-5-mini at 78 \% FC-SH in MemoryAgentBench, while EvoMemBench reports 65 \% for DeepSeek-V3.2 and 77 \% for GPT-5-mini. The protocols are not identical--the published aggregates also include the 262K condition that we exclude--so these numbers are not a claim of statistical parity. They nevertheless locate the governed 4B model inside the performance band reported for frontier-class long-context models on the same task family. The controlled result is therefore not that a small model becomes generally equivalent to a frontier model, but that unresolved stale context accounts for a substantial fraction of the scale gap observed on single-hop memory revision.
+
+The contributions of this paper are:
+\begin{enumerate}
+  \item \textbf{H-Nav-GEO}, a read-time conflict detector and repair mechanism for evolving vector memory that uses embedding geometry and a small NLI verifier, adds no LLM call at inference, requires no schema, and is refittable to any encoder from a committed recipe (Section~\ref{sec:method}).
+  \item \textbf{Five-model evidence} that the governance gain is universal across small answering models and store sizes, obtained under a design in which the suppression plan is provably model-independent (Sections~\ref{sec:design}--\ref{sec:results}).
+  \item \textbf{Evidence that memory governance narrows the apparent scale gap:} three of five    governed 2B--9B models enter the 60--78 \% FC-SH band reported for GPT-4o and    GPT-5-mini when averaged over the evaluated 6K--64K conditions, without changing    answering-model weights or adding an LLM call (Sections~\ref{sec:scale-results} and~\ref{sec:scale-discussion}).
+  \item \textbf{A characterisation of the failure mode} of small-model RAG over evolving memory, and of why each component of the detector is necessary: cosine is insufficient, NLI cannot carry identity, whitening decompresses the precision tail, the edit direction is slot-specific, and deletion, not reordering, is the edit that works on every model (Section~\ref{sec:analysis}).
+  \item \textbf{The gold conflict dataset}, 54,569 audited fact pairs with dual labels and cosine-matched balanced evaluation sets, released with this paper (Section~\ref{sec:gold}).
+\end{enumerate}
+
+Section 2 reviews related work. Section 3 defines the setting and the failure mode. Section 4 presents the method. Section 5 describes the experimental design, Section 6 the results, Section 7 the analysis of model substitution and of the mechanism, and Section 8 discusses generality, design boundaries and limitations.
+
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Knowledge conflict and temporal revision}
+
+CONFLICTBANK studies misinformation, temporal and semantic conflict between retrieved evidence and parametric knowledge, and shows that conflict behaviour varies with model scale and conflict type \cite{su2024conflictbank}. Our setting is narrower but operationally different: both competing statements are records in an evolving external memory, the store supplies an explicit recency order, and the desired operation is supersession rather than adjudication against world knowledge. This isolates temporal revision as a memory-governance problem.
+
+\subsection{Conflict resolution in agent memory}
+
+MemoryAgentBench introduces FactConsolidation as a selective-forgetting task and finds that current memory agents struggle to revise incrementally presented facts \cite{hu2026memoryagentbench}. EvoMemBench reuses this benchmark as its InEp-Know memory-revision setting and reaches the same systems-level conclusion: existing memory methods are better at retention than revision, because the harder step is deciding which stored information must be updated, suppressed or replaced \cite{wang2026evomembench}. Its FC-SH results span 18--54 \% for common explicit-memory and retrieval systems, compared with 65--96 \% for strong long-context baselines. This gap motivates an intervention after retrieval but before generation.
+
+Recent deterministic assembly work reaches the same diagnosis from a complementary direction: selecting the maximum serial after candidate extraction substantially improves FactConsolidation, suggesting that the bottleneck is post-retrieval assembly rather than storage alone \cite{reddy2026freshness}. H-Nav-GEO targets the same bottleneck but does not assume that the benchmark's fact key has already been parsed; it first infers competing versions from embeddings and then applies recency.
+
+\subsection{Model scale versus memory governance}
+
+Published FC-SH aggregates provide a useful, but non-controlled, reference band: MemoryAgentBench reports 60 \% for GPT-4o and 78 \% for GPT-5-mini, and EvoMemBench reports 65 \% for DeepSeek-V3.2, 77 \% for GPT-5-mini and 96 \% for Gemini-3-Flash. Because these aggregates include context lengths and inference pipelines not identical to ours, we do not treat them as head-to-head baselines. We use them only to ask a systems question: how much of the observed small-versus-large-model gap remains after the memory layer stops presenting a superseded value as equally valid evidence?
+
+\emph{[The remaining related-work subsections on embedding anisotropy, positional effects, and RAG deduplication/consolidation will be completed in the submission version.]}
+
+\section{Problem Setting}
+\label{sec:problem}
+
+\subsection{Evolving memory and supersession}
+
+We model an agent's memory as an append-only store of short factual records $f_1,f_2,\dots$, each with an embedding $v_i\in\mathbf{R}^d$ and a recency key $s_i$ (a serial number, a timestamp or a version counter). A record $f_j$ \emph{supersedes} $f_i$ when both assert a value for the same subject and relation and $s_j>s_i$. At query time a retriever returns a page of records; the answering model reads the page and answers. Supersession is a property of the store's convention, not of world knowledge: the newer record wins whether or not it is true of the world. Our task is to ensure that the model answers from the newest version.
+
+We impose three deployment constraints, because the target is a small model serving an agent, not an offline pipeline: (i) no large-language-model call may be added at read time; (ii) no schema, relation template or entity extractor may be assumed, since a real store holds free text; (iii) the mechanism may use only what every vector store already has, the record embeddings and the recency key.
+
+\subsection{The benchmark}
+
+We use the \emph{Conflict Resolution} dataset of MemoryAgentBench, single-hop subsets \code{factconsolidation_sh_{6k, 32k, 64k}}. Each subset is a numbered list of facts serving as the memory, and 100 questions. A later fact may restate an earlier fact's subject and relation with a different object; the benchmark's gold answer is the object of the highest-serial fact, and the model is told so in the prompt. Facts are counterfactual by design, so a model that answers from world knowledge answers the stale version. The evaluator is deterministic substring exact match.
+
+\begin{table}[H]\centering
+\caption{The three store sizes. At sh\_6k and sh\_32k every chunk is retrieved; at sh\_64k the benchmark's retriever returns 10 of 17 chunks.}
+\begin{tabular}{lrrrr}\toprule
+subset & facts & chunks & retrieved & conflicted / unique \\\midrule
+sh\_6k & 455 & 2 & 2 & 74 / 26\\
+sh\_32k & 2,310 & 9 & 9 & 65 / 35\\
+sh\_64k & 4,580 & 17 & 10 & 66 / 34\\\bottomrule
+\end{tabular}\label{tab:stores}\end{table}
+
+The benchmark's own pipeline chunks the fact list into 4,096-token chunks, embeds them, retrieves the top ten by cosine, and places them in the prompt in rank order. We keep that pipeline untouched and intervene only on the retrieved page (Section~\ref{sec:overview}).
+
+Each question is assigned to one of two strata from the fact text alone: \textbf{conflicted} if the queried subject and relation carry two distinct values in the store, \textbf{unique} otherwise. The conflicted stratum is the primary endpoint, the population the method exists for; the unique stratum is the do-no-harm control, where a correct method should change nothing.
+
+\subsection{The failure mode}
+\label{sec:failure}
+
+Stratifying the native baseline reveals the structure of the problem.
+
+\emph{Reference model, eight independent runs at sh\_6k.} Unique stratum: 26 of 26 correct in every run. Conflicted stratum: between 0 and 5 of 74 correct. Of the 575 errors on conflicted questions across the eight runs, 572 contained the stale value of the queried key, 3 an off-list value, 0 were empty.
+
+\emph{All five answering models, sh\_6k, native.} Conflicted accuracy 4, 13, 22, 16 and 14 of 74; unique accuracy 26, 26, 23, 24 and 26 of 26 (gemma-3-4b-it, gemma-4-E2B-it, Phi-4-mini-instruct, Qwen3-4B-Instruct-2507, Qwen3.5-9B; Section~\ref{sec:e2e}, Table~\ref{tab:sh6k}).
+
+The model reads the context: it never returns an empty answer or an unrelated fact. It finds the right slot: the wrong answer is the other value of the same key. What it cannot do is apply the recency rule it has been given. This holds on every model tested. It follows that the remedy is to remove the stale version, and that the difficult step is deciding, for a pair of retrieved facts, whether they are versions of the same fact.
+
+\subsection{The identity decision}
+
+Two retrieved facts with high cosine similarity can be a \textbf{version pair} (same subject, same relation, different object: the older should go) or a \textbf{look-alike pair} (same relation, same object, different subject: both must stay). Cosine cannot separate them; the look-alikes are, if anything, closer (Section~\ref{sec:components}). Any detector must therefore read something other than similarity, and under constraint (ii) it must do so from vectors. That is the problem H-Nav-GEO solves.
+
+\section{Method: H-Nav-GEO}
+\label{sec:method}
+
+\subsection{Overview}
+\label{sec:overview}
+
+For one question, H-Nav-GEO runs the following steps; none involves an LLM.
+\begin{enumerate}
+\item \textbf{Page.} The benchmark's retriever produces the page as usual.
+\item \textbf{Pool.} The 50 facts on the page most similar to the query form the candidate pool.
+\item \textbf{Candidate pairs.} Every pool pair with raw cosine $\geq0.94$ is a candidate.
+\item \textbf{GEO screen.} Two geometric signals are computed from the pair's vectors (Sections~\ref{sec:white} and~\ref{sec:probe}) and turned into a yes/no decision (Section~\ref{sec:margins}).
+\item \textbf{NLI verification.} Passing pairs are scored by an NLI cross-encoder in both directions and verified only if both directions contradict (Section~\ref{sec:nli}).
+\item \textbf{Group and delete.} Verified pairs are chained into groups; each group keeps its highest-serial member and the rest are deleted from the page (Section~\ref{sec:group}).
+\item The edited page is sent to the answering model with the benchmark's unchanged prompt.
+\end{enumerate}
+
+Because steps 1--6 contain no LLM, the resulting \emph{suppression plan} for a question is a deterministic function of the store, the retriever and the frozen detector, and is identical for every answering model. We verified this byte-for-byte across the five models of Section~\ref{sec:results} (Section~\ref{sec:substitution}).
+
+\placeholderfigure{H-Nav-GEO pipeline}{Page $\rightarrow$ pool $\rightarrow$ candidate pairs $\rightarrow$ GEO screen $\rightarrow$ NLI $\rightarrow$ groups $\rightarrow$ deletion $\rightarrow$ answering model. Annotate the whitened-cosine and slot-probe signals.}
+
+\subsection{Signal 1: whitened cosine}
+\label{sec:white}
+
+Sentence embeddings of short factual statements share a large common component: in the encoder we use, unrelated facts have a mean cosine of about 0.60, and the candidate pairs occupy only the top quarter of the cosine scale (Section~\ref{sec:components}). This component inflates every similarity equally and hides the differences that matter. Following the all-but-the-top family of post-processing methods, we subtract the store mean $\mu$, project out the $D=128$ dominant principal directions $P$, and renormalise:
+\begin{equation}
+\hat w(v)=\frac{(v-\mu)-P(v-\mu)}{\lVert(v-\mu)-P(v-\mu)\rVert},\qquad
+\operatorname{cos}_w(a,b)=\hat w(v_a)\cdot\hat w(v_b).
+\end{equation}
+The whitening statistics $(\mu,P)$ are fitted once on the calibration split's 2,765 facts and frozen. Whitening removes the anisotropy completely (mean cosine of unrelated pairs $0.60\to0.00$) and, more importantly for a detector that must be precise, decompresses the high-similarity tail: recall at precision 1.000 rises from 0.075 to 0.513 on sh\_6k and from 0.007 to 0.291 on sh\_32k (Section~\ref{sec:components}).
+
+\subsection{Signal 2: the slot probe}
+\label{sec:probe}
+
+The second signal reads \emph{what changed}. Let $d=v_b-v_a$ and $\hat d=d/\lVert d\rVert$ be the unit edit direction. Because a candidate pair is unordered, we drop the signs and use the coordinate-wise magnitude profile $|\hat d|\in\mathbf{R}^{2560}$, which is invariant to the order of the pair. A logistic regression on this profile,
+\begin{equation}
+\operatorname{probe}(a,b)=w\cdot|\hat d|+b_0,
+\end{equation}
+is trained to separate \textbf{object-slot edits} (the positives: gold conflict pairs from the audited dataset of Section~\ref{sec:gold}, 989 edits on the calibration split) from \textbf{subject swaps} (the hard negatives: same relation, same object, different subject, 8,716 edits). The intuition, confirmed in Section~\ref{sec:components}, is that an object change and a subject change move the embedding along recognisably different sets of axes. The probe is trained with balanced class weights and $C=1$; no relation identity, no parsed field and no metadata enters it.
+
+\subsection{Anchored margins and the decision}
+\label{sec:margins}
+
+Each signal is converted into a margin in standard-deviation units relative to an anchor. The anchors $(T_w,T_p)$ are the \emph{joint zero-false-positive point} on the calibration pools: sweeping over the pool pairs that pass the NLI gate, the loosest pair of thresholds at which no look-alike pair passes. The scales $(s_w,s_p)$ are the feature standard deviations over the same pairs (193 pairs on sh\_6k, 1,332 on sh\_32k).
+\begin{equation}
+m_w=\frac{\operatorname{cos}_w-T_w}{s_w},\qquad m_p=\frac{\operatorname{probe}-T_p}{s_p}.
+\end{equation}
+A pair passes the screen iff $m_w\geq\tau_w$ and $m_p\geq\tau_p$. The frozen operating point is $\tau_w=-0.40$, $\tau_p=+0.20$: a \emph{loose} whitened cosine and a \emph{strict} probe. With the fitted anchors $T_w=0.6397$, $s_w=0.3483$, $T_p=-0.0764$, $s_p=1.0675$, this is equivalent to $\operatorname{cos}_w\geq0.500$ and $\operatorname{probe}\geq0.137$. The rectangle was chosen on the calibration split by a selection rule that maximises pool recall subject to zero harmful deletions, with no answering model, no accuracy and no gold answer in the objective (Section~\ref{sec:splits}).
+
+\subsection{NLI verification}
+\label{sec:nli}
+
+Pairs that pass the screen are scored by a bidirectional NLI cross-encoder (\code{cross-encoder/nli-deberta-v3-large}, 435M parameters). A pair is a \emph{verified conflict} only if the contradiction probability is $\geq0.90$ in both directions ($a\Rightarrow b$ and $b\Rightarrow a$); one-directional contradiction or entailment is rejected, because supersession is symmetric disagreement about the same slot, not refinement. The NLI is a semantic verifier, not the identity screen: as Section~\ref{sec:components} shows, it cannot itself distinguish version pairs from look-alikes, which is why the geometric screen must decide identity before it.
+
+\subsection{Grouping and deletion}
+\label{sec:group}
+
+Verified pairs are edges; connected components are conflict groups. A group also passes a geometric span check: it survives only if some member's leave-one-out QR residual against the span of the other pool candidates is below $r_{\min}=0.44$. In each surviving group the member with the highest serial is kept and every other member is deleted from the page. Nothing is added, nothing is reordered, and the prompt gets shorter.
+
+We chose deletion over the two obvious alternatives, moving the newest version to the end or to the front of the page, on evidence: deletion is the only edit that improves accuracy on every answering model (Section~\ref{sec:placement}).
+
+\subsection{Fitting, freezing and provenance}
+
+Every learned quantity---the whitening $(\mu,P)$, the probe $(w,b_0)$, the anchors and scales, and the operating point---is fitted on the calibration split (sh\_6k + sh\_32k) only. The fitter refuses any other data. The resulting artifact is stored with a SHA-256 fingerprint over its arrays and scalars; the runner refuses to score if the fingerprint does not match. sh\_64k is the held-out split and was evaluated exactly once per answering model.
+
+\subsection{Cost}
+
+At inference, per fact on the page, whitening is one projection (shared across all pairs the fact appears in). Per candidate pair, the screen is two dot products in 2,560 dimensions. NLI runs only on screened pairs; in the campaign the precomputed tables bound it at 410, 4,868 and 8,956 directed cross-encoder passes per 100 questions at the three store sizes, at most about 90 per question at sh\_64k, for a 435M-parameter model. No LLM call is added; the embeddings are the store's own. The geometric parts of every analysis in this paper ran on a laptop CPU.
+
+\section{Experimental Design}
+\label{sec:design}
+
+\subsection{Splits and one-shot discipline}
+\label{sec:splits}
+
+sh\_6k and sh\_32k are the \textbf{calibration split}: every fitted quantity and every threshold was chosen there, from detection quality alone. sh\_64k is \textbf{held out} and was run exactly once per answering model; a void run would have been reported, never re-rolled. Because the selection objective never saw any answering model's behaviour, any accuracy or any gold answer, the accuracy measurements on the calibration split are also legitimate accuracy measurements for every model; we report all three subsets, labeled by role, and never pool across them, since store sizes span an order of magnitude.
+
+\subsection{The gold conflict dataset}
+\label{sec:gold}
+
+To train the probe and to evaluate pair-level discrimination we built an audited dataset of fact pairs. All 87,102 pairs with campaign-embedding cosine $\geq0.80$ across the three subsets form the candidate frame; 54,569 of them (62.6\%) were adjudicated by an LLM judge under a fixed schema with A/B order randomisation, with 100\% coverage of the parser-tagged supersession pairs and of the structural adversary channels, and an unbiased shuffled sample of the bulk tail. Pairs carry dual labels: \code{gold_update} (the benchmark's convention: a later record supersedes the same key) and \code{gold_strict} (the two values logically cannot coexist). The gold set comprises 2,388 core pairs plus 282 pairs gold under update semantics only; 105 single-judge positives are quarantined and excluded from both classes. Per subset, a balanced 1:1 evaluation set is drawn with negatives cosine-matched to positives in 0.01 bins (5,340 pairs in total). Because verified non-conflicts above cosine 0.95 barely exist, matching cannot remove all cosine signal; the dataset therefore records a \textbf{cosine-only AUC baseline} (0.960 / 0.911 / 0.893 for sh\_6k / sh\_32k / sh\_64k) and an \textbf{overlap band} (cosine 0.87--0.97) inside which cosine is uninformative. Any geometric detector is scored against that baseline and inside that band. The dataset, its builder and a test that re-derives its tier counts and AUCs from the raw audit files are released.
+
+\subsection{Answering models and serving}
+
+\begin{table}[H]\centering
+\caption{Answering models. Qwen3-4B-Instruct-2507 is the reference model on which the detector was developed; the other four were added after every parameter was frozen.}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{l l r l}\toprule
+model & family & parameters & served with\\\midrule
+gemma-3-4b-it & Gemma 3 & 4B & vLLM 0.9.1\\
+gemma-4-E2B-it & Gemma 4 & 2B effective & vLLM 0.28.0\\
+Phi-4-mini-instruct & Phi-4 & 3.8B & vLLM 0.9.1\\
+Qwen3-4B-Instruct-2507 & Qwen3 & 4B & vLLM 0.9.1\\
+Qwen3.5-9B & Qwen3.5 & 9B & vLLM 0.28.0, thinking disabled\\\bottomrule
+\end{tabular}}\label{tab:models}\end{table}
+
+All models are served with temperature 0, ten output tokens (the benchmark's own generation length), one sequence at a time, prefix caching disabled and eager execution, so that the same prompt yields the same output within a run. Before any shot is spent, a preflight gate measures the longest sh\_64k prompt with the model's own tokenizer and chat template (43k--50k tokens across models) and serves the model with a context window that fits it, verifies that the model does not emit reasoning tokens, and checks determinism on a short prompt.
+
+\subsection{Arms}
+
+Every run answers all 100 questions of a subset under five arms:
+\begin{itemize}
+\item \textbf{native}---the benchmark's page, unedited (the baseline);
+\item \textbf{native\_repeat}---the identical prompt sent again: the in-harness A/A floor, which must be zero discordant questions for the run to count;
+\item \textbf{H-Nav-GEO (delete)}---the method of Section~\ref{sec:method};
+\item \textbf{move newest to end} and \textbf{move newest to front}---the same detector and the same groups, but the newest member of each group is moved rather than the older members deleted; nothing is removed. These two placement arms are the mechanism controls.
+\end{itemize}
+Native outputs are compared across arms and models to confirm that all comparisons are exactly question-paired.
+
+\subsection{Metrics and statistics}
+
+Accuracy is the benchmark's substring exact match, reported overall and per stratum. Each arm is compared to native with the exact McNemar test on the discordant pairs $(b,c)$, where $b$ counts questions native alone answers and $c$ questions the arm alone answers. Models are never pooled into a single test: the five models answer the same 100 questions under the same plans and are not independent samples. Consistency across models is reported as the count of positive cells and as a one-sided sign test over models per subset. The A/A floor is reported for every cell.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Pair-level discrimination}
+
+We first ask whether the geometric screen separates true conflicts from look-alikes better than cosine, on the held-out balanced evaluation set (sh\_64k, 1,681 gold vs 1,681 cosine-matched non-conflicts; 1,000 bootstrap resamples).
+
+\begin{table}[H]\centering
+\caption{Held-out pair-level discrimination on the cosine-matched evaluation set. The overlap band (cosine 0.87--0.97) is where cosine is uninformative by construction.}
+\begin{tabular}{lcc}\toprule
+screen & balanced AUROC [95\% CI] & overlap-band AUROC\\\midrule
+raw cosine (standard screen) & 0.893 [0.882, 0.904] & 0.850\\
+whitened cosine alone & 0.965 [0.959, 0.970] & 0.952\\
+slot probe alone & 0.913 [0.904, 0.923] & 0.902\\
+\textbf{H-Nav-GEO screen (both)} & \textbf{0.972 [0.967, 0.976]} & \textbf{0.966}\\\bottomrule
+\end{tabular}\label{tab:pairlevel}\end{table}
+
+The combined screen lifts discrimination from 0.893 to 0.972, and from 0.850 to 0.966 inside the band where cosine is uninformative. Against the confirmatory hard task (1,681 gold vs 39,215 same-relation different-subject negatives) the screen reaches an AUROC of 0.998 and an average precision of 0.978. Over the 527,062 gold-negative comparisons that raw cosine orders exactly wrong, the screen orders 95.9\% correctly. At a false-positive rate of $10^{-4}$, the operating regime a deployed detector needs, it recovers 72.0\% of conflicts whose object transition was seen in calibration and 48.1\% of those never seen, the best unseen-transition figure of any screen we measured (whitened cosine alone: 40.4\%).
+
+\placeholderfigure{ROC curves of the four screens}{Held-out balanced set with the overlap band shaded; inset: TPR at FPR $10^{-4}$, seen versus unseen transitions. Source: \code{stage0_results/geometry_filter/geo_pairlevel.json}.}
+
+\subsection{Detection quality inside the benchmark's pools}
+
+Inside the retrieved pools of the calibration split, under the frozen operating point, the screen followed by NLI made 2,157 deletions over 200 questions at pair precision 1.000: every deleted fact was independently verified against the store to be a superseded value. Pool recall was 0.790 (0.798 on sh\_6k, 0.780 on sh\_32k), and the detector reached 104 of the 139 conflicted questions. For comparison, the best previously measured parser-free screen reached pool recall 0.444 at the same precision.
+
+\subsection{End-to-end accuracy across five answering models}
+\label{sec:e2e}
+
+Tables~\ref{tab:sh6k}--\ref{tab:sh64k} give the overall accuracy of the native baseline and of H-Nav-GEO for every model and subset, with the discordant pairs and the exact McNemar $p$, and the two strata. Every cell is one shot; the A/A floor was 0 discordant questions in all 15 cells.
+
+\begin{table}[H]\centering\small
+\caption{sh\_6k (calibration split; $n=100$).}\label{tab:sh6k}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrll}\toprule
+model & native & GEO & net $(b/c)$ & $p$ & conflicted & unique\\\midrule
+gemma-3-4b-it & 45 & \textbf{76} & +31 (2/33) & 3.7e-08 & 22 $\to$ \textbf{53} & 23 $\to$ 23\\
+gemma-4-E2B-it & 40 & \textbf{72} & +32 (3/35) & 6.7e-08 & 16 $\to$ \textbf{48} & 24 $\to$ 24\\
+Phi-4-mini-instruct & 40 & \textbf{76} & +36 (0/36) & 2.9e-11 & 14 $\to$ \textbf{50} & 26 $\to$ 26\\
+Qwen3-4B-Instruct-2507 & 30 & \textbf{77} & +47 (1/48) & 1.8e-13 & 4 $\to$ \textbf{51} & 26 $\to$ 26\\
+Qwen3.5-9B & 39 & \textbf{81} & +42 (0/42) & 4.5e-13 & 13 $\to$ \textbf{55} & 26 $\to$ 26\\\bottomrule
+\end{tabular}}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{sh\_32k (calibration split; $n=100$).}\label{tab:sh32k}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrll}\toprule
+model & native & GEO & net $(b/c)$ & $p$ & conflicted & unique\\\midrule
+gemma-3-4b-it & 38 & \textbf{45} & +7 (5/12) & 0.143 & 11 $\to$ \textbf{18} & 27 $\to$ 27\\
+gemma-4-E2B-it & 44 & \textbf{58} & +14 (3/17) & 2.6e-03 & 17 $\to$ \textbf{31} & 27 $\to$ 27\\
+Phi-4-mini-instruct & 50 & \textbf{66} & +16 (3/19) & 8.6e-04 & 16 $\to$ \textbf{33} & 34 $\to$ 33\\
+Qwen3-4B-Instruct-2507 & 53 & \textbf{77} & +24 (1/25) & 8.0e-07 & 19 $\to$ \textbf{43} & 34 $\to$ 34\\
+Qwen3.5-9B & 61 & \textbf{86} & +25 (2/27) & 1.6e-06 & 27 $\to$ \textbf{52} & 34 $\to$ 34\\\bottomrule
+\end{tabular}}\end{table}
+
+\begin{table}[H]\centering\small
+\caption{sh\_64k (held out, one shot; $n=100$).}\label{tab:sh64k}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrll}\toprule
+model & native & GEO & net $(b/c)$ & $p$ & conflicted & unique\\\midrule
+gemma-3-4b-it & 33 & \textbf{36} & +3 (1/4) & 0.375 & 14 $\to$ \textbf{17} & 19 $\to$ 19\\
+gemma-4-E2B-it & 37 & \textbf{41} & +4 (3/7) & 0.344 & 21 $\to$ \textbf{25} & 16 $\to$ 16\\
+Phi-4-mini-instruct & 46 & \textbf{52} & +6 (3/9) & 0.146 & 16 $\to$ \textbf{22} & 30 $\to$ 30\\
+Qwen3-4B-Instruct-2507 & 45 & \textbf{56} & +11 (2/13) & 7.4e-03 & 17 $\to$ \textbf{29} & 28 $\to$ 27\\
+Qwen3.5-9B & 51 & \textbf{62} & +11 (1/12) & 3.4e-03 & 24 $\to$ \textbf{36} & 27 $\to$ 26\\\bottomrule
+\end{tabular}}\end{table}
+
+Three observations.
+
+\textbf{The gain is universal.} H-Nav-GEO improves overall accuracy in all 15 model-by-subset cells, by +3 to +47 points, and conflicted-stratum accuracy in all 15. At sh\_6k the conflicted stratum improves by a factor of 2.4 (gemma-3) to 12.8 (Qwen3-4B). The improvement is significant at the 5\% level in 11 of the 15 cells: five of five at sh\_6k, four of five at sh\_32k, and on the held-out sh\_64k for the two strongest models. In the four cells with $p>0.05$ the discordant pairs still favour H-Nav-GEO (12/5, 4/1, 7/3, 9/3). Five of five models improve at each store size; a one-sided sign test over models gives $p=1/32$ per subset.
+
+\textbf{The no-conflict stratum is untouched.} Where the queried fact has a single version, H-Nav-GEO changes at most one question in either direction in every cell. This is the do-no-harm check, and it holds on all five models at all three store sizes.
+
+\textbf{The gain narrows with store size, and the reason is retrieval.} At sh\_64k the benchmark's retriever returns 10 of 17 chunks, so fewer conflict pairs reach the page for any read-time method to act on; the detector fired on 99 of 100 questions but formed 5.3 verified pairs per question against 11.5 at sh\_6k (Table~\ref{tab:cost}).
+
+\placeholderfigure{Native versus H-Nav-GEO accuracy}{Paired dot plot per model, one panel per subset, with the conflicted stratum highlighted. Source: \code{detector_gap_sh_*.json} artifacts.}
+
+\subsection{Memory governance recovers much of the apparent scale gap}\label{sec:scale-results}
+
+After H-Nav-GEO the five models rank identically at sh\_32k and sh\_64k (45 / 58 / 66 / 77 / 86 and 36 / 41 / 52 / 56 / 62 for gemma-3, gemma-4-E2B, Phi-4-mini, Qwen3-4B, Qwen3.5-9B) and compress into 72--81 at sh\_6k, where the ceiling is near. The \emph{gain}, however, is not a function of the native score: the model with the lowest native accuracy (Qwen3-4B, 30) gains the most (+47), while a model with a higher native score (gemma-3, 45) gains less (+31). Section 7.1 interprets this.
+
+The mean over the three evaluated conditions makes the scale implication visible:
+
+
+
+\begin{table}[H]\centering\small
+\caption{Descriptive means over the evaluated 6K--64K FC-SH conditions. Bold values fall within the published 60--78\% GPT-4o/GPT-5-mini reference interval; this is neither a confidence interval nor an equivalence test.}\label{tab:scale}
+\begin{tabular}{lrrr}\toprule
+Answering model & Parameters & Native mean & H-Nav-GEO mean\\\midrule
+gemma-3-4b-it & 4B & 38.7 & 52.3\\
+gemma-4-E2B-it & 2B effective & 40.3 & 57.0\\
+Phi-4-mini-instruct & 3.8B & 45.3 & \textbf{64.7}\\
+Qwen3-4B-Instruct-2507 & 4B & 42.7 & \textbf{70.0}\\
+Qwen3.5-9B & 9B & 50.3 & \textbf{76.3}\\\bottomrule
+\end{tabular}\end{table}
+
+Thus, none of the five native small models reaches 60 \% on this three-condition mean, whereas three of five governed models do. The reference 4B model moves from 42.7 \% to 70.0 \%, numerically above the 60 \% GPT-4o aggregate and close to the 78 \% GPT-5-mini aggregate reported by MemoryAgentBench; EvoMemBench independently reports 65 \% for DeepSeek-V3.2 and 77 \% for GPT-5-mini on FC-SH. These are deliberately not presented as direct wins: the external scores pool 6K, 32K, 64K and 262K, use different answering pipelines, and provide no question-paired outputs for a statistical comparison. The supported claim is narrower and more informative: on the evaluated single-hop conflict-resolution conditions, read-time governance moves several 2B--9B models into the numerical performance range reported for frontier-class long-context models. This indicates that a substantial component of the apparent model-scale gap is induced by unresolved conflicting context rather than answering-model capacity alone.
+
+\subsection{Deletion versus placement}
+\label{sec:placement}
+
+Table~\ref{tab:placement} compares the three page edits driven by the same detector and the same groups.
+
+
+\begin{table}[H]\centering\small
+\caption{Overall accuracy (of 100) under the three edits; identical groups in every row of a subset.}\label{tab:placement}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrr}\toprule
+model & subset & native & delete stale & move newest to end & move newest to front\\\midrule
+gemma-3-4b-it & sh\_6k & 45 & \textbf{76} & 38 & 72\\
+gemma-3-4b-it & sh\_32k & 38 & \textbf{45} & 58 & 58\\
+gemma-3-4b-it & sh\_64k & 33 & \textbf{36} & 36 & 43\\
+gemma-4-E2B-it & sh\_6k & 40 & \textbf{72} & 42 & 45\\
+gemma-4-E2B-it & sh\_32k & 44 & \textbf{58} & 46 & 57\\
+gemma-4-E2B-it & sh\_64k & 37 & \textbf{41} & 37 & 44\\
+Phi-4-mini-instruct & sh\_6k & 40 & \textbf{76} & 50 & 33\\
+Phi-4-mini-instruct & sh\_32k & 50 & \textbf{66} & 76 & 43\\
+Phi-4-mini-instruct & sh\_64k & 46 & \textbf{52} & 55 & 46\\
+Qwen3-4B-Instruct-2507 & sh\_6k & 30 & \textbf{77} & 34 & 28\\
+Qwen3-4B-Instruct-2507 & sh\_32k & 53 & \textbf{77} & 58 & 45\\
+Qwen3-4B-Instruct-2507 & sh\_64k & 45 & \textbf{56} & 49 & 44\\
+Qwen3.5-9B & sh\_6k & 39 & \textbf{81} & 54 & 46\\
+Qwen3.5-9B & sh\_32k & 61 & \textbf{86} & 83 & 68\\
+Qwen3.5-9B & sh\_64k & 51 & \textbf{62} & 55 & 55\\\bottomrule
+\end{tabular}}\end{table}
+
+
+Deletion is the only edit that is positive in all 15 cells. The two placement edits, which keep every fact and only move the newest one, flip sign from model to model: moving the newest fact to the front gains +27 on gemma-3 at sh\_6k and loses 7 on Phi-4-mini at sh\_6k; moving it to the end gains +26 on Phi-4-mini at sh\_32k and loses 7 on gemma-3 at sh\_6k. Position-based repairs depend on how a particular model weights position; removing the wrong information does not.
+
+\subsection{Cost}
+
+\begin{table}[H]\centering\small
+\caption{Plan and cost per subset; identical for every answering model.}\label{tab:cost}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrl}\toprule
+subset & fired & facts deleted & verified pairs & prompt vs native & chunks retrieved / total\\\midrule
+sh\_6k & 100/100 & 1,152 & 1,152 (11.5) & $-2.87\%$ & 2/2\\
+sh\_32k & 100/100 & 1,005 & 1,005 (10.1) & $-0.51\%$ & 9/9\\
+sh\_64k & 99/100 & 532 & 534 (5.3) & $-0.22\%$ & 10/17\\\bottomrule
+\end{tabular}}\end{table}
+
+H-Nav-GEO adds no LLM call; its only effect on the answering model's input is to make it shorter. Accuracy rises while token cost falls. The offline fitting cost, 2,765 facts for the whitening, 9,705 edit vectors for the probe and 1,525 pool pairs for the anchors, is paid once and is independent of the answering model: four models were added to the study without refitting anything.
+
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{What changes when the answering model changes, and what does not}
+\label{sec:substitution}
+
+The campaign is a controlled substitution. Memory, retrieval, embeddings, prompts, generation settings, scoring and the detector are frozen; the answering model is the only variable.
+
+\emph{What does not change.} The suppression plan. Computed without an LLM, it is byte-identical across the five models: the same 1,152, 1,005 and 532 deletions, the same serials, the same 99 or 100 questions fired. We verified this by hashing the per-question plans of every artifact. The direction of the effect: positive in all 15 cells. The behaviour on the no-conflict stratum: unchanged to within one question everywhere.
+
+\emph{What changes.} The native accuracy, from 30 to 61, for reasons unrelated to memory. And the accuracy \emph{achieved} after the page is cleaned, which orders the models by capability at the two larger stores and compresses toward the ceiling at the smallest.
+
+\emph{Interpretation.} The stale-version failure is a failure of in-context version resolution, and every small model we tested has it. H-Nav-GEO removes the stale version before the model reads the page, so the model only has to do what it already can: read a page and answer. The number that moves is therefore set by the method, not by the model. The model determines how much of a cleaned page it converts into correct answers, and stronger models convert more; but no model converts a page it was never handed. The placement controls make the same point from the other side. An edit that relies on how a particular model weights position is idiosyncratic to that model; an edit that removes the wrong information is not.
+
+\subsection{Why each component is necessary}
+\label{sec:components}
+
+Each design choice in Section~\ref{sec:method} rests on a measurement.
+
+\textbf{Cosine is necessary but not sufficient.} True conflict pairs occupy a narrow, reproducible band of raw cosine (mean 0.955, 0.956 and 0.956 across the three stores). But on sh\_64k, 65,782 non-conflict pairs lie above the conflict floor against 1,687 conflicts: 39 look-alikes per conflict. A cosine threshold cannot be both precise and useful. \emph{A second, non-cosine signal is required.}
+
+\textbf{NLI cannot carry identity.} The bidirectional cross-encoder scores ``Thomas Kyd was born in the city of London'' against ``Marlowe was born in the city of London'' as a contradiction with probability 0.9995 and 0.9998 in the two directions; among 453 cross-key adversary pairs in the calibration pools, 447 pass the bidirectional 0.90 gate. Two facts about different subjects are not in contradiction, but the NLI model reads the shared template and the differing token as a disagreement. \emph{Identity must be decided from geometry before NLI; NLI is the verifier.}
+
+\textbf{Whitening decompresses the precision tail.} Mean-centring alone removes essentially all of the encoder's anisotropy (unrelated-pair cosine $0.60\to0.00$); removing the top 128 principal directions on top of it cleans the high-confidence tail of the ranking. Judged by AUROC the gain is small (+0.002 to +0.005, from a base of 0.99), which is why whitening is easy to dismiss; judged by the statistic a precise detector needs, recall at precision 1.000, it is transformative: $0.075\to0.513$ on sh\_6k and $0.007\to0.291$ on sh\_32k. \emph{The first geometric signal is the whitened cosine.}
+
+\textbf{The edit direction is slot-specific, and sign-invariant features carry it.} A multinomial probe on $|\hat d|$ identifies which of six slot combinations changed between two facts at macro-F1 0.70 (chance 0.17) and separates object-slot from subject-slot changes at AUROC 0.96, while a probe on signed features with randomised orientation sits at chance, as it must for unordered pairs. The signal is distributed across dimensions: compressing the profile to 64 or 256 principal components drops the held-out balanced AUROC to 0.73 and 0.82, and a full-covariance quadratic scorer does not beat the flat linear family. \emph{The second signal is a linear probe on the full magnitude profile.}
+
+\textbf{Granularity must match the conflict.} An earlier design reordered \emph{chunks}, promoting the chunk that carried the newest version. Driven by a precision-1.0 detector on the calibration split, it was net negative in all 81 operating points tested, helping 228 questions and harming 441: a chunk carries approximately 250 facts, and moving one to fix a single conflict scrambles the order of hundreds of unrelated facts. \emph{Edit facts, not chunks.}
+
+\textbf{Deletion is the edit that works, on every model.} Table~\ref{tab:placement}. \emph{Suppress; do not reorder.}
+
+\textbf{Read time is where the headroom is.} A write-time policy in this setting would, after safety vetoes, touch 0--1.6\% of writes and could change the correctness of 0.00 of them on the held-out store, because the store is append-only and retrieval already returns the newest version alongside the old one. \emph{Intervene when the page is read.}
+
+\placeholderfigure{Mechanism diagnostics}{(a) Recall at precision 1.000 before and after whitening on both calibration subsets; (b) held-out AUROC of the slot probe under PCA compression to 64, 256 and all 2,560 dimensions. Sources: \code{G1_GATE_REPORT.md} and \code{geo_pairlevel.json}.}
+
+\section{Discussion}
+
+\subsection{Generality}
+
+\emph{Across answering models.} Five models, 2B to 9B parameters, four architecture families, two serving stacks, one served in non-thinking mode: the gain replicates in every model at every store size, under a design in which the intervention itself cannot vary with the model.
+
+\emph{Across store sizes.} Positive at 455, 2,310 and 4,580 stored facts. The narrowing at the largest store is a property of the benchmark's retriever, which returns 10 of 17 chunks, not of the detector, which fired on 99 of 100 questions there.
+
+\emph{Across embedders.} H-Nav-GEO is embedder-agnostic by construction: nothing in it is a hand-set constant. The whitening, the probe, the anchors and the scales are fitted procedures with a committed refit recipe that runs on the calibration split in minutes on a CPU. The geometric properties the method exploits are documented general properties of sentence embeddings of English text rather than of this benchmark: a dominant common component that inflates every cosine and is removed by mean-centring plus a few principal directions, and a systematic per-slot structure in difference vectors. We therefore state as our hypothesis that other English encoders exhibit the same qualitative geometry and require a refit, not a redesign. The experiments in this paper use one encoder, Qwen3-Embedding-4B, in float32; a second-encoder refit is the first item of future work.
+
+\emph{Toward real agent memory.} The method consumes exactly two things every vector memory store already has: an embedding per record and a recency key. It needs no schema, no relation templates, no entity extraction and no LLM at read time. This is the hypothesis the paper argues for: that the stale-version failure of small-model RAG over evolving memory, which we have shown to be systematic and model-independent, can be governed at read time by geometry alone, at negative token cost. The benchmark campaign is the controlled test of the mechanism; the transfer to production stores is the claim it motivates.
+
+\subsection{What the result does and does not say about model scale}\label{sec:scale-discussion}
+
+The scale comparison is a systems result, not a claim that a governed 4B model is generally equivalent to GPT-4o or GPT-5-mini. The answering weights, general reasoning ability and knowledge of the small model do not change. What changes is the task the model is asked to solve: native retrieval asks it to select the current value while simultaneously resisting a highly similar stale value; H-Nav-GEO removes that avoidable competition before generation. Moving the reference model from 42.7 \% to 70.0 \% and placing three of five governed models in the published 60--78 \% FC-SH band therefore supports a causal interpretation within our paired experiments: unresolved conflicting context, not capacity alone, produces a substantial portion of the small-model error.
+
+This distinction matters for system design. On single-hop evolving-memory questions, spending inference budget on a larger reader is not the only path to the performance regime associated with large long-context models; governing the retrieved page can recover much of the lost accuracy while reducing prompt length and adding no LLM call. The claim is bounded to single-hop conflict resolution. It does not extend to multi-hop reasoning, general language ability, or the unmeasured 262K condition, and the external model scores remain contextual references until all models are rerun in the same harness with identical prompts and scoring.
+
+\subsection{Why the identity signal is geometric rather than a fact parser}
+
+The benchmark generates its facts from a small set of sentence templates, so a regular-expression parser recovers each fact's subject and relation exactly, and a detector keyed on that schema does well on this benchmark precisely because the language is uniform and template-generated. Such a screen has no counterpart in a real memory store: it needs either hand-written templates per domain or an LLM extraction call per write, the cost and the dependency this work sets out to remove. We therefore study parser-free identity, and H-Nav-GEO is the result. Used only as an oracle reference for this design decision, geometry alone recovers 72\% of the deletions a schema-keyed oracle makes on the held-out store, and between half and three quarters of that oracle's accuracy gain across store sizes, from vectors alone. For generalisation beyond a templated store we hold that geometry is the far more efficient signal: it is available everywhere, it costs a few dot products, and it does not depend on the store's language matching a template.
+
+\subsection{Why the largest subset is excluded}
+
+MemoryAgentBench also ships a 262k-token subset. We exclude it by design: its contexts would exceed the context window of the smaller answering models the study exists to test, which would silently turn a memory comparison into a context-length comparison. It was never part of the registered campaign, and the runner refuses it. We report that it was not measured; we do not extrapolate to it.
+
+\subsection{Limitations}
+
+\begin{itemize}
+\item On the held-out store, 8 of the 532 deletions (1.5\%) merged two different keys, because a geometric group is a connected component of a similarity relation and not an equivalence relation; the net accuracy effect is nonetheless positive on every model and the no-conflict stratum is unaffected. A transitivity-aware grouping is future work.
+\item One encoder; the fitted parameters are coordinates in its space and are refit, not copied, for another encoder.
+\item The store has single-valued relations; the NLI verifier's role grows in stores with genuinely multi-valued relations.
+\item Five answering models; on the held-out store the per-model gain is significant for the two strongest models and positive for all five.
+\item One benchmark family; the 262k subset was not measured.
+\item The scale-gap comparison is cross-study and descriptive. Published FC-SH scores pool   the 262K condition and use different inference pipelines, so they cannot establish   model equivalence or a direct win over GPT-4o, GPT-5-mini or DeepSeek-V3.2. A   controlled head-to-head run in our harness is required for that stronger claim.
+\end{itemize}
+
+\section{Conclusion}
+
+Small language models doing retrieval-augmented generation over an evolving memory fail in one systematic way: they retrieve the right fact and answer with its stale version. We have shown that this failure can be governed at read time, without a schema and without an LLM, by a detector that reads what changed between two facts from their embeddings, verifies it with a small NLI model, and deletes the superseded versions from the page. In a controlled substitution study, H-Nav-GEO raised accuracy above the native baseline on every one of five answering models at every one of three store sizes, left the no-conflict stratum untouched, and shortened the prompt. The suppression plan does not depend on the model; the method is what moves the number. For the reference 4B model, the three-condition mean rises from 42.7 \% to 70.0 \%, and three of five governed small models enter the 60--78 \% FC-SH range reported for GPT-4o and GPT-5-mini. This does not make the small models generally frontier-equivalent; rather, it shows that unresolved stale evidence creates a large, avoidable component of the apparent scale gap on single-hop memory conflict resolution. Because it consumes only what every vector store already has, an embedding and a recency key, we propose it as a general governance layer for evolving agent memory.
+
+\section*{Data and Code Availability}
+
+The detector, the frozen artifacts with their fingerprints, the five-model campaign artifacts, the gold conflict dataset with its builder and its self-verifying test, and the scripts that generate every table in this paper from the artifacts are available in the project repository (branch \code{claude/hnav-presentation-evidence}).
+
+\appendix
+\section{Frozen parameters of H-Nav-GEO}
+
+\begin{longtable}{p{0.19\linewidth}p{0.50\linewidth}p{0.23\linewidth}}
+\caption{Frozen H-Nav-GEO parameters.}\label{tab:frozen}\\
+\toprule component & value & fitted on\\\midrule\endfirsthead
+\toprule component & value & fitted on\\\midrule\endhead
+encoder & Qwen3-Embedding-4B, float32, 2,560-d, unit norm & ---\\
+candidate pool & 50 most query-similar facts on the page & ---\\
+candidate pair cosine & $\geq0.94$ & selection grid, calibration\\
+whitening & mean + top-128 principal directions removed, renormalised & 2,765 calibration facts\\
+probe & logistic on $|\hat d|$, $C=1$, balanced class weights & 989 gold vs 8,716 hard-negative edits\\
+anchors, scales & $T_w=0.6397$, $s_w=0.3483$, $T_p=-0.0764$, $s_p=1.0675$ & 193 + 1,332 NLI-passing pairs at cos $\geq0.88$\\
+decision & $m_w\geq-0.40$, $m_p\geq+0.20$ ($\operatorname{cos}_w\geq0.500$, probe $\geq0.137$) & selection grid, calibration\\
+NLI & \code{cross-encoder/nli-deberta-v3-large}, contradiction $\geq0.90$ both directions & ---\\
+span check & leave-one-out QR residual $<0.44$ & selection grid, calibration\\
+artifact fingerprint & \code{335b4540...} (SHA-256 over arrays and scalars) & ---\\\bottomrule
+\end{longtable}
+
+\section{Provenance of every number}
+
+\begin{longtable}{p{0.28\linewidth}p{0.65\linewidth}}
+\caption{Artifact provenance.}\label{tab:provenance}\\
+\toprule number & file\\\midrule\endfirsthead
+\toprule number & file\\\midrule\endhead
+Tables 4--6, 8--9 & \code{pipelines/hnav_geo/results/<model>_<date>/detector_gap_sh_{6k,32k,64k}.json}\\
+Table~\ref{tab:scale}, internal means & Arithmetic means of Tables~\ref{tab:sh6k}--\ref{tab:sh64k}.\\
+Table~\ref{tab:scale}, external interval & MemoryAgentBench Table 3; contextual comparison only.\\
+Table 3, hard task, tails & \code{stage0_results/geometry_filter/geo_pairlevel.json}\\
+Section 6.2 & \code{stage0_results/geometry_filter/geo_operating_point.json}\\
+Appendix A & \code{stage0_results/geometry_filter/geo_identity_screen.json}\\
+Section 3.3 & \code{stage0_results/question_strata.json}; Table 4 native columns\\
+Section 7.2, cosine & \code{stage0_results/delta_geometry/DELTA_GEOMETRY_REPORT.md}, Section 2\\
+Section 7.2, NLI & \code{TEZ_BULGULARI.md}, Section B; \code{stage0_results/geometry_filter/GEO_PREREG.md}\\
+Section 7.2, whitening & \code{stage0_results/abtt/G1_GATE_REPORT.md}, Sections 2 and 4\\
+Section 7.2, probe and PCA & \code{stage0_results/geometry_filter/REPORT.md}, Section 2; \code{geo_pairlevel.json}; \code{stage0_results/qda_filter/REPORT.md}\\
+Section 7.2, chunk reranking & \code{STAGE1_NULL_ANALIZI.md}\\
+Section 7.2, write path & \code{KAPI_KARARI.md}, Section 2\\
+Section 4.8, NLI counts & \code{TEZ_HIKAYESI.md}, Section 3.1\\
+Section 5.2 & \code{stage0_results/conflict_pairs/AUDIT_SUMMARY.md}; \code{gold_conflict_dataset.summary.md}\\
+Section 5.3 & \code{pipelines/MULTIMODEL_CAMPAIGN_PLAN.md}\\
+Section 8.3 oracle reference & \code{stage0_results/geometry_filter/E2E4_COMPLEMENTARITY.md}, Section 4; \code{LATEST_RESULTS_REPORT.md}, Section 12.2\\\bottomrule
+\end{longtable}
+
+\section*{Acknowledgements}
+
+The numerical calculations reported in this paper were partially performed at Barcelona Supercomputing Center (BSC) and TUBITAK ULAKBIM, High Performance and Grid Computing Center.
+
+
+
+
+
+
+\begin{thebibliography}{9}
+\bibitem{hu2026memoryagentbench} Hu, Y.; Wang, Y.; McAuley, J. Evaluating Memory in LLM Agents via Incremental Multi-Turn Interactions. \emph{arXiv} \textbf{2026}, arXiv:2507.05257v4. \url{https://arxiv.org/abs/2507.05257}.
+\bibitem{reddy2026freshness} Reddy, V.; Challaram, S. Don't Ask the LLM to Track Freshness: A Deterministic Recipe for Memory Conflict Resolution. \emph{arXiv} \textbf{2026}, arXiv:2606.01435. \url{https://arxiv.org/abs/2606.01435}.
+\bibitem{su2024conflictbank} Su, Z.; Zhang, J.; Qu, X.; et al. CONFLICTBANK: A Benchmark for Evaluating Knowledge Conflicts in Large Language Models. \emph{arXiv} \textbf{2024}, arXiv:2408.12076. \url{https://arxiv.org/abs/2408.12076}.
+\bibitem{wang2026evomembench} Wang, Y.; Zhang, Z.; Chi, M.; et al. EvoMemBench: Benchmarking Agent Memory from a Self-Evolving Perspective. \emph{arXiv} \textbf{2026}, arXiv:2605.18421v2. \url{https://arxiv.org/abs/2605.18421}.
+\end{thebibliography}
+
+
+
+\end{document}

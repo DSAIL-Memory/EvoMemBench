@@ -1,0 +1,34 @@
+{
+ "provenance": {
+  "git_commit": "2f87c16cdf985138794638b2de0a0f2ebec7a9c3",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "pipeline": "qda_filter",
+  "stage": "ordered_term",
+  "n_flips": 2000
+ },
+ "mu1_test": {
+  "T": 3.069324702281441,
+  "null_mean": 0.5043539204808668,
+  "null_q95": 0.5536341266075779,
+  "null_max": 0.6255086892065179,
+  "p_signflip": 0.0004997501249375312,
+  "n_flips": 2000,
+  "n_samples": 989
+ },
+ "mu0_test": {
+  "T": 0.9666374926635207,
+  "null_mean": 0.09528981255999085,
+  "null_q95": 0.10349342182395559,
+  "null_max": 0.11393525565599572,
+  "p_signflip": 0.0004997501249375312,
+  "n_flips": 2000,
+  "n_samples": 7786
+ },
+ "mu0_source": "fit negatives, serial-oriented (order IS available for negatives \u2014 see discovery.json)",
+ "g3_signflip_condition_met": true,
+ "note": "G3's second condition (V3 held-out >= V2 held-out) is decided in fit-stage output"
+}

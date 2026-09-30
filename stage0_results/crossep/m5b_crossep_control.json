@@ -1,0 +1,88 @@
+{
+  "measurement": "m5b_crossep_control",
+  "validates": "m5_crossep_write_headroom_qwen3_embedding.json",
+  "source": "/mnt/nvmes/nvme1/egekutlu/EvoMemBench/Cross-Episode-Knowledge/CROSSEP-KNOW/outputs/context_nomemory/CL-bench_context_ge5_deepseek-v3-2-251201_ctx_nomemory.jsonl",
+  "cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "n_vectors_read": 7879,
+  "fallback_chunker": false,
+  "near_dup_tau": 0.95,
+  "shingle_k": 5,
+  "threshold_control": {
+    "n_pairs_each": 20000,
+    "seed": 20260816,
+    "across_contexts": {
+      "n": 20000,
+      "mean": 0.7859684891570347,
+      "p05": 0.6908649313229123,
+      "p25": 0.7535830733897391,
+      "p50": 0.7902687482469614,
+      "p75": 0.8227310372686476,
+      "p95": 0.8652518421439824,
+      "min": 0.5260048946907846,
+      "max": 0.973440159263854,
+      "frac_ge_0.95": 0.0004
+    },
+    "within_context": {
+      "n": 20000,
+      "mean": 0.9162299603143783,
+      "p05": 0.8325960872521234,
+      "p25": 0.8939469269168668,
+      "p50": 0.9249498545899937,
+      "p75": 0.9472199653055122,
+      "p95": 0.9712921195471795,
+      "min": 0.5978264973088946,
+      "max": 1.0000000000000009,
+      "frac_ge_0.95": 0.218
+    }
+  },
+  "store_size_effect": {
+    "pairwise_p": 0.218,
+    "mean_predicted_nn_rate": 0.9445230163742596,
+    "n_writes_considered": 7759,
+    "interpretation": "Expected nearest-neighbour rate under INDEPENDENCE given the pairwise rate and the store sizes. Observed sim_max rates at or below this carry no evidence beyond the pairwise rate."
+  },
+  "system_context_attribution": {
+    "n_write_events": 7879,
+    "verbatim_system_substring": {
+      "n": 917,
+      "rate": 0.11638532808732073,
+      "note": "Chunks that are literally inside the context's System Context block. This is the exact-duplicate driver; compare against M5's MD5 exact_dup_rate."
+    },
+    "calibration": {
+      "n_comparisons": 3196,
+      "sim_max_frac_ge_tau_event_level": 0.8660826032540676,
+      "near_dup_mass": {
+        "n": 2768,
+        "cross_sample_frac": 0.6246387283236994,
+        "containment_frac_ge": {
+          "0.9": 0.16546242774566475,
+          "0.5": 0.23121387283236994,
+          "0.1": 0.3403179190751445
+        }
+      },
+      "organic_chunks": {
+        "definition": "system-shingle containment < 0.1",
+        "n": 2149,
+        "sim_max_frac_ge_tau": 0.8496975337366217
+      }
+    },
+    "heldout": {
+      "n_comparisons": 4563,
+      "sim_max_frac_ge_tau_event_level": 0.8549200087661626,
+      "near_dup_mass": {
+        "n": 3901,
+        "cross_sample_frac": 0.6324019482184056,
+        "containment_frac_ge": {
+          "0.9": 0.1363752883875929,
+          "0.5": 0.23276083055626762,
+          "0.1": 0.3311971289412971
+        }
+      },
+      "organic_chunks": {
+        "definition": "system-shingle containment < 0.1",
+        "n": 3147,
+        "sim_max_frac_ge_tau": 0.8290435335239911
+      }
+    }
+  }
+}

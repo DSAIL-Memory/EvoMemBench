@@ -1,0 +1,21 @@
+{
+ "function": "hnav/labeling/conflict_analysis.py::parse, lines 53-68",
+ "demo_input": "Nobuhiro Watsuki is famous for Rurouni Kenshin.",
+ "demo_output": {
+  "relation_key": "| is famous for ",
+  "subject": "Nobuhiro Watsuki",
+  "object": "Rurouni Kenshin"
+ },
+ "parse_coverage_m1_pct": {
+  "sh_6k": 99.56,
+  "sh_32k": 99.65,
+  "sh_64k": 99.63,
+  "sh_262k": 99.47
+ },
+ "parse_coverage_m1b_pct": {
+  "sh_6k": 99.56,
+  "sh_32k": 99.65,
+  "sh_64k": 99.63,
+  "sh_262k": 99.44
+ }
+}

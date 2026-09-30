@@ -1,0 +1,4140 @@
+{
+ "what": "pairs the LLM judge marks as update conflicts that the template parser did NOT tag — the parser's false negatives on the audited candidate set",
+ "judge": "openai/gpt-5-mini via OpenRouter; verbatim slot-alignment system prompt (sha256 a3632d8b7b29e97c103abcf881be192f17c5f1f4de48c62b44101ec23c342a30); update_conflict = same_referent AND same_relation AND context_overlap AND values_incompatible",
+ "source_results": "audit_results_gpt5mini.jsonl.gz (54,569 audited of 87,102 candidates; every non-bulk slice 100% covered)",
+ "n_discovered": 105,
+ "by_subset": {
+  "sh_32k": 27,
+  "sh_64k": 75,
+  "sh_6k": 3
+ },
+ "by_parser_miss_channel": {
+  "alias_candidate": 35,
+  "bulk": 45,
+  "unparsed_fact": 13,
+  "cross_template_same_subject": 12
+ },
+ "caveat": "bulk-channel entries come from the 34.5%-audited shuffled tail plus the 4k random sample; scale bulk counts accordingly. Judge verdicts are single-model labels, not ground truth — review before promoting to labels.",
+ "discovered_conflicts": [
+  {
+   "pair_id": "sh_32k:1477-1870",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1477",
+   "fact_b_id": "fact:1870",
+   "fact_a": "The author of Sidereus Nuncius is Galileo Galilei.",
+   "fact_b": "The author of The Scarlet Letter is Galileo Galilei.",
+   "cosine_similarity": 0.8563561155875548,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Sidereus Nuncius",
+     "object": "Galileo Galilei"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Scarlet Letter",
+     "object": "Galileo Galilei"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same author relation for two different books—one person cannot be author of both"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:1479-1541",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1479",
+   "fact_b_id": "fact:1541",
+   "fact_a": "2009 WNBA season is associated with the sport of association football.",
+   "fact_b": "2004 NBA Draft is associated with the sport of association football.",
+   "cosine_similarity": 0.8060418939159103,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "2009 WNBA season",
+     "object": "association football"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "2004 NBA Draft",
+     "object": "association football"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different events; both assert wrong sport (association football) for basketball/"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:1500-1682",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1500",
+   "fact_b_id": "fact:1682",
+   "fact_a": "Israel is located in the continent of North America.",
+   "fact_b": "France is located in the continent of North America.",
+   "cosine_similarity": 0.8408348087431066,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Israel",
+     "object": "North America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "France",
+     "object": "North America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries with same relation but incompatible continent assignments (f"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:1655-1850",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1655",
+   "fact_b_id": "fact:1850",
+   "fact_a": "Ireland is located in the continent of Europe.",
+   "fact_b": "England is located in the continent of South America.",
+   "cosine_similarity": 0.8433215882365455,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Ireland",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "England",
+     "object": "South America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries with contradictory continent locations (one false for each)."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:1768-1801",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1768",
+   "fact_b_id": "fact:1801",
+   "fact_a": "point guard is associated with the sport of cricket.",
+   "fact_b": "outfielder is associated with the sport of cricket.",
+   "cosine_similarity": 0.8022695689934596,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "point guard",
+     "object": "cricket"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "outfielder",
+     "object": "cricket"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different positions (outfielder vs point guard) refer to different sports; one ("
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:1776-1789",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1776",
+   "fact_b_id": "fact:1789",
+   "fact_a": "Geoffrey Chaucer is famous for The Canterbury Tales.",
+   "fact_b": "The author of The Canterbury Tales is Mark Haddon.",
+   "cosine_similarity": 0.8800193151419349,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is famous for ",
+     "subject": "Geoffrey Chaucer",
+     "object": "The Canterbury Tales"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Canterbury Tales",
+     "object": "Mark Haddon"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Two different authors asserted for same work; conflicting author attribution."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:1850-2186",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1850",
+   "fact_b_id": "fact:2186",
+   "fact_a": "England is located in the continent of South America.",
+   "fact_b": "London is located in the continent of Eurasia.",
+   "cosine_similarity": 0.9067332684793212,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "England",
+     "object": "South America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "London",
+     "object": "Eurasia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subjects (London vs England) asserting incompatible continent values."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:1850-2220",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:1850",
+   "fact_b_id": "fact:2220",
+   "fact_a": "England is located in the continent of South America.",
+   "fact_b": "Australia is located in the continent of South America.",
+   "cosine_similarity": 0.8261375054832915,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "England",
+     "object": "South America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Australia",
+     "object": "South America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries (Australia vs England) assigned to the same continent; both/"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:190-1060",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:190",
+   "fact_b_id": "fact:1060",
+   "fact_a": "The official language of Russia is Russian.",
+   "fact_b": "The official language of Moscow is German.",
+   "cosine_similarity": 0.9354217768451076,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "Russia",
+     "object": "Russian"
+    },
+    "fact_b_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "Moscow",
+     "object": "German"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different administrative scopes (city vs country) asserting incompatible 'offi­c"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:2077-2094",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:2077",
+   "fact_b_id": "fact:2094",
+   "fact_a": "Day Tripper was performed by Madonna.",
+   "fact_b": "1 was performed by Madonna.",
+   "cosine_similarity": 0.8139634413560246,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Day Tripper",
+     "object": "Madonna"
+    },
+    "fact_b_parsed": {
+     "relation": "| was performed by ",
+     "subject": "1",
+     "object": "Madonna"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": true,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different song titles (Day Tripper vs '1') claimed as performed by same artist; "
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:2107-2186",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:2107",
+   "fact_b_id": "fact:2186",
+   "fact_a": "Ireland is located in the continent of North America.",
+   "fact_b": "London is located in the continent of Eurasia.",
+   "cosine_similarity": 0.8077636161877623,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Ireland",
+     "object": "North America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "London",
+     "object": "Eurasia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different geographic subjects (London vs Ireland) asserting incompatible contint"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:2203-2261",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:2203",
+   "fact_b_id": "fact:2261",
+   "fact_a": "The author of David Copperfield is Charles Darwin.",
+   "fact_b": "The author of Our Mutual Friend is Charles Darwin.",
+   "cosine_similarity": 0.8963224617505876,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "David Copperfield",
+     "object": "Charles Darwin"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Our Mutual Friend",
+     "object": "Charles Darwin"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same author entity assigned as author of two different single-author novels (inf"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:355-1597",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:355",
+   "fact_b_id": "fact:1597",
+   "fact_a": "Classical Athens is located in the continent of Europe.",
+   "fact_b": "Paris is located in the continent of Antarctica.",
+   "cosine_similarity": 0.802507162354037,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Classical Athens",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Paris",
+     "object": "Antarctica"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subjects (Classical Athens vs Paris) asserting incompatible continents"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:364-1187",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:364",
+   "fact_b_id": "fact:1187",
+   "fact_a": "The Church of Jesus Christ of Latter-day Saints was founded by Lyndon B. Johnson.",
+   "fact_b": "Mormonism was founded by Juvénal Habyarimana.",
+   "cosine_similarity": 0.8367025965454363,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was founded by ",
+     "subject": "The Church of Jesus Christ of Latter-day Saints",
+     "object": "Lyndon B. Johnson"
+    },
+    "fact_b_parsed": {
+     "relation": "| was founded by ",
+     "subject": "Mormonism",
+     "object": "Juvénal Habyarimana"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different religious organizations (Mormonism vs LDS) presented with mutually-ruj"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:364-602",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:364",
+   "fact_b_id": "fact:602",
+   "fact_a": "The Church of Jesus Christ of Latter-day Saints was founded by Lyndon B. Johnson.",
+   "fact_b": "Mormonism was founded by Joseph Smith.",
+   "cosine_similarity": 0.8737149820829001,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was founded by ",
+     "subject": "The Church of Jesus Christ of Latter-day Saints",
+     "object": "Lyndon B. Johnson"
+    },
+    "fact_b_parsed": {
+     "relation": "| was founded by ",
+     "subject": "Mormonism",
+     "object": "Joseph Smith"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different claimed founders for (effectively) same religious movement names; one–"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:369-1816",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:369",
+   "fact_b_id": "fact:1816",
+   "fact_a": "The Prime Minister of Sweden is Stefan Löfven.",
+   "fact_b": "The name of the current head of the Sweden government is Gro Harlem Brundtland.",
+   "cosine_similarity": 0.8421643431999122,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Sweden",
+     "object": "Gro Harlem Brundtland"
+    },
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both claim current head of Sweden government with different names."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:369-538",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:369",
+   "fact_b_id": "fact:538",
+   "fact_a": "The Prime Minister of Sweden is Stefan Löfven.",
+   "fact_b": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "cosine_similarity": 0.8936384121210299,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same office, two different persons asserted as PM."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:398-1770",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:398",
+   "fact_b_id": "fact:1770",
+   "fact_a": "Christianity was founded in the city of Jerusalem.",
+   "fact_b": "Christianity was founded by Noel Pemberton Billing.",
+   "cosine_similarity": 0.8771925341322341,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was founded in the city of ",
+     "subject": "Christianity",
+     "object": "Jerusalem"
+    },
+    "fact_b_parsed": {
+     "relation": "| was founded by ",
+     "subject": "Christianity",
+     "object": "Noel Pemberton Billing"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert founding of Christianity with two incompatible founders/locations."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:475-1770",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:475",
+   "fact_b_id": "fact:1770",
+   "fact_a": "Christianity was founded in the city of Taipei.",
+   "fact_b": "Christianity was founded by Noel Pemberton Billing.",
+   "cosine_similarity": 0.8865191764162776,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was founded in the city of ",
+     "subject": "Christianity",
+     "object": "Taipei"
+    },
+    "fact_b_parsed": {
+     "relation": "| was founded by ",
+     "subject": "Christianity",
+     "object": "Noel Pemberton Billing"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert founding of Christianity with conflicting founder/place."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:475-763",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:475",
+   "fact_b_id": "fact:763",
+   "fact_a": "Christianity was founded in the city of Taipei.",
+   "fact_b": "Christianity was founded by Jesus Christ.",
+   "cosine_similarity": 0.9145173468102062,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was founded in the city of ",
+     "subject": "Christianity",
+     "object": "Taipei"
+    },
+    "fact_b_parsed": {
+     "relation": "| was founded by ",
+     "subject": "Christianity",
+     "object": "Jesus Christ"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert founding of Christianity with mutually exclusive founder/place."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:538-1816",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:538",
+   "fact_b_id": "fact:1816",
+   "fact_a": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "fact_b": "The name of the current head of the Sweden government is Gro Harlem Brundtland.",
+   "cosine_similarity": 0.8285120228753283,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Sweden",
+     "object": "Gro Harlem Brundtland"
+    },
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert current head/PM of Sweden but give different names."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:538-889",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:538",
+   "fact_b_id": "fact:889",
+   "fact_a": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "fact_b": "The name of the current head of the Sweden government is Stefan Löfven.",
+   "cosine_similarity": 0.8299270090040807,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Sweden",
+     "object": "Stefan Löfven"
+    },
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert current head of Swedish government but give different names."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:560-896",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:560",
+   "fact_b_id": "fact:896",
+   "fact_a": "The author of Sketches by Boz is Charles Dickens.",
+   "fact_b": "The author of A Christmas Carol is Winston Churchill.",
+   "cosine_similarity": 0.8293918782157458,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Sketches by Boz",
+     "object": "Charles Dickens"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "A Christmas Carol",
+     "object": "Winston Churchill"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "other",
+    "explanation": "Different works; each work has a single author but authors differ, so directconf"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:618-2043",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:618",
+   "fact_b_id": "fact:2043",
+   "fact_a": "outfielder is associated with the sport of baseball.",
+   "fact_b": "first baseman is associated with the sport of cricket.",
+   "cosine_similarity": 0.8844308798425737,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "outfielder",
+     "object": "baseball"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "first baseman",
+     "object": "cricket"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different positions (outfielder vs first baseman) are different roles; they map;"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:631-664",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:631",
+   "fact_b_id": "fact:664",
+   "fact_a": "The President of Azerbaijan is Ilham Aliyev.",
+   "fact_b": "The President of Azerbaijan is Prince Andrew, Duke of York.",
+   "cosine_similarity": 0.8300240634985095,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same office, two different persons asserted as president."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_32k:791-1935",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:791",
+   "fact_b_id": "fact:1935",
+   "fact_a": "Bengaluru is located in the continent of Oceania.",
+   "fact_b": "India is located in the continent of Africa.",
+   "cosine_similarity": 0.849117578163812,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Bengaluru",
+     "object": "Oceania"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "India",
+     "object": "Africa"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subjects (Bengaluru vs India) asserting incompatible continent values;"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_32k:825-1604",
+   "subset": "sh_32k",
+   "fact_a_id": "fact:825",
+   "fact_b_id": "fact:1604",
+   "fact_a": "Malaysia is located in the continent of Antarctica.",
+   "fact_b": "Singapore is located in the continent of Asia.",
+   "cosine_similarity": 0.8678670462370714,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Malaysia",
+     "object": "Antarctica"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Singapore",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries (Singapore vs Malaysia) with incompatible continent values."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:1034-3227",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1034",
+   "fact_b_id": "fact:3227",
+   "fact_a": "first baseman is associated with the sport of cricket.",
+   "fact_b": "designated hitter is associated with the sport of rugby.",
+   "cosine_similarity": 0.8377085174501666,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "first baseman",
+     "object": "cricket"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "designated hitter",
+     "object": "rugby"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different positions (different referents) assigned to incompatible sports."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1105-3320",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1105",
+   "fact_b_id": "fact:3320",
+   "fact_a": "Bonn is located in the continent of Europe.",
+   "fact_b": "France is located in the continent of North America.",
+   "cosine_similarity": 0.800313968940534,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Bonn",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "France",
+     "object": "North America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subjects (Bonn vs France) assert incompatible continent locations."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1119-2827",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1119",
+   "fact_b_id": "fact:2827",
+   "fact_a": "rugby was created in the country of England.",
+   "fact_b": "rugby union was created in the country of India.",
+   "cosine_similarity": 0.9607075239612433,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was created in the country of ",
+     "subject": "rugby",
+     "object": "England"
+    },
+    "fact_b_parsed": {
+     "relation": "| was created in the country of ",
+     "subject": "rugby union",
+     "object": "India"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "subsumption",
+    "explanation": "Rugby union is a variant of rugby; origin countries differ so creation location/"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:1155-3327",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1155",
+   "fact_b_id": "fact:3327",
+   "fact_a": "Saint Petersburg is located in the continent of Europe.",
+   "fact_b": "Paris is located in the continent of Antarctica.",
+   "cosine_similarity": 0.8151746219632918,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Saint Petersburg",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Paris",
+     "object": "Antarctica"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different cities (different referents) asserting incompatible continents."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1222-2943",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1222",
+   "fact_b_id": "fact:2943",
+   "fact_a": "Christianity was founded in the city of Jerusalem.",
+   "fact_b": "Christianity was founded by Noel Pemberton Billing.",
+   "cosine_similarity": 0.8771925341322341,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was founded in the city of ",
+     "subject": "Christianity",
+     "object": "Jerusalem"
+    },
+    "fact_b_parsed": {
+     "relation": "| was founded by ",
+     "subject": "Christianity",
+     "object": "Noel Pemberton Billing"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Founder vs founding place are different values for same relation 'was founded by"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1355-2783",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1355",
+   "fact_b_id": "fact:2783",
+   "fact_a": "North Korea is located in the continent of Asia.",
+   "fact_b": "Kingdom of Italy is located in the continent of Asia.",
+   "cosine_similarity": 0.8026722439670326,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "North Korea",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of Italy",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries with same relation; Italy located in Europe conflicts with '"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1413-3053",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1413",
+   "fact_b_id": "fact:3053",
+   "fact_a": "Kingdom of England is located in the continent of North America.",
+   "fact_b": "England is located in the continent of Europe.",
+   "cosine_similarity": 0.9119429274078138,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of England",
+     "object": "North America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "England",
+     "object": "Europe"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same entity (England) assigned two different continents."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1413-3198",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1413",
+   "fact_b_id": "fact:3198",
+   "fact_a": "Kingdom of England is located in the continent of North America.",
+   "fact_b": "Canada is located in the continent of North America.",
+   "cosine_similarity": 0.8066523026711974,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of England",
+     "object": "North America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Canada",
+     "object": "North America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries (Canada vs Kingdom of England) assigned incompatible_contin="
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:1458-2687",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1458",
+   "fact_b_id": "fact:2687",
+   "fact_a": "The author of The Song of Hiawatha is Sigmund Freud.",
+   "fact_b": "The author of Sketches by Boz is Sigmund Freud.",
+   "cosine_similarity": 0.8116195470082255,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Song of Hiawatha",
+     "object": "Sigmund Freud"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Sketches by Boz",
+     "object": "Sigmund Freud"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Same author name but refers to different real-world authors (claims attributing著"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1458-4154",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1458",
+   "fact_b_id": "fact:4154",
+   "fact_a": "The author of The Song of Hiawatha is Sigmund Freud.",
+   "fact_b": "The author of psychoanalysis is Sigmund Freud.",
+   "cosine_similarity": 0.8021091888291688,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Song of Hiawatha",
+     "object": "Sigmund Freud"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "psychoanalysis",
+     "object": "Sigmund Freud"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same author role for two different works—cannot be author of both specific works"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:1480-4348",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1480",
+   "fact_b_id": "fact:4348",
+   "fact_a": "WWE Tough Enough was created by Vince McMahon.",
+   "fact_b": "WWE Superstars was created by Richard Nixon.",
+   "cosine_similarity": 0.8761403245996977,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was created by ",
+     "subject": "WWE Tough Enough",
+     "object": "Vince McMahon"
+    },
+    "fact_b_parsed": {
+     "relation": "| was created by ",
+     "subject": "WWE Superstars",
+     "object": "Richard Nixon"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different TV shows (different subjects) with conflicting creator claims; not the"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1487-3051",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1487",
+   "fact_b_id": "fact:3051",
+   "fact_a": "Singapore is located in the continent of Asia.",
+   "fact_b": "Malaysia is located in the continent of Antarctica.",
+   "cosine_similarity": 0.8678670462370714,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Singapore",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Malaysia",
+     "object": "Antarctica"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries as subjects; both assert continent locations with mutually ("
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1570-3260",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1570",
+   "fact_b_id": "fact:3260",
+   "fact_a": "New Zealand is located in the continent of Africa.",
+   "fact_b": "India is located in the continent of Africa.",
+   "cosine_similarity": 0.8004946241775703,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "New Zealand",
+     "object": "Africa"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "India",
+     "object": "Africa"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries assigned incompatible continents; both assert continent but,"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1574-1798",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1574",
+   "fact_b_id": "fact:1798",
+   "fact_a": "Singapore is located in the continent of Antarctica.",
+   "fact_b": "Chicago is located in the continent of Antarctica.",
+   "cosine_similarity": 0.805661352527268,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Singapore",
+     "object": "Antarctica"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Chicago",
+     "object": "Antarctica"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different cities asserted to be on Antarctica; same relation but distinct refer-"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:1579-3326",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1579",
+   "fact_b_id": "fact:3326",
+   "fact_a": "The official language of United Kingdom of Great Britain and Ireland is English.",
+   "fact_b": "The official language of United Kingdom is Finnish.",
+   "cosine_similarity": 0.9369424892830618,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "United Kingdom of Great Britain and Ireland",
+     "object": "English"
+    },
+    "fact_b_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "United Kingdom",
+     "object": "Finnish"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same country (UK variants) claiming two different official languages."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1593-2783",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1593",
+   "fact_b_id": "fact:2783",
+   "fact_a": "Israel is located in the continent of Asia.",
+   "fact_b": "Kingdom of Italy is located in the continent of Asia.",
+   "cosine_similarity": 0.8341655149769825,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Israel",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of Italy",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries (Israel vs Italy) assigned to the same continent; Italy in/​"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1615-2783",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1615",
+   "fact_b_id": "fact:2783",
+   "fact_a": "Spain is located in the continent of Europe.",
+   "fact_b": "Kingdom of Italy is located in the continent of Asia.",
+   "cosine_similarity": 0.8107154491930583,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Spain",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of Italy",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries (Spain vs Kingdom of Italy); both assert continent locations"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:171-2416",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:171",
+   "fact_b_id": "fact:2416",
+   "fact_a": "The author of Executive Order 6102 is Franklin Delano Roosevelt.",
+   "fact_b": "The author of Surrealist Manifesto is Franklin Delano Roosevelt.",
+   "cosine_similarity": 0.8346706461006774,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Executive Order 6102",
+     "object": "Franklin Delano Roosevelt"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Surrealist Manifesto",
+     "object": "Franklin Delano Roosevelt"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both claim same author relation for different works to the same person; one slot"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1784-3320",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1784",
+   "fact_b_id": "fact:3320",
+   "fact_a": "San Francisco is located in the continent of North America.",
+   "fact_b": "France is located in the continent of North America.",
+   "cosine_similarity": 0.802531107658881,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "San Francisco",
+     "object": "North America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "France",
+     "object": "North America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different places (a city vs a country); one located in North America and the其他 ("
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1887-2365",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1887",
+   "fact_b_id": "fact:2365",
+   "fact_a": "WWE Superstars was created by Vince McMahon.",
+   "fact_b": "WWE Tough Enough was created by William Shakespeare.",
+   "cosine_similarity": 0.8574549166590364,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was created by ",
+     "subject": "WWE Superstars",
+     "object": "Vince McMahon"
+    },
+    "fact_b_parsed": {
+     "relation": "| was created by ",
+     "subject": "WWE Tough Enough",
+     "object": "William Shakespeare"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different TV shows (different subjects) claiming different creators; creator-re-"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:1966-3825",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:1966",
+   "fact_b_id": "fact:3825",
+   "fact_a": "Kemba Walker plays the position of goaltender.",
+   "fact_b": "Kenley Jansen plays the position of shooting guard.",
+   "cosine_similarity": 0.8228812471969771,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| plays the position of ",
+     "subject": "Kemba Walker",
+     "object": "goaltender"
+    },
+    "fact_b_parsed": {
+     "relation": "| plays the position of ",
+     "subject": "Kenley Jansen",
+     "object": "shooting guard"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different players; same position slot with incompatible values."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2124-2849",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2124",
+   "fact_b_id": "fact:2849",
+   "fact_a": "Yves Montand is married to Natalie Portman.",
+   "fact_b": "Natalie Portman is married to Benjamin Millepied.",
+   "cosine_similarity": 0.8157999871654956,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is married to ",
+     "subject": "Yves Montand",
+     "object": "Natalie Portman"
+    },
+    "fact_b_parsed": {
+     "relation": "| is married to ",
+     "subject": "Natalie Portman",
+     "object": "Benjamin Millepied"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": true,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different persons (Natalie Portman vs Yves Montand); marriage relation assigns a"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2168-4352",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2168",
+   "fact_b_id": "fact:4352",
+   "fact_a": "The name of the current head of the Italy government is Lili Bosse.",
+   "fact_b": "The name of the current head of the Monti Cabinet government is Mario Monti.",
+   "cosine_similarity": 0.9473627643254928,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Italy",
+     "object": "Lili Bosse"
+    },
+    "fact_b_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Monti Cabinet",
+     "object": "Mario Monti"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert current head of Italy/Monti Cabinet; two different names for same (s"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2168-4571",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2168",
+   "fact_b_id": "fact:4571",
+   "fact_a": "The name of the current head of the Italy government is Lili Bosse.",
+   "fact_b": "The name of the current head of state in Italy is Alassane Dramane Ouattara.",
+   "cosine_similarity": 0.9071941115602252,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Italy",
+     "object": "Lili Bosse"
+    },
+    "fact_b_parsed": {
+     "relation": "The name of the current head of state in | is ",
+     "subject": "Italy",
+     "object": "Alassane Dramane Ouattara"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": false,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "different_relation",
+    "explanation": "Both about Italy's leaders but different roles (head of state vs head of govt) —"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2176-3555",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2176",
+   "fact_b_id": "fact:3555",
+   "fact_a": "Past Masters was performed by The Beatles.",
+   "fact_b": "Beatles for Sale was performed by Madonna.",
+   "cosine_similarity": 0.8142710090223987,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Past Masters",
+     "object": "The Beatles"
+    },
+    "fact_b_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Beatles for Sale",
+     "object": "Madonna"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different musical works/artists swapped; assertions about who performed which (m"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2235-3326",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2235",
+   "fact_b_id": "fact:3326",
+   "fact_a": "The official language of United Kingdom of Great Britain and Ireland is Hungarian.",
+   "fact_b": "The official language of United Kingdom is Finnish.",
+   "cosine_similarity": 0.9453333992255962,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "United Kingdom of Great Britain and Ireland",
+     "object": "Hungarian"
+    },
+    "fact_b_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "United Kingdom",
+     "object": "Finnish"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same country (aliases) and same relation (official language) with two different,"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2235-4354",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2235",
+   "fact_b_id": "fact:4354",
+   "fact_a": "The official language of United Kingdom of Great Britain and Ireland is Hungarian.",
+   "fact_b": "The official language of Hungary is Hungarian.",
+   "cosine_similarity": 0.816111849633014,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "United Kingdom of Great Britain and Ireland",
+     "object": "Hungarian"
+    },
+    "fact_b_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "Hungary",
+     "object": "Hungarian"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries as subjects; both assert official language but assign it to/"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:230-2102",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:230",
+   "fact_b_id": "fact:2102",
+   "fact_a": "The author of Beyond Good and Evil is Friedrich Nietzsche.",
+   "fact_b": "The author of The Republic is Jean Genet.",
+   "cosine_similarity": 0.8124450199187156,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Beyond Good and Evil",
+     "object": "Friedrich Nietzsche"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Republic",
+     "object": "Jean Genet"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different works (Beyond Good and Evil vs The Republic) attributed to different作者"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2310-3227",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2310",
+   "fact_b_id": "fact:3227",
+   "fact_a": "second baseman is associated with the sport of baseball.",
+   "fact_b": "designated hitter is associated with the sport of rugby.",
+   "cosine_similarity": 0.8285745649774938,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "second baseman",
+     "object": "baseball"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "designated hitter",
+     "object": "rugby"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different positions (second baseman vs designated hitter) are distinct roles; B\u0002"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2320-3555",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2320",
+   "fact_b_id": "fact:3555",
+   "fact_a": "Can't Buy Me Love was performed by Madonna.",
+   "fact_b": "Beatles for Sale was performed by Madonna.",
+   "cosine_similarity": 0.8620524667394036,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Can't Buy Me Love",
+     "object": "Madonna"
+    },
+    "fact_b_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Beatles for Sale",
+     "object": "Madonna"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": true,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different works (albums/songs) assigned same performer; works are distinct but a"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2369-2374",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2369",
+   "fact_b_id": "fact:2374",
+   "fact_a": "United Kingdom is located in the continent of Oceania.",
+   "fact_b": "Great Britain is located in the continent of Europe.",
+   "cosine_similarity": 0.932928217524143,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "United Kingdom",
+     "object": "Oceania"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Great Britain",
+     "object": "Europe"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different entities (United Kingdom vs Great Britain) with conflicting continent;"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2369-3224",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2369",
+   "fact_b_id": "fact:3224",
+   "fact_a": "United Kingdom is located in the continent of Oceania.",
+   "fact_b": "England is located in the continent of South America.",
+   "cosine_similarity": 0.9281078673052652,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "United Kingdom",
+     "object": "Oceania"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "England",
+     "object": "South America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries (UK vs England); both assign incompatible continents."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:245-3224",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:245",
+   "fact_b_id": "fact:3224",
+   "fact_a": "Iceland is located in the continent of Europe.",
+   "fact_b": "England is located in the continent of South America.",
+   "cosine_similarity": 0.8038203348164313,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Iceland",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "England",
+     "object": "South America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries as subjects but both assert continent locations that are not"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2468-2642",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2468",
+   "fact_b_id": "fact:2642",
+   "fact_a": "Great Britain is located in the continent of Asia.",
+   "fact_b": "Greece is located in the continent of Asia.",
+   "cosine_similarity": 0.8233985183319219,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Great Britain",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Greece",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Both assert 'located on continent' but about different countries; each gives a ("
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2642-2783",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2642",
+   "fact_b_id": "fact:2783",
+   "fact_a": "Greece is located in the continent of Asia.",
+   "fact_b": "Kingdom of Italy is located in the continent of Asia.",
+   "cosine_similarity": 0.8077414978905322,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Greece",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of Italy",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries assigned to the same continent slot; both continent values ("
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2681-3198",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2681",
+   "fact_b_id": "fact:3198",
+   "fact_a": "Pakistan is located in the continent of North America.",
+   "fact_b": "Canada is located in the continent of North America.",
+   "cosine_similarity": 0.8024431279966259,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Pakistan",
+     "object": "North America"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Canada",
+     "object": "North America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries asserted to occupy the same single-continent relation with a"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2683-3260",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2683",
+   "fact_b_id": "fact:3260",
+   "fact_a": "Hyderabad is located in the continent of Asia.",
+   "fact_b": "India is located in the continent of Africa.",
+   "cosine_similarity": 0.8179833475165427,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Hyderabad",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "India",
+     "object": "Africa"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subject entities (Hyderabad vs India) asserting incompatible continent"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2688-3169",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2688",
+   "fact_b_id": "fact:3169",
+   "fact_a": "The chief executive officer of Hewlett-Packard is Vijay Mallya.",
+   "fact_b": "The chief executive officer of Apple Inc. is Vijay Mallya.",
+   "cosine_similarity": 0.8977641674272723,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The chief executive officer of | is ",
+     "subject": "Hewlett-Packard",
+     "object": "Vijay Mallya"
+    },
+    "fact_b_parsed": {
+     "relation": "The chief executive officer of | is ",
+     "subject": "Apple Inc.",
+     "object": "Vijay Mallya"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same person (Vijay Mallya) asserted as CEO of two different companies—incoherent"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2783-3936",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2783",
+   "fact_b_id": "fact:3936",
+   "fact_a": "Kingdom of Italy is located in the continent of Asia.",
+   "fact_b": "Japan is located in the continent of Europe.",
+   "cosine_similarity": 0.8200905629240746,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Kingdom of Italy",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Japan",
+     "object": "Europe"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries with geographic-location claims; both assert continent but关于"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:282-3999",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:282",
+   "fact_b_id": "fact:3999",
+   "fact_a": "Jailhouse Rock was performed by Elvis Presley.",
+   "fact_b": "The Life of Pablo was performed by Elvis Presley.",
+   "cosine_similarity": 0.8167738954597413,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Jailhouse Rock",
+     "object": "Elvis Presley"
+    },
+    "fact_b_parsed": {
+     "relation": "| was performed by ",
+     "subject": "The Life of Pablo",
+     "object": "Elvis Presley"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": true,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "value_paraphrase",
+    "explanation": "Both assert performer for works; Elvis can't have performed The Life of Pablo (m"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:2959-4242",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2959",
+   "fact_b_id": "fact:4242",
+   "fact_a": "The Prime Minister of Malta is Joseph Muscat.",
+   "fact_b": "The Prime Minister of Malta is Pietro Parolin.",
+   "cosine_similarity": 0.9332672589380364,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same office for same country, two different persons."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2976-4499",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2976",
+   "fact_b_id": "fact:4499",
+   "fact_a": "The Sky at Night was written in the language of English.",
+   "fact_b": "The original language of The Sky at Night is Filipino.",
+   "cosine_similarity": 0.9095741671150362,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was written in the language of ",
+     "subject": "The Sky at Night",
+     "object": "English"
+    },
+    "fact_b_parsed": {
+     "relation": "The original language of | is ",
+     "subject": "The Sky at Night",
+     "object": "Filipino"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Original language asserted as Filipino vs English for the same work; mutually_ex"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:2991-4306",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:2991",
+   "fact_b_id": "fact:4306",
+   "fact_a": "The chief executive officer of NeXT Computer, Inc. is Steve Jobs.",
+   "fact_b": "The chief executive officer of Microsoft is Steve Jobs.",
+   "cosine_similarity": 0.8948618556971325,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The chief executive officer of | is ",
+     "subject": "NeXT Computer, Inc.",
+     "object": "Steve Jobs"
+    },
+    "fact_b_parsed": {
+     "relation": "The chief executive officer of | is ",
+     "subject": "Microsoft",
+     "object": "Steve Jobs"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Same person but different companies; CEO role for two different organizations."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:3006-4004",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3006",
+   "fact_b_id": "fact:4004",
+   "fact_a": "India is located in the continent of Asia.",
+   "fact_b": "Argentina is located in the continent of Asia.",
+   "cosine_similarity": 0.8133555714508292,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "India",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Argentina",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries; both claim continent Asia but only Argentina is incorrect ("
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:3210-4312",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3210",
+   "fact_b_id": "fact:4312",
+   "fact_a": "The name of the current head of state in United States of America is Connachta.",
+   "fact_b": "The name of the current head of the United States of America government is Ole Johan Vierdal.",
+   "cosine_similarity": 0.9577366133642374,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of state in | is ",
+     "subject": "United States of America",
+     "object": "Connachta"
+    },
+    "fact_b_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "United States of America",
+     "object": "Ole Johan Vierdal"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": false,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_relation",
+    "explanation": "Head of government vs head of state are distinct offices; names conflict for two"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3219-4049",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3219",
+   "fact_b_id": "fact:4049",
+   "fact_a": "Brazil is located in the continent of Antarctica.",
+   "fact_b": "São Paulo is located in the continent of South America.",
+   "cosine_similarity": 0.892635821425683,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Brazil",
+     "object": "Antarctica"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "São Paulo",
+     "object": "South America"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Statements about different places (São Paulo vs Brazil) assert incompatible_cont"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3227-3706",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3227",
+   "fact_b_id": "fact:3706",
+   "fact_a": "designated hitter is associated with the sport of rugby.",
+   "fact_b": "infielder is associated with the sport of rugby.",
+   "cosine_similarity": 0.8585563551373313,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "designated hitter",
+     "object": "rugby"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "infielder",
+     "object": "rugby"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different player positions (infielder, designated hitter) are from baseball, not"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:323-2848",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:323",
+   "fact_b_id": "fact:2848",
+   "fact_a": "The name of the current head of the Sweden government is Stefan Löfven.",
+   "fact_b": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "cosine_similarity": 0.8299270090040807,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Sweden",
+     "object": "Stefan Löfven"
+    },
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert Sweden's current head of government with different names."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3261-3357",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3261",
+   "fact_b_id": "fact:3357",
+   "fact_a": "macOS was developed by Microsoft.",
+   "fact_b": "Xcode was developed by Microsoft.",
+   "cosine_similarity": 0.8582414225927453,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was developed by ",
+     "subject": "macOS",
+     "object": "Microsoft"
+    },
+    "fact_b_parsed": {
+     "relation": "| was developed by ",
+     "subject": "Xcode",
+     "object": "Microsoft"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different software products (macOS vs Xcode) but both claimed developed by same "
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:349-3776",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:349",
+   "fact_b_id": "fact:3776",
+   "fact_a": "The President of Azerbaijan is Ilham Aliyev.",
+   "fact_b": "The President of Azerbaijan is Prince Andrew, Duke of York.",
+   "cosine_similarity": 0.8300240634985095,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same office for same country; two different persons asserted."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3636-3924",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3636",
+   "fact_b_id": "fact:3924",
+   "fact_a": "The author of Devdas is Terrance Dicks.",
+   "fact_b": "The author of The Second Coming is Terrance Dicks.",
+   "cosine_similarity": 0.831002825115073,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Devdas",
+     "object": "Terrance Dicks"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Second Coming",
+     "object": "Terrance Dicks"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same author asserted for two different books."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3636-3954",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3636",
+   "fact_b_id": "fact:3954",
+   "fact_a": "The author of Devdas is Terrance Dicks.",
+   "fact_b": "The author of The Whisperer in Darkness is Terrance Dicks.",
+   "cosine_similarity": 0.813768805082579,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Devdas",
+     "object": "Terrance Dicks"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Whisperer in Darkness",
+     "object": "Terrance Dicks"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Same author name tied to different works; works different—claims about who wrote"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3643-4295",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3643",
+   "fact_b_id": "fact:4295",
+   "fact_a": "tight end is associated with the sport of field hockey.",
+   "fact_b": "tight end works in the field of American football player.",
+   "cosine_similarity": 0.935903991751656,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "tight end",
+     "object": "field hockey"
+    },
+    "fact_b_parsed": {
+     "relation": "| works in the field of ",
+     "subject": "tight end",
+     "object": "American football player"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": false,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_relation",
+    "explanation": "A asserts 'tight end' is a position in field hockey; B asserts 'tight end' is in"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:3703-4460",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3703",
+   "fact_b_id": "fact:4460",
+   "fact_a": "The official language of United States of America is German.",
+   "fact_b": "The official language of Germany is English.",
+   "cosine_similarity": 0.9067124071341908,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "United States of America",
+     "object": "German"
+    },
+    "fact_b_parsed": {
+     "relation": "The official language of | is ",
+     "subject": "Germany",
+     "object": "English"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries asserted official languages; each claim contradicts usual un"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:3857-4203",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3857",
+   "fact_b_id": "fact:4203",
+   "fact_a": "The original language of The Sky at Night is English.",
+   "fact_b": "The Sky at Night was written in the language of German.",
+   "cosine_similarity": 0.9214972050108466,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The original language of | is ",
+     "subject": "The Sky at Night",
+     "object": "English"
+    },
+    "fact_b_parsed": {
+     "relation": "| was written in the language of ",
+     "subject": "The Sky at Night",
+     "object": "German"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same work, same relation (original language), two different languages asserted."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:3999-4331",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:3999",
+   "fact_b_id": "fact:4331",
+   "fact_a": "The Life of Pablo was performed by Elvis Presley.",
+   "fact_b": "Love Me Tender was performed by Elvis Presley.",
+   "cosine_similarity": 0.815849070105156,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was performed by ",
+     "subject": "The Life of Pablo",
+     "object": "Elvis Presley"
+    },
+    "fact_b_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Love Me Tender",
+     "object": "Elvis Presley"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": true,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "different_relation",
+    "explanation": "Both assert performer relation for titles; Elvis performing two different works—"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:4203-4499",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:4203",
+   "fact_b_id": "fact:4499",
+   "fact_a": "The Sky at Night was written in the language of German.",
+   "fact_b": "The original language of The Sky at Night is Filipino.",
+   "cosine_similarity": 0.9046903963320259,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was written in the language of ",
+     "subject": "The Sky at Night",
+     "object": "German"
+    },
+    "fact_b_parsed": {
+     "relation": "The original language of | is ",
+     "subject": "The Sky at Night",
+     "object": "Filipino"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same work, same relation (original language), two different languages."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:443-3754",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:443",
+   "fact_b_id": "fact:3754",
+   "fact_a": "Abbey Road was performed by The Beatles.",
+   "fact_b": "Revolver was performed by Madonna.",
+   "cosine_similarity": 0.8026405734640888,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Abbey Road",
+     "object": "The Beatles"
+    },
+    "fact_b_parsed": {
+     "relation": "| was performed by ",
+     "subject": "Revolver",
+     "object": "Madonna"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different musical works (albums/songs); conflicting performers for each title."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:499-4560",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:499",
+   "fact_b_id": "fact:4560",
+   "fact_a": "The Illinois Attorney General is Lisa Madigan.",
+   "fact_b": "The Illinois Attorney General is Ben Carson.",
+   "cosine_similarity": 0.9370961516257134,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same office slot assigned to two different persons."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:526-4302",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:526",
+   "fact_b_id": "fact:4302",
+   "fact_a": "The head coach of Sydney FC is Graham Arnold.",
+   "fact_b": "The head coach of Central Coast Mariners FC is Graham Arnold.",
+   "cosine_similarity": 0.9581779796103898,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The head coach of | is ",
+     "subject": "Sydney FC",
+     "object": "Graham Arnold"
+    },
+    "fact_b_parsed": {
+     "relation": "The head coach of | is ",
+     "subject": "Central Coast Mariners FC",
+     "object": "Graham Arnold"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same person occupying head coach role at two clubs simultaneously; conflicting. "
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:596-2848",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:596",
+   "fact_b_id": "fact:2848",
+   "fact_a": "The name of the current head of the Sweden government is Gro Harlem Brundtland.",
+   "fact_b": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "cosine_similarity": 0.8285120228753283,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Sweden",
+     "object": "Gro Harlem Brundtland"
+    },
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert the current head/prime minister of Sweden with different names."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:596-971",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:596",
+   "fact_b_id": "fact:971",
+   "fact_a": "The name of the current head of the Sweden government is Gro Harlem Brundtland.",
+   "fact_b": "The Prime Minister of Sweden is Stefan Löfven.",
+   "cosine_similarity": 0.8421643431999122,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "Sweden",
+     "object": "Gro Harlem Brundtland"
+    },
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert who is the head of Sweden's government (current PM) with different,互"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:612-4307",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:612",
+   "fact_b_id": "fact:4307",
+   "fact_a": "The author of The Call of Cthulhu is H. P. Lovecraft.",
+   "fact_b": "The author of Little Women is H. P. Lovecraft.",
+   "cosine_similarity": 0.8250944587472726,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "The Call of Cthulhu",
+     "object": "H. P. Lovecraft"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Little Women",
+     "object": "H. P. Lovecraft"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same author slot with two different claimed works; cannot both be author of that"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:614-4323",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:614",
+   "fact_b_id": "fact:4323",
+   "fact_a": "Paris is located in the continent of Europe.",
+   "fact_b": "Germany is located in the continent of Africa.",
+   "cosine_similarity": 0.8108617366490619,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Paris",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Germany",
+     "object": "Africa"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subjects (Paris vs Germany) asserting incompatible continent locations"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:631-3260",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:631",
+   "fact_b_id": "fact:3260",
+   "fact_a": "Bengaluru is located in the continent of Asia.",
+   "fact_b": "India is located in the continent of Africa.",
+   "cosine_similarity": 0.8438851142997518,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Bengaluru",
+     "object": "Asia"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "India",
+     "object": "Africa"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different subjects (Bengaluru vs India) asserting incompatible continent values."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:645-3661",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:645",
+   "fact_b_id": "fact:3661",
+   "fact_a": "Rurouni Kenshin was written in the language of Japanese.",
+   "fact_b": "The original language of Rurouni Kenshin is English.",
+   "cosine_similarity": 0.93253654451109,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| was written in the language of ",
+     "subject": "Rurouni Kenshin",
+     "object": "Japanese"
+    },
+    "fact_b_parsed": {
+     "relation": "The original language of | is ",
+     "subject": "Rurouni Kenshin",
+     "object": "English"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Both assert original language of same work with two different languages."
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:668-2468",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:668",
+   "fact_b_id": "fact:2468",
+   "fact_a": "London is located in the continent of Europe.",
+   "fact_b": "Great Britain is located in the continent of Asia.",
+   "cosine_similarity": 0.8802767586209985,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "London",
+     "object": "Europe"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Great Britain",
+     "object": "Asia"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different place subjects (London vs Great Britain) with conflicting continent at"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:732-978",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:732",
+   "fact_b_id": "fact:978",
+   "fact_a": "point guard is associated with the sport of cricket.",
+   "fact_b": "outfielder is associated with the sport of cricket.",
+   "cosine_similarity": 0.8022695689934596,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "point guard",
+     "object": "cricket"
+    },
+    "fact_b_parsed": {
+     "relation": "| is associated with the sport of ",
+     "subject": "outfielder",
+     "object": "cricket"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different player positions (outfielder vs point guard) map to different sports; "
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:829-1234",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:829",
+   "fact_b_id": "fact:1234",
+   "fact_a": "Italy is located in the continent of Oceania.",
+   "fact_b": "Australia is located in the continent of Oceania.",
+   "cosine_similarity": 0.8335956365698028,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Italy",
+     "object": "Oceania"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Australia",
+     "object": "Oceania"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries; both assigned to same continent slot but are distinct refer"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:829-2374",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:829",
+   "fact_b_id": "fact:2374",
+   "fact_a": "Italy is located in the continent of Oceania.",
+   "fact_b": "Great Britain is located in the continent of Europe.",
+   "cosine_similarity": 0.8186091321581093,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Italy",
+     "object": "Oceania"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Great Britain",
+     "object": "Europe"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries; both assert continent locations that conflict (Europe vs. O"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:829-3936",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:829",
+   "fact_b_id": "fact:3936",
+   "fact_a": "Italy is located in the continent of Oceania.",
+   "fact_b": "Japan is located in the continent of Europe.",
+   "cosine_similarity": 0.8213245830231225,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Italy",
+     "object": "Oceania"
+    },
+    "fact_b_parsed": {
+     "relation": "| is located in the continent of ",
+     "subject": "Japan",
+     "object": "Europe"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different countries with contradictory continent assignments (each country has a"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:909-2912",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:909",
+   "fact_b_id": "fact:2912",
+   "fact_a": "The headquarters of Corpus Christi College is located in the city of Oxford.",
+   "fact_b": "The headquarters of University of Oxford is located in the city of Frankfurt.",
+   "cosine_similarity": 0.8763876104247712,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The headquarters of | is located in the city of ",
+     "subject": "Corpus Christi College",
+     "object": "Oxford"
+    },
+    "fact_b_parsed": {
+     "relation": "The headquarters of | is located in the city of ",
+     "subject": "University of Oxford",
+     "object": "Frankfurt"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different institutions (college vs university) — headquarters locations conflict"
+   },
+   "judge_input_order": "ab"
+  },
+  {
+   "pair_id": "sh_64k:919-2992",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:919",
+   "fact_b_id": "fact:2992",
+   "fact_a": "The author of Julius Caesar is Aristotle.",
+   "fact_b": "The author of Coriolanus is William Shakespeare.",
+   "cosine_similarity": 0.8498956208604808,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Julius Caesar",
+     "object": "Aristotle"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Coriolanus",
+     "object": "William Shakespeare"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different works (Coriolanus vs Julius Caesar) with different attributed authors;"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:919-969",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:919",
+   "fact_b_id": "fact:969",
+   "fact_a": "The author of Julius Caesar is Aristotle.",
+   "fact_b": "The author of Antony and Cleopatra is William Shakespeare.",
+   "cosine_similarity": 0.8730309163592895,
+   "parser_miss_channel": "bulk",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Julius Caesar",
+     "object": "Aristotle"
+    },
+    "fact_b_parsed": {
+     "relation": "The author of | is ",
+     "subject": "Antony and Cleopatra",
+     "object": "William Shakespeare"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different works (Antony and Cleopatra vs Julius Caesar) attributed to different,"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_64k:971-2848",
+   "subset": "sh_64k",
+   "fact_a_id": "fact:971",
+   "fact_b_id": "fact:2848",
+   "fact_a": "The Prime Minister of Sweden is Stefan Löfven.",
+   "fact_b": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "cosine_similarity": 0.8936384121210299,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Single office (PM of Sweden) assigned two different persons."
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_6k:126-432",
+   "subset": "sh_6k",
+   "fact_a_id": "fact:126",
+   "fact_b_id": "fact:432",
+   "fact_a": "The name of the current head of state in United States of America is Connachta.",
+   "fact_b": "The name of the current head of the United States of America government is Donald Trump.",
+   "cosine_similarity": 0.967315992930577,
+   "parser_miss_channel": "cross_template_same_subject",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The name of the current head of state in | is ",
+     "subject": "United States of America",
+     "object": "Connachta"
+    },
+    "fact_b_parsed": {
+     "relation": "The name of the current head of the | government is ",
+     "subject": "United States of America",
+     "object": "Donald Trump"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": true,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": false,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": false,
+    "update_conflict": true,
+    "reason_code": "different_relation",
+    "explanation": "A asserts head of government = Donald Trump; B asserts head of state = Connachta"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_6k:33-378",
+   "subset": "sh_6k",
+   "fact_a_id": "fact:33",
+   "fact_b_id": "fact:378",
+   "fact_a": "The capital of Great Britain is London.",
+   "fact_b": "The capital of England is London.",
+   "cosine_similarity": 0.9655169637739277,
+   "parser_miss_channel": "alias_candidate",
+   "parser_metadata": {
+    "fact_a_parsed": {
+     "relation": "The capital of | is ",
+     "subject": "Great Britain",
+     "object": "London"
+    },
+    "fact_b_parsed": {
+     "relation": "The capital of | is ",
+     "subject": "England",
+     "object": "London"
+    },
+    "both_parse": true,
+    "same_key": false,
+    "same_relation": true,
+    "same_subject": false,
+    "same_object": true,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": false,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "different_referent",
+    "explanation": "Different political entities (England vs Great Britain) claim same city as their"
+   },
+   "judge_input_order": "ba"
+  },
+  {
+   "pair_id": "sh_6k:82-276",
+   "subset": "sh_6k",
+   "fact_a_id": "fact:82",
+   "fact_b_id": "fact:276",
+   "fact_a": "The Prime Minister of Sweden is Stefan Löfven.",
+   "fact_b": "The Prime Minister of Sweden is Pedro Pierluisi.",
+   "cosine_similarity": 0.8936384121210299,
+   "parser_miss_channel": "unparsed_fact",
+   "parser_metadata": {
+    "fact_a_parsed": null,
+    "fact_b_parsed": null,
+    "both_parse": false,
+    "same_key": false,
+    "same_relation": false,
+    "same_subject": false,
+    "same_object": false,
+    "superseding_serial": null
+   },
+   "judge_verdict": {
+    "same_referent": true,
+    "same_relation": true,
+    "context_overlap": true,
+    "values_incompatible": true,
+    "relation_allows_multiple_values": false,
+    "strict_conflict": true,
+    "update_conflict": true,
+    "reason_code": "direct_replacement",
+    "explanation": "Same office, two different persons named as current prime minister."
+   },
+   "judge_input_order": "ab"
+  }
+ ]
+}

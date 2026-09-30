@@ -1,0 +1,85 @@
+{
+ "task": "T13",
+ "thresholds": {
+  "cos_pair": 0.8,
+  "r_min": 0.5999999999999999,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.9
+ },
+ "r_min_label": "loose",
+ "pair_filter": "fusion",
+ "ces": {
+  "tau": 6.0,
+  "artifact": "stage0_results/geometry_filter/fusion_screen.json",
+  "fingerprint": "2ffb0c85e80b20e16eda014ee67eae199804e9759f27f3a78224840be0bd23ee"
+ },
+ "mechanisms": [
+  "suppress",
+  "demote_late"
+ ],
+ "selection_rule": {
+  "EXPLORATORY_RELAXED_HARM": true,
+  "note": "NOT selected by the preregistered zero-harm rule (which the fusion screen FAILS - harm plateaus ~305). Threshold predefined from the calibration grid per user directive 2026-08-27; no held-out data touched in choosing it."
+ },
+ "metrics": {
+  "note": "calibration clean-row detection metrics, NOT a zero-harm selection",
+  "pair_recall_pool": 0.882,
+  "n_suppressed": 2573,
+  "n_suppressed_harmful": 312
+ },
+ "ambiguity_note": null,
+ "provenance": {
+  "generated_at_utc": "2026-08-27T12:15:18+00:00",
+  "git_head": "7ad4581c55b4d4f5ad210ee9e2bffc46e2414521",
+  "fit_subsets": [
+   "sh_32k",
+   "sh_6k"
+  ],
+  "confirmatory_refused": [
+   "sh_64k",
+   "sh_262k"
+  ],
+  "prepass": {
+   "sh_6k": "stage1_prepass_sh_6k_benchmarkpage_ces.json",
+   "sh_32k": "stage1_prepass_sh_32k_benchmarkpage_ces.json"
+  },
+  "prepass_unstamped_nli_config": [],
+  "embed_cache_namespace": [
+   "Qwen_Qwen3-Embedding-4B|float32",
+   "Qwen_Qwen3-Embedding-4B|float32|L8192"
+  ],
+  "max_pair_cosine_error_vs_prepass": 6.024715323293961e-07,
+  "geometry_space": "raw",
+  "pair_screen": "fusion",
+  "whitening_artifact": null,
+  "whitening_fingerprint": null,
+  "grid": {
+   "cos_pair": [
+    0.8
+   ],
+   "r_min": [
+    "frozen",
+    "loose",
+    "off"
+   ],
+   "ambiguity_mode": [
+    "all",
+    "any",
+    "none"
+   ],
+   "nli_contradiction": [
+    0.5,
+    0.9,
+    0.99
+   ],
+   "pair_filter": [
+    true,
+    false
+   ],
+   "ces_tau": null
+  },
+  "exploratory_relaxed_harm": true
+ }
+}

@@ -64,6 +64,7 @@ lerna-debug.log*
 .env.*
 !.env.example
 !.env-example
+!hnav/deploy/.env.template
 variables.env
 *.pem
 *.key
@@ -142,3 +143,10 @@ EvoMemBench-Memory-Systems/MemOS/evaluation/*tmp/
 EvoMemBench-Memory-Systems/mem0/server/history/
 EvoMemBench-Memory-Systems/mem0/openmemory/.openmemory/
 EvoMemBench-Memory-Systems/mem0/openmemory/api/.openmemory*/
+
+# H-Nav runtime
+hnav/_cache/
+hnav/_out/
+.venv-hnav/
+.venv-hnav-local/
+.env

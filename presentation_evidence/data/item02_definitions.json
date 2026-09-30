@@ -1,0 +1,31 @@
+{
+ "definitions": {
+  "unique": "queried (relation, subject) key has exactly one distinct value in the context",
+  "conflicted": "queried key has >= 2 distinct values",
+  "ambiguous": "several keys qualify and disagree about conflictedness; not assigned",
+  "unmatched": "no key with the question's subject carries the expected answer",
+  "stale_value": "incorrect output contains a non-expected value OF THE SAME KEY",
+  "off_list": "incorrect output contains no value of the queried key",
+  "empty": "output is empty after the evaluator's normalization",
+  "conflicted_only_accuracy.kind": "'estimate' = the unique-stratum premise is MEASURED for this subset and a point estimate is defensible; 'bound' = it is not, so only the assumption-free counting interval is emitted"
+ },
+ "aggregate": {
+  "n_runs": 8,
+  "unique_accuracy_min": 1.0,
+  "unique_accuracy_max": 1.0,
+  "conflicted_accuracy_min": 0.0,
+  "conflicted_accuracy_max": 0.06756756756756757,
+  "errors_total": {
+   "stale_value": 572,
+   "off_list": 3,
+   "empty": 0
+  },
+  "n_grade_disagreements": 0
+ },
+ "recomputed_errors_total": {
+  "stale_value": 572,
+  "off_list": 3,
+  "empty": 0
+ },
+ "arithmetic": "sum over runs[].strata.{unique,conflicted,ambiguous,unmatched}.errors"
+}

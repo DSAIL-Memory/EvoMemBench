@@ -43,6 +43,25 @@ from cl_bench_memory.io import append_jsonl
 from cl_bench_memory.logging_utils import log
 
 
+# ── [HNAV] shadow-mode hook ──────────────────────────────────────────────────
+# Adds an ADDITIVE "hnav" field to each result record when HNAV_MODE is
+# shadow/live. eval.py reads only model_output and the requirement list, so an
+# unknown key changes nothing. No-op when off, and never raises.
+def _hnav_annotate(result):
+    try:
+        import sys as _sys, pathlib as _pathlib
+        _root = str(_pathlib.Path(__file__).resolve().parents[2])
+        if _root not in _sys.path:
+            _sys.path.insert(0, _root)
+        from hnav.adapters.clbench_adapter import result_annotation
+        annotation = result_annotation()
+        if annotation is not None:
+            result["hnav"] = annotation
+    except Exception:
+        pass
+    return result
+
+
 def load_jsonl(file_path):
     data = []
     with open(file_path, "r", encoding="utf-8") as f:
@@ -203,6 +222,7 @@ def process_context_group(
             "memory_retrieved": memory_text if memory_text else "",
             "stats": sample_stats,
         }
+        _hnav_annotate(result)   # [HNAV] additive field; no-op when HNAV_MODE=off
 
         with output_lock:
             append_jsonl(result, output_path)

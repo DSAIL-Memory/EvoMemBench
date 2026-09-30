@@ -28,7 +28,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # Load environment variables
-dotenv.load_dotenv(override=True)
+# HNAV guarded hook (default behaviour unchanged): with override=True, ./.env
+# clobbers the shell's OPENAI_BASE_URL, which under the two-endpoint split of
+# hnav/deploy/mab.env.template (.env -> :8001 embeddings, shell -> :8000 LLM)
+# sends the bare OpenAI() LLM client's chat completions to the *embedding*
+# server (response has no choices -> TypeError, seen 2026-08-14 in T4).
+# The pipeline's t4 stage sets HNAV_DOTENV_NO_OVERRIDE=1 in BOTH arms, so the
+# shell keeps :8000 for the LLM while dotenv_values() in
+# methods/embedding_retriever.py still reads :8001 for embeddings from the file.
+dotenv.load_dotenv(override=os.environ.get("HNAV_DOTENV_NO_OVERRIDE") != "1")
 
 
 def parse_command_line_arguments():

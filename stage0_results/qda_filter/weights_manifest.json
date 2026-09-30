@@ -1,0 +1,23 @@
+{
+ "artifact": "QDA conflict scorer weights",
+ "scalars": {
+  "w_perp": -1.8867896326751068,
+  "beta": -3306.2017240196565,
+  "ordered_on": true,
+  "k_obj": 64,
+  "k_subj": 0,
+  "sigma1_sq": 0.3464055671674725,
+  "dtype": "float32"
+ },
+ "fingerprint": "068fe21d21e5d088c52cb487bd98988906c7023f585fd9bd6fa92225fe6446da",
+ "provenance": {
+  "git_commit": "2f87c16cdf985138794638b2de0a0f2ebec7a9c3",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "pipeline": "qda_filter",
+  "stage": "weights"
+ }
+}

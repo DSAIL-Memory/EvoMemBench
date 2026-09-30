@@ -1,0 +1,136 @@
+{
+ "sh_6k": {
+  "file": "stage0_results/stage1/detector_gap_sh6k.json",
+  "source_probe": "stage0_results/stage1/stale_suppression_probe_sh6k.json",
+  "same_harness": {
+   "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+   "llm_base_url": "http://localhost:8003/v1",
+   "prompt_shape": "RAGSystem: 'Memory 1:\\n<whole context>\\n' + templated query"
+  },
+  "native_cross_run": {
+   "detector_native": {
+    "n": 100,
+    "correct": 29,
+    "accuracy": 0.29
+   },
+   "oracle_native": {
+    "n": 100,
+    "correct": 29,
+    "accuracy": 0.29
+   },
+   "identical": true
+  },
+  "suppress": {
+   "oracle_arm": "oracle_suppress",
+   "detector_net": 61,
+   "oracle_net": 62,
+   "net_ratio": 0.9838709677419355,
+   "detector_conflicted_correct": 66,
+   "oracle_conflicted_correct": 66,
+   "detector_conflicted_gain": 62,
+   "oracle_conflicted_gain": 62,
+   "conflicted_gain_ratio": 1.0,
+   "detector_accuracy": 0.9,
+   "oracle_accuracy": 0.91
+  },
+  "demote_late": {
+   "oracle_arm": "oracle_recency",
+   "detector_net": 3,
+   "oracle_net": 17,
+   "net_ratio": 0.17647058823529413,
+   "detector_conflicted_correct": 7,
+   "oracle_conflicted_correct": 20,
+   "detector_conflicted_gain": 3,
+   "oracle_conflicted_gain": 16,
+   "conflicted_gain_ratio": 0.1875,
+   "detector_accuracy": 0.32,
+   "oracle_accuracy": 0.46
+  },
+  "identical_to_oracle_probe": "same prompt shape, same system message, same grader, same frozen :8003 substrate - the headline is a RATIO against the oracle arms and a ratio taken across harnesses is meaningless",
+  "per_question_cross_run": {
+   "native_output_identical_questions": 100,
+   "of": 100,
+   "conflicted_oracle_right_detector_wrong": [
+    0,
+    7,
+    26,
+    60
+   ],
+   "conflicted_detector_right_oracle_wrong": [
+    30,
+    41,
+    52,
+    86
+   ],
+   "caveat": "cross-RUN comparison (two separate LLM passes); native outputs identical on 100/100 questions"
+  }
+ },
+ "sh_32k": {
+  "file": "stage0_results/stage1/detector_gap_sh32k.json",
+  "source_probe": "stage0_results/stage1/stale_suppression_probe_sh32k.json",
+  "same_harness": {
+   "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+   "llm_base_url": "http://localhost:8003/v1",
+   "prompt_shape": "RAGSystem: 'Memory 1:\\n<whole context>\\n' + templated query"
+  },
+  "native_cross_run": {
+   "detector_native": {
+    "n": 100,
+    "correct": 42,
+    "accuracy": 0.42
+   },
+   "oracle_native": {
+    "n": 100,
+    "correct": 42,
+    "accuracy": 0.42
+   },
+   "identical": true
+  },
+  "suppress": {
+   "oracle_arm": "oracle_suppress",
+   "detector_net": 44,
+   "oracle_net": 46,
+   "net_ratio": 0.9565217391304348,
+   "detector_conflicted_correct": 51,
+   "oracle_conflicted_correct": 53,
+   "detector_conflicted_gain": 44,
+   "oracle_conflicted_gain": 46,
+   "conflicted_gain_ratio": 0.9565217391304348,
+   "detector_accuracy": 0.86,
+   "oracle_accuracy": 0.88
+  },
+  "demote_late": {
+   "oracle_arm": "oracle_recency",
+   "detector_net": 9,
+   "oracle_net": 26,
+   "net_ratio": 0.34615384615384615,
+   "detector_conflicted_correct": 16,
+   "oracle_conflicted_correct": 33,
+   "detector_conflicted_gain": 9,
+   "oracle_conflicted_gain": 26,
+   "conflicted_gain_ratio": 0.34615384615384615,
+   "detector_accuracy": 0.51,
+   "oracle_accuracy": 0.68
+  },
+  "identical_to_oracle_probe": "same prompt shape, same system message, same grader, same frozen :8003 substrate - the headline is a RATIO against the oracle arms and a ratio taken across harnesses is meaningless",
+  "per_question_cross_run": {
+   "native_output_identical_questions": 100,
+   "of": 100,
+   "conflicted_oracle_right_detector_wrong": [
+    8,
+    9,
+    23,
+    32,
+    87
+   ],
+   "conflicted_detector_right_oracle_wrong": [
+    31,
+    57,
+    92
+   ],
+   "caveat": "cross-RUN comparison (two separate LLM passes); native outputs identical on 100/100 questions"
+  }
+ },
+ "retrieval_files_caveat": "This run uses the RETRIEVAL-PATH harness; the oracle probe is whole-context. The ratios below therefore compare across harnesses and are NOT the detector/oracle ratio of the confirmatory design - read them as 'how much of the whole-context oracle ceiling survives being applied to a rank-ordered multi-block page'.",
+ "sh_64k_correction": "NO ORACLE-CEILING RATIO EXISTS FOR sh_64k. detector_vs_oracle is empty because no oracle arm was ever run there - the whole-context probe does not fit the window. The 0.984 / 0.957 ratios are calibration-only and cross-harness, and may not be quoted for this subset."
+}

@@ -1,0 +1,14 @@
+{
+ "source": "stage0_results/stage1_operating_point.json -> thresholds",
+ "thresholds": {
+  "cos_pair": 0.9,
+  "r_min": 0.44,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.9
+ },
+ "r_min_label": "loose",
+ "sqrt(1-r_min^2)": 0.8979977728257459,
+ "reading": "a pair passing r >= 0.44 implies in-span cosine <= 0.898, just under the cos_pair=0.90 screen: the two screens meet at the same geometric point rather than one overriding the other"
+}

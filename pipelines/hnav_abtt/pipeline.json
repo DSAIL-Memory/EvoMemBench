@@ -1,0 +1,12 @@
+{
+ "name": "hnav_abtt",
+ "description": "H-Nav read-time conflict detector with ABTT whitening (D=128, frozen_global) applied before the cosine screen",
+ "geometry_space": "abtt",
+ "operating_point": "stage0_results/abtt/abtt_operating_point.json",
+ "operating_point_sha256": "ac7991fdb54e5a99d56e87a4732a31dcbbf3c5cd210d5e8b5351c18433fe9b12",
+ "whitening_artifact": "stage0_results/abtt/abtt_whitening_D128.json",
+ "whitening_fingerprint": "3fdacc1fcc479efb721730a6b5bbc01f35821531c69b1f6b212f9c12d3c89980",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "subsets": ["sh_6k", "sh_32k", "sh_64k"],
+ "frozen_thresholds_for_reference": {"cos_pair": 0.30, "r_min": 0.9539, "nli_contradiction": 0.90, "pair_filter": true}
+}

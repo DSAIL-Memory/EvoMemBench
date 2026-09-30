@@ -1,0 +1,9 @@
+run,conflicted_n,conflicted_correct,conflicted_stale_value,conflicted_off_list,conflicted_empty,unique_stale_value,unique_off_list,unique_empty
+sh_6k_detA,74,1,72,1,0,0,0,0
+sh_6k_detB,74,0,73,1,0,0,0,0
+sh_6k_detC,74,5,69,0,0,0,0,0
+sh_6k_detD,74,1,72,1,0,0,0,0
+sh_6k_off,74,3,71,0,0,0,0,0
+sh_6k_offA,74,0,74,0,0,0,0,0
+sh_6k_offB,74,4,70,0,0,0,0,0
+sh_6k_shadow,74,3,71,0,0,0,0,0

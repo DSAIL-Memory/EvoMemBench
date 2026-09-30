@@ -1,0 +1,19 @@
+{
+ "pipeline": "hnav_ces",
+ "geometry_space": "raw",
+ "pair_screen": "ces",
+ "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+ "llm_base_url": "http://localhost:8003/v1",
+ "subsets": [
+  "sh_6k",
+  "sh_32k",
+  "sh_64k"
+ ],
+ "mechanism": "detector_suppress",
+ "operating_point_sha256": "1b96d1002c84badd700fe27a2359d22fde740a7374831ac443ebddfbb52b48c0",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "started_utc": "2026-08-26T23:42:34.871626+00:00",
+ "git_head": "c7d12f8690600b3597be9c2576680cb87dd475bf",
+ "dry_run": false,
+ "smoke_llm": false
+}

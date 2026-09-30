@@ -1,0 +1,6 @@
+# The repo-root `results/` rule swallows every pipeline run output, and files
+# inside an excluded directory cannot be re-included from within it — so the
+# directory itself is re-included here, one level up. Committed run results
+# are the repo convention (E2E campaign, 2026-08-27). Logs stay ignored.
+!*/results/
+*/results/**/*.log

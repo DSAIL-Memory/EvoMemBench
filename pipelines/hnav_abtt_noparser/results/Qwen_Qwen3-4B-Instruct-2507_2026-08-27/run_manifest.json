@@ -1,0 +1,19 @@
+{
+ "pipeline": "hnav_abtt_noparser",
+ "geometry_space": "abtt",
+ "pair_screen": "none",
+ "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+ "llm_base_url": "http://localhost:8003/v1",
+ "subsets": [
+  "sh_6k",
+  "sh_32k",
+  "sh_64k"
+ ],
+ "mechanism": "detector_suppress",
+ "operating_point_sha256": "c656a826e07c8591f9853878baa4817507156b4e45315864914ecd8b8ffc60ac",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "started_utc": "2026-08-27T01:47:01.478738+00:00",
+ "git_head": "c7d12f8690600b3597be9c2576680cb87dd475bf",
+ "dry_run": false,
+ "smoke_llm": false
+}

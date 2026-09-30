@@ -1,0 +1,372 @@
+{
+  "measurement": "M6 ABTT geometry re-measurement",
+  "interpretation": "A gain that appears in AUC but vanishes at equal coverage is a rescaling, not a detection improvement: the pipeline thresholds cosine, so only a change in the ORDER of pairs can change a decision. Report the equal-coverage deltas as the headline and AUC as context, never the reverse.",
+  "config": {
+    "embed_model": "Qwen/Qwen3-Embedding-4B",
+    "embed_dtype": "float32",
+    "embed_max_length": 8192,
+    "whiten_min_fit_n": 200,
+    "d_grid": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      8,
+      16
+    ],
+    "regimes": [
+      "per_store",
+      "frozen_global",
+      "pool_level"
+    ]
+  },
+  "mode": "prepass (mechanism M3 only)",
+  "prepass": [
+    {
+      "source": "stage1_prepass_sh_6k.json",
+      "subset": "sh_6k",
+      "n_facts": 455,
+      "cos_loose": 0.9,
+      "n_pairs": 4501,
+      "n_true_supersession": 1437,
+      "base_rate": 0.3192623861364141,
+      "pair_support": "RAW loose screen - pairs the whitened screen would admit but the raw screen rejected are NOT in this population, so mechanism M2 is invisible here",
+      "distributions": {
+        "cos_raw": {
+          "n": 4501,
+          "min": 0.8513053229863878,
+          "p10": 0.8750409316731175,
+          "p50": 0.9174190167754757,
+          "p90": 0.9787729076931379,
+          "max": 0.9912601733459935,
+          "mean": 0.9229333498220457,
+          "std": 0.03962326562062132,
+          "band_p10_p90": 0.10373197602002038
+        },
+        "cos_whitened": {
+          "n": 4501,
+          "min": 0.3297210265981749,
+          "p10": 0.37694574163080696,
+          "p50": 0.6015005987358564,
+          "p90": 0.9171642966354174,
+          "max": 0.9723288060862696,
+          "mean": 0.6521869732315246,
+          "std": 0.19519802992367938,
+          "band_p10_p90": 0.5402185550046105
+        }
+      },
+      "auc": {
+        "cos_raw": 0.9360756199000311,
+        "cos_whitened": 0.9546249257319154,
+        "rmin_raw": 0.352268742357428,
+        "rmin_whitened": 0.45126026353132703
+      },
+      "class_separation": {
+        "raw_mean_gap": 0.062367111331749436,
+        "whitened_mean_gap": 0.32326526579168535
+      },
+      "rank_agreement_cos_vs_cos_w": {
+        "spearman": 0.9779669378807644,
+        "kendall_tau": 0.8867413451788818
+      },
+      "equal_coverage": [
+        {
+          "raw_threshold": 0.9,
+          "n_admitted": 3043,
+          "whitened_threshold_equal_coverage": 0.535918839479554,
+          "raw_precision": 0.472231350640815,
+          "raw_recall": 1.0,
+          "whitened_precision": 0.46899477806788514,
+          "whitened_recall": 1.0,
+          "delta_precision": -0.0032365725729298633,
+          "delta_recall": 0.0
+        },
+        {
+          "raw_threshold": 0.92,
+          "n_admitted": 2129,
+          "whitened_threshold_equal_coverage": 0.6169076048688116,
+          "raw_precision": 0.6547674964772193,
+          "raw_recall": 0.9700765483646486,
+          "whitened_precision": 0.6693060083837913,
+          "whitened_recall": 1.0,
+          "delta_precision": 0.01453851190657196,
+          "delta_recall": 0.029923451635351372
+        },
+        {
+          "raw_threshold": 0.94,
+          "n_admitted": 1643,
+          "whitened_threshold_equal_coverage": 0.7631444870977768,
+          "raw_precision": 0.8003651856360317,
+          "raw_recall": 0.9151009046624913,
+          "whitened_precision": 0.7934523809523809,
+          "whitened_recall": 0.9276270006958942,
+          "delta_precision": -0.006912804683650742,
+          "delta_recall": 0.012526096033402934
+        },
+        {
+          "raw_threshold": 0.96,
+          "n_admitted": 1259,
+          "whitened_threshold_equal_coverage": 0.8290658915778267,
+          "raw_precision": 0.8228752978554408,
+          "raw_recall": 0.720946416144746,
+          "whitened_precision": 0.888801261829653,
+          "whitened_recall": 0.7842727905358385,
+          "delta_precision": 0.06592596397421224,
+          "delta_recall": 0.06332637439109257
+        }
+      ],
+      "recall_at_precision": {
+        "cos_raw": {
+          "recall_at_precision_0.9": 0.03897007654836465,
+          "recall_at_precision_0.95": 0.03897007654836465,
+          "recall_at_precision_0.99": 0.03897007654836465,
+          "recall_at_precision_1": 0.03897007654836465
+        },
+        "cos_whitened": {
+          "recall_at_precision_0.9": 0.11899791231732777,
+          "recall_at_precision_0.95": 0.11899791231732777,
+          "recall_at_precision_0.99": 0.11899791231732777,
+          "recall_at_precision_1": 0.11899791231732777
+        }
+      },
+      "verdict_m3": {
+        "auc_delta_cos": 0.0185493058318843,
+        "auc_delta_rmin": 0.09899152117389903,
+        "max_equal_coverage_precision_gain": 0.06592596397421224,
+        "max_equal_coverage_recall_gain": 0.06332637439109257
+      }
+    },
+    {
+      "source": "stage1_prepass_sh_32k.json",
+      "subset": "sh_32k",
+      "n_facts": 2310,
+      "cos_loose": 0.9,
+      "n_pairs": 24232,
+      "n_true_supersession": 1282,
+      "base_rate": 0.05290524925718059,
+      "pair_support": "RAW loose screen - pairs the whitened screen would admit but the raw screen rejected are NOT in this population, so mechanism M2 is invisible here",
+      "distributions": {
+        "cos_raw": {
+          "n": 24232,
+          "min": 0.7885038440625121,
+          "p10": 0.860061190362113,
+          "p50": 0.888890111331592,
+          "p90": 0.9299975341512527,
+          "max": 0.9970926347136954,
+          "mean": 0.8932563496995951,
+          "std": 0.030057146142938612,
+          "band_p10_p90": 0.06993634378913971
+        },
+        "cos_whitened": {
+          "n": 24232,
+          "min": 0.2584273454948438,
+          "p10": 0.39142818920635336,
+          "p50": 0.5002882352375003,
+          "p90": 0.7090828225684724,
+          "max": 0.9907443955772857,
+          "mean": 0.5276661314895009,
+          "std": 0.13345090024492468,
+          "band_p10_p90": 0.3176546333621191
+        }
+      },
+      "auc": {
+        "cos_raw": 0.9875926775633117,
+        "cos_whitened": 0.9908149031843627,
+        "rmin_raw": 0.6287645427385723,
+        "rmin_whitened": 0.6946063986350304
+      },
+      "class_separation": {
+        "raw_mean_gap": 0.07718347486556876,
+        "whitened_mean_gap": 0.3662097371949493
+      },
+      "rank_agreement_cos_vs_cos_w": {
+        "spearman": 0.8937575597923993,
+        "kendall_tau": 0.7609664259310824
+      },
+      "equal_coverage": [
+        {
+          "raw_threshold": 0.9,
+          "n_admitted": 8527,
+          "whitened_threshold_equal_coverage": 0.5442948866578995,
+          "raw_precision": 0.15034595989210742,
+          "raw_recall": 1.0,
+          "whitened_precision": 0.15002925687536572,
+          "whitened_recall": 1.0,
+          "delta_precision": -0.0003167030167416929,
+          "delta_recall": 0.0
+        },
+        {
+          "raw_threshold": 0.92,
+          "n_admitted": 3594,
+          "whitened_threshold_equal_coverage": 0.6444974033908588,
+          "raw_precision": 0.3525319977740679,
+          "raw_recall": 0.9882995319812793,
+          "whitened_precision": 0.3564081178760078,
+          "whitened_recall": 1.0,
+          "delta_precision": 0.003876120101939884,
+          "delta_recall": 0.011700468018720711
+        },
+        {
+          "raw_threshold": 0.94,
+          "n_admitted": 1734,
+          "whitened_threshold_equal_coverage": 0.7729839897781787,
+          "raw_precision": 0.6776239907727797,
+          "raw_recall": 0.9165366614664586,
+          "whitened_precision": 0.6796561604584527,
+          "whitened_recall": 0.9251170046801872,
+          "delta_precision": 0.002032169685672991,
+          "delta_recall": 0.00858034321372858
+        },
+        {
+          "raw_threshold": 0.96,
+          "n_admitted": 1143,
+          "whitened_threshold_equal_coverage": 0.8408359333368125,
+          "raw_precision": 0.8407699037620298,
+          "raw_recall": 0.749609984399376,
+          "whitened_precision": 0.8660328435609335,
+          "whitened_recall": 0.781591263650546,
+          "delta_precision": 0.025262939798903705,
+          "delta_recall": 0.03198127925117
+        }
+      ],
+      "recall_at_precision": {
+        "cos_raw": {
+          "recall_at_precision_0.9": 0.0070202808112324495,
+          "recall_at_precision_0.95": 0.0070202808112324495,
+          "recall_at_precision_0.99": 0.0070202808112324495,
+          "recall_at_precision_1": 0.0070202808112324495
+        },
+        "cos_whitened": {
+          "recall_at_precision_0.9": 0.00858034321372855,
+          "recall_at_precision_0.95": 0.00858034321372855,
+          "recall_at_precision_0.99": 0.00858034321372855,
+          "recall_at_precision_1": 0.00858034321372855
+        }
+      },
+      "verdict_m3": {
+        "auc_delta_cos": 0.0032222256210510114,
+        "auc_delta_rmin": 0.06584185589645808,
+        "max_equal_coverage_precision_gain": 0.025262939798903705,
+        "max_equal_coverage_recall_gain": 0.03198127925117
+      }
+    }
+  ],
+  "transfer": {
+    "precision_target": 0.95,
+    "space": {
+      "raw": [
+        {
+          "fit_on": "sh_6k",
+          "eval_on": "sh_6k",
+          "transferred": false,
+          "threshold": 0.9859175269541961,
+          "n_admitted": 154,
+          "coverage": 0.03421461897356143,
+          "precision": 0.36363636363636365,
+          "recall": 0.03897007654836465,
+          "own_threshold": 0.9859175269541961,
+          "degradation_vs_own": 0.0
+        },
+        {
+          "fit_on": "sh_6k",
+          "eval_on": "sh_32k",
+          "transferred": true,
+          "threshold": 0.9859175269541961,
+          "n_admitted": 174,
+          "coverage": 0.007180587652690657,
+          "precision": 0.367816091954023,
+          "recall": 0.0499219968798752,
+          "own_threshold": 0.9936852452054874,
+          "degradation_vs_own": 0.632183908045977
+        },
+        {
+          "fit_on": "sh_32k",
+          "eval_on": "sh_6k",
+          "transferred": true,
+          "threshold": 0.9936852452054874,
+          "n_admitted": 0,
+          "coverage": 0.0,
+          "precision": NaN,
+          "recall": 0.0,
+          "own_threshold": 0.9859175269541961,
+          "degradation_vs_own": NaN
+        },
+        {
+          "fit_on": "sh_32k",
+          "eval_on": "sh_32k",
+          "transferred": false,
+          "threshold": 0.9936852452054874,
+          "n_admitted": 9,
+          "coverage": 0.00037140970617365466,
+          "precision": 1.0,
+          "recall": 0.0070202808112324495,
+          "own_threshold": 0.9936852452054874,
+          "degradation_vs_own": 0.0
+        }
+      ],
+      "whitened": [
+        {
+          "fit_on": "sh_6k",
+          "eval_on": "sh_6k",
+          "transferred": false,
+          "threshold": 0.9313381987938055,
+          "n_admitted": 181,
+          "coverage": 0.040213285936458565,
+          "precision": 0.9447513812154696,
+          "recall": 0.11899791231732777,
+          "own_threshold": 0.9313381987938055,
+          "degradation_vs_own": 0.0
+        },
+        {
+          "fit_on": "sh_6k",
+          "eval_on": "sh_32k",
+          "transferred": true,
+          "threshold": 0.9313381987938055,
+          "n_admitted": 310,
+          "coverage": 0.012793000990425882,
+          "precision": 0.632258064516129,
+          "recall": 0.15288611544461778,
+          "own_threshold": 0.976169589780351,
+          "degradation_vs_own": 0.367741935483871
+        },
+        {
+          "fit_on": "sh_32k",
+          "eval_on": "sh_6k",
+          "transferred": true,
+          "threshold": 0.976169589780351,
+          "n_admitted": 0,
+          "coverage": 0.0,
+          "precision": NaN,
+          "recall": 0.0,
+          "own_threshold": 0.9313381987938055,
+          "degradation_vs_own": NaN
+        },
+        {
+          "fit_on": "sh_32k",
+          "eval_on": "sh_32k",
+          "transferred": false,
+          "threshold": 0.976169589780351,
+          "n_admitted": 11,
+          "coverage": 0.0004539451964344668,
+          "precision": 1.0,
+          "recall": 0.00858034321372855,
+          "own_threshold": 0.976169589780351,
+          "degradation_vs_own": 0.0
+        }
+      ]
+    },
+    "summary": {
+      "raw": {
+        "mean_transferred_precision": 0.367816091954023,
+        "mean_degradation": 0.632183908045977,
+        "threshold_spread": 0.0077677182512913
+      },
+      "whitened": {
+        "mean_transferred_precision": 0.632258064516129,
+        "mean_degradation": 0.367741935483871,
+        "threshold_spread": 0.04483139098654543
+      }
+    }
+  }
+}

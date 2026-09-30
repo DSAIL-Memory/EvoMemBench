@@ -18,6 +18,27 @@ from transformers import BitsAndBytesConfig
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaConfig
 
 
+# ── [HNAV] shadow-mode hook ──────────────────────────────────────────────────
+# Returns None unless HNAV_MODE is shadow/live, and never raises.
+_HNAV_ADAPTER = "unset"
+
+
+def _hnav_adapter():
+    global _HNAV_ADAPTER
+    if _HNAV_ADAPTER == "unset":
+        _HNAV_ADAPTER = None
+        try:
+            import sys as _sys, pathlib as _pathlib
+            _root = str(_pathlib.Path(__file__).resolve().parents[3])
+            if _root not in _sys.path:
+                _sys.path.insert(0, _root)
+            from hnav.adapters.mab_adapter import get_adapter
+            _HNAV_ADAPTER = get_adapter()
+        except Exception:
+            _HNAV_ADAPTER = None
+    return _HNAV_ADAPTER
+
+
 class AgentWrapper:
     """
     A wrapper class for different types of memory agents including:
@@ -977,6 +998,29 @@ class AgentWrapper:
         Returns:
             dict or str: Agent response with metadata (for queries) or confirmation (for memorization)
         """
+        # [HNAV] Entry/exit callbacks, gated on HNAV_MODE (default off). The
+        # dispatch below is unchanged and its return value is passed through
+        # untouched, so shadow mode is byte-identical to off.
+        hnav = _hnav_adapter()
+        if hnav is not None:
+            try:
+                hnav.on_send_message_enter(message, memorizing=memorizing,
+                                           query_id=query_id, context_id=context_id)
+            except Exception:
+                pass
+
+        result = self._dispatch_message(message, memorizing, query_id, context_id)
+
+        if hnav is not None:
+            try:
+                hnav.on_send_message_exit(result, message, memorizing=memorizing,
+                                          query_id=query_id, context_id=context_id)
+            except Exception:
+                pass
+        return result
+
+    def _dispatch_message(self, message, memorizing=False, query_id=None, context_id=None):
+        """Original send_message body — routing only, behaviour unchanged."""
         # Route to appropriate agent handler based on agent type
         if 'Long_context_agent' in self.agent_name:
             return self._handle_long_context_agent(message, memorizing)

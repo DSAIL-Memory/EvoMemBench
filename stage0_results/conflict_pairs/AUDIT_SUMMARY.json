@@ -1,0 +1,97 @@
+{
+ "model": "openai/gpt-5-mini",
+ "n_results": 54569,
+ "total_cost_usd": 19.4892,
+ "n_disagreements": 294,
+ "n_discoveries": 105,
+ "per_subset": {
+  "sh_32k": {
+   "tagged": {
+    "n": 835,
+    "update_conflict": 740,
+    "strict_conflict": 616,
+    "reason:direct_replacement": 599,
+    "reason:multi_valued_relation": 160,
+    "reason:subsumption": 15,
+    "reason:relation_paraphrase": 27,
+    "reason:alias_equivalent": 1,
+    "reason:different_referent": 15,
+    "reason:value_paraphrase": 4,
+    "reason:other": 5,
+    "reason:context_mismatch": 3,
+    "reason:different_relation": 6
+   },
+   "untagged": {
+    "n": 9391,
+    "update_conflict": 27,
+    "strict_conflict": 26,
+    "reason:relation_paraphrase": 130,
+    "reason:different_relation": 403,
+    "reason:different_referent": 8810,
+    "reason:direct_replacement": 10,
+    "reason:other": 4,
+    "reason:multi_valued_relation": 6,
+    "reason:alias_equivalent": 5,
+    "reason:subsumption": 2,
+    "reason:value_paraphrase": 3,
+    "reason:context_mismatch": 18
+   }
+  },
+  "sh_64k": {
+   "tagged": {
+    "n": 1687,
+    "update_conflict": 1507,
+    "strict_conflict": 1231,
+    "reason:subsumption": 32,
+    "reason:direct_replacement": 1204,
+    "reason:multi_valued_relation": 352,
+    "reason:relation_paraphrase": 59,
+    "reason:different_referent": 14,
+    "reason:other": 12,
+    "reason:different_relation": 8,
+    "reason:value_paraphrase": 2,
+    "reason:context_mismatch": 2,
+    "reason:alias_equivalent": 2
+   },
+   "untagged": {
+    "n": 42125,
+    "update_conflict": 75,
+    "strict_conflict": 70,
+    "reason:different_referent": 40517,
+    "reason:different_relation": 1142,
+    "reason:alias_equivalent": 12,
+    "reason:relation_paraphrase": 358,
+    "reason:direct_replacement": 22,
+    "reason:subsumption": 14,
+    "reason:context_mismatch": 37,
+    "reason:multi_valued_relation": 17,
+    "reason:other": 3,
+    "reason:value_paraphrase": 3
+   }
+  },
+  "sh_6k": {
+   "untagged": {
+    "n": 371,
+    "update_conflict": 3,
+    "strict_conflict": 2,
+    "reason:direct_replacement": 1,
+    "reason:different_relation": 47,
+    "reason:different_referent": 311,
+    "reason:relation_paraphrase": 11,
+    "reason:alias_equivalent": 1
+   },
+   "tagged": {
+    "n": 160,
+    "update_conflict": 141,
+    "strict_conflict": 119,
+    "reason:direct_replacement": 115,
+    "reason:multi_valued_relation": 32,
+    "reason:subsumption": 3,
+    "reason:relation_paraphrase": 3,
+    "reason:other": 5,
+    "reason:different_relation": 1,
+    "reason:different_referent": 1
+   }
+  }
+ }
+}

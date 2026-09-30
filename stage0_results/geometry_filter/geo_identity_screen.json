@@ -1,0 +1,43 @@
+{
+ "artifact": "GEO identity screen (slot probe x whitened cosine)",
+ "dim": 2560,
+ "scalars": {
+  "probe_b": 0.0616016760468483,
+  "T_w": 0.6396504004901709,
+  "T_p": -0.07636616045305258,
+  "s_w": 0.3483432583731584,
+  "s_p": 1.0675458709838188
+ },
+ "matrices_npz": "geo_identity_screen.npz",
+ "fingerprint": "335b4540d61cf6b79a7ead27cc7b107b84b5646a3a7618e53abfc943e89ccb2a",
+ "provenance": {
+  "fit_subsets": [
+   "sh_6k",
+   "sh_32k"
+  ],
+  "probe": {
+   "n_pos_edits": 989,
+   "n_neg_edits": 8716,
+   "features": "|d_hat| (2560), LogisticRegression C=1.0 class_weight=balanced",
+   "fit_frame": "gold conflict dataset, calibration gold vs calibration hard negatives"
+  },
+  "anchors": {
+   "pool_cos_min": 0.88,
+   "pool_nli_min": 0.9,
+   "n_pool_pairs": {
+    "sh_6k": 193,
+    "sh_32k": 1332
+   },
+   "anchor_zero_fp_recall_unique_pairs": 0.7667910447761194,
+   "rule": "joint zero-FP staircase over NLI-passing calibration pool pairs; T_p = max FP probe at T_w; scales = feature std over the same pairs"
+  },
+  "abtt_source": "stage0_results/abtt/abtt_whitening_D128.json",
+  "abtt_source_fingerprint": "3fdacc1fcc479efb721730a6b5bbc01f35821531c69b1f6b212f9c12d3c89980",
+  "dataset": "stage0_results/conflict_pairs/gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "geometry_space": "raw (probe) + committed ABTT D=128 (cos_w)",
+  "seed": 20260824,
+  "no_parser_at_inference": "score_pair reads a.vector/b.vector only; no metadata, no parser field"
+ }
+}

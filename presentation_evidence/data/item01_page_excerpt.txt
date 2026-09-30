@@ -1,0 +1,44 @@
+REPRODUCED PAGE EXCERPT - factconsolidation_sh_6k, question index 1
+Reproduced offline with hnav/stage1/stale_suppression_probe.py::render_context;
+byte-identical to the dataset 'context' field: True
+full prompt: 26959 chars; context: 26157 chars, 455 facts
+==============================================================================
+--- prompt head (first 12 lines of the full prompt) ---
+Memory 1:
+Here is a list of facts:
+0. Thomas Kyd was born in the city of London.
+1. The chairperson of Fatah is Mahmoud Abbas.
+2. Amy Winehouse died in the city of Camden Town.
+3. Hines Ward plays the position of wide receiver.
+4. Bengaluru is located in the continent of Asia.
+5. Pedro Pierluisi worked in the city of Washington, D.C..
+6. Rogério Ceni plays the position of goalkeeper.
+7. The director of British Broadcasting Corporation is Tony Hall, Baron Hall of Birkenhead.
+8. Victoria Beckham is married to David Beckham.
+9. The headquarters of University of Minnesota is located in the city of Minneapolis.
+...
+--- around serial 91 (the stale fact) ---
+88. Andrzej Sapkowski speaks the language of Polish.
+89. The official language of Moscow is Russian.
+90. The type of music that John McVie plays is rock music.
+91. Nobuhiro Watsuki is famous for Rurouni Kenshin.
+92. The company that produced Il-2 Shturmovik is Ilyushin.
+93. Gala RFC is associated with the sport of rugby union.
+94. Princess Alice, Duchess of Gloucester is affiliated with the religion of Anglicanism.
+...
+--- around serial 259 (the superseding fact) ---
+256. Vito Corleone was created by Mario Puzo.
+257. Le Petit Parisien was created in the country of France.
+258. flanker is associated with the sport of rugby union.
+259. Nobuhiro Watsuki is famous for The Fairly OddParents.
+260. Kingdom of Ireland is affiliated with the religion of Zoroastrianism.
+261. pesäpallo was created in the country of Philippines.
+262. Mahmoud Abbas works in the field of politician.
+...
+--- prompt tail (last 6 lines: template + the question) ---
+
+ Question: Based on the provided Knowledge Pool, what is the name of the current president of Russia? 
+Answer: Donald Trump 
+
+ Now Answer the Question: Based on the provided Knowledge Pool, What is Nobuhiro Watsuki famous for? 
+Answer:

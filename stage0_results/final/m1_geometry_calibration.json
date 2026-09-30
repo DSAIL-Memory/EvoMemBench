@@ -1,0 +1,154 @@
+[
+  {
+    "subset": "sh_6k",
+    "model": "Qwen/Qwen3-Embedding-4B",
+    "dtype": "float32",
+    "n_facts": 455,
+    "parse_coverage": 99.56,
+    "n_conflict_pairs": 160,
+    "n_control_pairs": 159,
+    "whole_blob_sim": {
+      "mean": 0.9547497630119324,
+      "p10": 0.9127784371376038,
+      "p50": 0.9636123776435852,
+      "p90": 0.9831693172454834
+    },
+    "diff_sim": {
+      "mean": 0.7049170136451721,
+      "p10": 0.5836061835289001,
+      "p50": 0.6872348785400391,
+      "p90": 0.8270344138145447
+    },
+    "control_whole_blob_sim": {
+      "mean": 0.6047795414924622,
+      "p10": 0.5312103629112244,
+      "p50": 0.5976653099060059,
+      "p90": 0.6893954277038574
+    },
+    "qr_residual_new_vs_old": {
+      "mean": 0.19911977648735046,
+      "p10": 0.11353959888219833,
+      "p50": 0.19440898299217224,
+      "p90": 0.2846689522266388
+    },
+    "separation_auc_conflict_vs_control": 1.0,
+    "critical_delta_n": 0,
+    "critical_delta_pct": 0.0,
+    "gate_median_whole_blob": 0.9636,
+    "gate_pass": true
+  },
+  {
+    "subset": "sh_32k",
+    "model": "Qwen/Qwen3-Embedding-4B",
+    "dtype": "float32",
+    "n_facts": 2310,
+    "parse_coverage": 99.65,
+    "n_conflict_pairs": 835,
+    "n_control_pairs": 830,
+    "whole_blob_sim": {
+      "mean": 0.955725371837616,
+      "p10": 0.9158294200897217,
+      "p50": 0.963786244392395,
+      "p90": 0.9841615557670593
+    },
+    "diff_sim": {
+      "mean": 0.7090187072753906,
+      "p10": 0.596757173538208,
+      "p50": 0.7125017642974854,
+      "p90": 0.8114863634109497
+    },
+    "control_whole_blob_sim": {
+      "mean": 0.6062317490577698,
+      "p10": 0.5269215106964111,
+      "p50": 0.6050881147384644,
+      "p90": 0.6846204400062561
+    },
+    "qr_residual_new_vs_old": {
+      "mean": 0.20951522886753082,
+      "p10": 0.10172173380851746,
+      "p50": 0.2051519751548767,
+      "p90": 0.3258793354034424
+    },
+    "separation_auc_conflict_vs_control": 1.0,
+    "critical_delta_n": 0,
+    "critical_delta_pct": 0.0,
+    "gate_median_whole_blob": 0.9638,
+    "gate_pass": true
+  },
+  {
+    "subset": "sh_64k",
+    "model": "Qwen/Qwen3-Embedding-4B",
+    "dtype": "float32",
+    "n_facts": 4580,
+    "parse_coverage": 99.63,
+    "n_conflict_pairs": 1687,
+    "n_control_pairs": 1685,
+    "whole_blob_sim": {
+      "mean": 0.9557351469993591,
+      "p10": 0.9167003631591797,
+      "p50": 0.9638358354568481,
+      "p90": 0.9838905930519104
+    },
+    "diff_sim": {
+      "mean": 0.710504949092865,
+      "p10": 0.598736047744751,
+      "p50": 0.7165297269821167,
+      "p90": 0.8077889680862427
+    },
+    "control_whole_blob_sim": {
+      "mean": 0.6037126779556274,
+      "p10": 0.518696665763855,
+      "p50": 0.6020547747612,
+      "p90": 0.6848036050796509
+    },
+    "qr_residual_new_vs_old": {
+      "mean": 0.2568914294242859,
+      "p10": 0.12509769201278687,
+      "p50": 0.27378544211387634,
+      "p90": 0.3495641350746155
+    },
+    "separation_auc_conflict_vs_control": 1.0,
+    "critical_delta_n": 0,
+    "critical_delta_pct": 0.0,
+    "gate_median_whole_blob": 0.9638,
+    "gate_pass": true
+  },
+  {
+    "subset": "sh_262k",
+    "model": "Qwen/Qwen3-Embedding-4B",
+    "dtype": "float32",
+    "n_facts": 18332,
+    "parse_coverage": 99.47,
+    "n_conflict_pairs": 7197,
+    "n_control_pairs": 7197,
+    "whole_blob_sim": {
+      "mean": 0.9570436477661133,
+      "p10": 0.9200060963630676,
+      "p50": 0.9641435742378235,
+      "p90": 0.9838284850120544
+    },
+    "diff_sim": {
+      "mean": 0.7145408391952515,
+      "p10": 0.6054810881614685,
+      "p50": 0.7239236831665039,
+      "p90": 0.8046138882637024
+    },
+    "control_whole_blob_sim": {
+      "mean": 0.6125486493110657,
+      "p10": 0.5315588116645813,
+      "p50": 0.6108647584915161,
+      "p90": 0.6933512687683105
+    },
+    "qr_residual_new_vs_old": {
+      "mean": 0.29054510593414307,
+      "p10": 0.2255970984697342,
+      "p50": 0.2948337495326996,
+      "p90": 0.3580528497695923
+    },
+    "separation_auc_conflict_vs_control": 0.9999,
+    "critical_delta_n": 0,
+    "critical_delta_pct": 0.0,
+    "gate_median_whole_blob": 0.9641,
+    "gate_pass": true
+  }
+]

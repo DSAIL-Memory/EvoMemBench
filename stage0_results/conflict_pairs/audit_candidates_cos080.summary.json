@@ -1,0 +1,83 @@
+{
+ "what": "all unordered fact pairs with cosine >= 0.8 — candidate set for the LLM semantic audit",
+ "threshold": 0.8,
+ "embedding": {
+  "model": "Qwen/Qwen3-Embedding-4B",
+  "dtype": "float32",
+  "max_length": 8192,
+  "cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "cache_dir": "C:\\Users\\USER\\Desktop\\Tezim\\hnav_evo\\EvoMemBench\\hnav\\_cache\\emb",
+  "provenance": "the campaign cache pulled from ozonderlab2 2026-08-23; identical vectors to every committed geometry result"
+ },
+ "n_total_candidates": 87102,
+ "output_jsonl": "C:\\Users\\USER\\Desktop\\Tezim\\hnav_evo\\EvoMemBench\\stage0_results\\conflict_pairs\\audit_candidates_cos080.jsonl",
+ "subsets": {
+  "sh_6k": {
+   "n_facts": 455,
+   "n_unparsed": 2,
+   "n_possible_unordered_pairs": 103285,
+   "n_selected": 882,
+   "n_selected_parser_tagged": 160,
+   "n_selected_untagged": 722,
+   "selected_cosine": {
+    "n": 882,
+    "min": 0.8001215839920165,
+    "median": 0.8372511950471768,
+    "mean": 0.8582718852868947,
+    "max": 0.9912601751117877
+   },
+   "reconciliation_vs_m7": {
+    "m7_figure": 466,
+    "m7_floor": 0.8338865637779236,
+    "n_at_m7_floor_parsed_only": 465,
+    "n_added_by_flat_threshold": 416,
+    "n_added_by_unparsed_facts": 2
+   }
+  },
+  "sh_32k": {
+   "n_facts": 2310,
+   "n_unparsed": 8,
+   "n_possible_unordered_pairs": 2666895,
+   "n_selected": 16918,
+   "n_selected_parser_tagged": 835,
+   "n_selected_untagged": 16083,
+   "selected_cosine": {
+    "n": 16918,
+    "min": 0.8000028503706846,
+    "median": 0.8294440080546289,
+    "mean": 0.8409788021549103,
+    "max": 0.9982977964789814
+   },
+   "reconciliation_vs_m7": {
+    "m7_figure": 7551,
+    "m7_floor": 0.8338865637779236,
+    "n_at_m7_floor_parsed_only": 7550,
+    "n_added_by_flat_threshold": 9361,
+    "n_added_by_unparsed_facts": 14
+   }
+  },
+  "sh_64k": {
+   "n_facts": 4580,
+   "n_unparsed": 17,
+   "n_possible_unordered_pairs": 10485910,
+   "n_selected": 69302,
+   "n_selected_parser_tagged": 1687,
+   "n_selected_untagged": 67615,
+   "selected_cosine": {
+    "n": 69302,
+    "min": 0.8000015959741966,
+    "median": 0.8276676987254243,
+    "mean": 0.836320401141399,
+    "max": 0.9982977964789814
+   },
+   "reconciliation_vs_m7": {
+    "m7_figure": 67469,
+    "m7_floor": 0.8010916709899902,
+    "n_at_m7_floor_parsed_only": 67468,
+    "n_added_by_flat_threshold": 1775,
+    "n_added_by_unparsed_facts": 61
+   }
+  }
+ },
+ "note": "parser output is METADATA only; nothing was filtered by it. Unparsed facts are INCLUDED (M7's pair space excluded them), and the flat threshold sits below the per-subset conflict floors M7 used — both differences vs the ~75,486 figure are quantified in reconciliation_vs_m7."
+}

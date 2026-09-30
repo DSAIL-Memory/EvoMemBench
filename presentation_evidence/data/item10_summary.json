@@ -1,0 +1,73 @@
+{
+ "grid": {
+  "cos_pair": [
+   0.9,
+   0.92,
+   0.94
+  ],
+  "r_min": [
+   "frozen",
+   "loose",
+   "off"
+  ],
+  "ambiguity_mode": [
+   "all",
+   "any",
+   "none"
+  ],
+  "nli_contradiction": [
+   0.5,
+   0.9,
+   0.99
+  ],
+  "pair_filter": [
+   true,
+   false
+  ]
+ },
+ "nli_model": "cross-encoder/nli-deberta-v3-large",
+ "n_questions_calibration": 200,
+ "fv_rate_pair_filter_true": {
+  "n_cells": 81,
+  "n_cells_with_verified_pairs": 81,
+  "n_cells_zero_verified": 0,
+  "min": 0.0,
+  "max": 0.0
+ },
+ "fv_rate_pair_filter_false": {
+  "n_cells": 81,
+  "n_cells_with_verified_pairs": 81,
+  "n_cells_zero_verified": 0,
+  "min": 0.31496062992125984,
+  "max": 0.9409065883648375
+ },
+ "fv_rate_formula": "(n_fv_diff_key + n_fv_same_object) / n_verified per cell",
+ "operating_point_metrics": {
+  "n_questions": 200,
+  "tp": 2673,
+  "fp": 0,
+  "gt_pool": 2732,
+  "gt_page": 99200,
+  "n_suppressed": 2673,
+  "n_suppressed_superseded": 2673,
+  "n_suppressed_same_value": 0,
+  "n_suppressed_harmful": 0,
+  "n_demoted": 2673,
+  "n_demoted_is_latest": 2673,
+  "n_conflicted": 139,
+  "n_conflicted_hit": 133,
+  "n_conflicted_gold_cut": 2,
+  "n_unique": 61,
+  "n_unique_touched": 61,
+  "n_touched": 200,
+  "n_ambiguous_pass": 200,
+  "pair_precision": 1.0,
+  "pair_recall_pool": 0.9784040995607614,
+  "pair_recall_page": 0.026945564516129034,
+  "fact_precision": 1.0,
+  "question_recall_conflicted": 0.9568345323741008,
+  "coverage": 1.0
+ },
+ "operating_point_note": "metrics.n_questions=200 -> CALIBRATION split (sh_6k+sh_32k), not held-out",
+ "kyd_marlowe_provenance": "TEZ_BULGULARI.md lines 265-267 ONLY; scores 0.99949 / 0.99983 in the two directions; no JSON artifact behind it"
+}

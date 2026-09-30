@@ -1,0 +1,9 @@
+run,file,unique_n,unique_correct,unique_acc,conflicted_n,conflicted_correct,conflicted_acc,overall_acc
+sh_6k_detA,stage0_results/t4_s2_evidence/sh_6k_detA_results.json,26,26,1.0,74,1,0.013514,0.27
+sh_6k_detB,stage0_results/t4_s2_evidence/sh_6k_detB_results.json,26,26,1.0,74,0,0.0,0.26
+sh_6k_detC,stage0_results/t4_s2_evidence/sh_6k_detC_results.json,26,26,1.0,74,5,0.067568,0.31
+sh_6k_detD,stage0_results/t4_s2_evidence/sh_6k_detD_results.json,26,26,1.0,74,1,0.013514,0.27
+sh_6k_off,stage0_results/t4_s2_evidence/sh_6k_off_results.json,26,26,1.0,74,3,0.040541,0.29
+sh_6k_offA,stage0_results/t4_s2_evidence/sh_6k_offA_results.json,26,26,1.0,74,0,0.0,0.26
+sh_6k_offB,stage0_results/t4_s2_evidence/sh_6k_offB_results.json,26,26,1.0,74,4,0.054054,0.3
+sh_6k_shadow,stage0_results/t4_s2_evidence/sh_6k_shadow_results.json,26,26,1.0,74,3,0.040541,0.29

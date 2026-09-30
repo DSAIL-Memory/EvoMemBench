@@ -1,0 +1,172 @@
+{
+ "task": "T13",
+ "thresholds": {
+  "cos_pair": 0.94,
+  "r_min": 0.44,
+  "nmargin": 0.004764391389658354,
+  "H_z": 1.9569327964981853,
+  "ambiguity_mode": "none",
+  "nli_contradiction": 0.9
+ },
+ "r_min_label": "loose",
+ "pair_filter": "geo",
+ "ces": {
+  "tau": "-0.4:0.2",
+  "artifact": "stage0_results/geometry_filter/geo_identity_screen.json",
+  "fingerprint": "335b4540d61cf6b79a7ead27cc7b107b84b5646a3a7618e53abfc943e89ccb2a"
+ },
+ "mechanisms": [
+  "suppress",
+  "demote_late"
+ ],
+ "selection_rule": {
+  "require": [
+   "pair_filter == 'geo' (pinned by the arm)",
+   "n_suppressed_harmful == 0"
+  ],
+  "maximise": "pair_recall_pool",
+  "tie_break": [
+   "higher ces_tau (stricter identity screen)",
+   "higher cos_pair",
+   "higher nli_contradiction",
+   "tighter r_min (frozen<loose<off)",
+   "stricter ambiguity_mode (all<any<none)"
+  ],
+  "fit_on": "detection quality only - no LLM, no accuracy, no gold answer",
+  "split": "sh_6k + sh_32k (calibration) ONLY"
+ },
+ "metrics": {
+  "n_questions": 200,
+  "tp": 2157,
+  "fp": 0,
+  "gt_pool": 2732,
+  "gt_page": 99200,
+  "n_suppressed": 2157,
+  "n_suppressed_superseded": 2157,
+  "n_suppressed_same_value": 0,
+  "n_suppressed_harmful": 0,
+  "n_demoted": 2157,
+  "n_demoted_is_latest": 2157,
+  "n_conflicted": 139,
+  "n_conflicted_hit": 104,
+  "n_conflicted_gold_cut": 2,
+  "n_unique": 61,
+  "n_unique_touched": 61,
+  "n_touched": 200,
+  "n_ambiguous_pass": 200,
+  "pair_precision": 1.0,
+  "pair_recall_pool": 0.7895314787701317,
+  "pair_recall_page": 0.021743951612903226,
+  "fact_precision": 1.0,
+  "question_recall_conflicted": 0.7482014388489209,
+  "coverage": 1.0
+ },
+ "by_subset": {
+  "sh_6k": {
+   "n_questions": 100,
+   "tp": 1152,
+   "fp": 0,
+   "gt_pool": 1444,
+   "gt_page": 16000,
+   "n_suppressed": 1152,
+   "n_suppressed_superseded": 1152,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1152,
+   "n_demoted_is_latest": 1152,
+   "n_conflicted": 74,
+   "n_conflicted_hit": 54,
+   "n_conflicted_gold_cut": 0,
+   "n_unique": 26,
+   "n_unique_touched": 26,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.7977839335180056,
+   "pair_recall_page": 0.072,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.7297297297297297,
+   "coverage": 1.0
+  },
+  "sh_32k": {
+   "n_questions": 100,
+   "tp": 1005,
+   "fp": 0,
+   "gt_pool": 1288,
+   "gt_page": 83200,
+   "n_suppressed": 1005,
+   "n_suppressed_superseded": 1005,
+   "n_suppressed_same_value": 0,
+   "n_suppressed_harmful": 0,
+   "n_demoted": 1005,
+   "n_demoted_is_latest": 1005,
+   "n_conflicted": 65,
+   "n_conflicted_hit": 50,
+   "n_conflicted_gold_cut": 2,
+   "n_unique": 35,
+   "n_unique_touched": 35,
+   "n_touched": 100,
+   "n_ambiguous_pass": 100,
+   "pair_precision": 1.0,
+   "pair_recall_pool": 0.78027950310559,
+   "pair_recall_page": 0.012079326923076924,
+   "fact_precision": 1.0,
+   "question_recall_conflicted": 0.7692307692307693,
+   "coverage": 1.0
+  }
+ },
+ "ambiguity_note": "ambiguity_mode='none' disables the frozen Stage-0 nmargin/H_z precondition. Declared, not incidental: those two signals are the only gate input computed from CHUNK embeddings, which were truncated at 512 of ~4096 tokens (T12) and are not yet re-fit; they are also the dominant recall bottleneck (question-level recall collapses from 0.97 to 0.16 with the screen on); and the volume-limiting role they played is now carried by the identity screen plus bidirectional NLI at the measured precision recorded here. A campaign run after the embeddings are re-fit must revisit this.",
+ "provenance": {
+  "generated_at_utc": "2026-08-29T16:08:36+00:00",
+  "git_head": "a3ccddd73f8632b6dbc0c2c4b0a59a7d3132699e",
+  "fit_subsets": [
+   "sh_32k",
+   "sh_6k"
+  ],
+  "confirmatory_refused": [
+   "sh_64k",
+   "sh_262k"
+  ],
+  "prepass": {
+   "sh_6k": "stage1_prepass_sh_6k_benchmarkpage.json",
+   "sh_32k": "stage1_prepass_sh_32k_benchmarkpage.json"
+  },
+  "prepass_unstamped_nli_config": [],
+  "embed_cache_namespace": [
+   "Qwen_Qwen3-Embedding-4B|float32",
+   "Qwen_Qwen3-Embedding-4B|float32|L8192"
+  ],
+  "max_pair_cosine_error_vs_prepass": 2.2488737660975033e-07,
+  "geometry_space": "raw",
+  "pair_screen": "geo",
+  "whitening_artifact": null,
+  "whitening_fingerprint": null,
+  "grid": {
+   "cos_pair": [
+    0.9,
+    0.92,
+    0.94
+   ],
+   "r_min": [
+    "frozen",
+    "loose",
+    "off"
+   ],
+   "ambiguity_mode": [
+    "all",
+    "any",
+    "none"
+   ],
+   "nli_contradiction": [
+    0.5,
+    0.9,
+    0.99
+   ],
+   "pair_filter": [
+    true,
+    false
+   ],
+   "ces_tau": null
+  }
+ }
+}

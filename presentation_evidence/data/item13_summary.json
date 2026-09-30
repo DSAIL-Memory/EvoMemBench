@@ -1,0 +1,397 @@
+{
+ "file": "stage0_results/stage1/detector_gap_confirmatory_sh64k.json",
+ "preregistration": "stage0_results/stage1_preregistration_v2.md",
+ "arms_by_stratum": {
+  "native": {
+   "overall": {
+    "n": 100,
+    "correct": 45,
+    "accuracy": 0.45
+   },
+   "unique": {
+    "n": 34,
+    "correct": 28,
+    "accuracy": 0.8235294117647058
+   },
+   "conflicted": {
+    "n": 66,
+    "correct": 17,
+    "accuracy": 0.25757575757575757
+   }
+  },
+  "native_repeat": {
+   "overall": {
+    "n": 100,
+    "correct": 45,
+    "accuracy": 0.45
+   },
+   "unique": {
+    "n": 34,
+    "correct": 28,
+    "accuracy": 0.8235294117647058
+   },
+   "conflicted": {
+    "n": 66,
+    "correct": 17,
+    "accuracy": 0.25757575757575757
+   }
+  },
+  "detector_suppress": {
+   "overall": {
+    "n": 100,
+    "correct": 64,
+    "accuracy": 0.64
+   },
+   "unique": {
+    "n": 34,
+    "correct": 27,
+    "accuracy": 0.7941176470588235
+   },
+   "conflicted": {
+    "n": 66,
+    "correct": 37,
+    "accuracy": 0.5606060606060606
+   }
+  },
+  "detector_demote_late": {
+   "overall": {
+    "n": 100,
+    "correct": 48,
+    "accuracy": 0.48
+   },
+   "unique": {
+    "n": 34,
+    "correct": 28,
+    "accuracy": 0.8235294117647058
+   },
+   "conflicted": {
+    "n": 66,
+    "correct": 20,
+    "accuracy": 0.30303030303030304
+   }
+  },
+  "detector_anti": {
+   "overall": {
+    "n": 100,
+    "correct": 43,
+    "accuracy": 0.43
+   },
+   "unique": {
+    "n": 34,
+    "correct": 28,
+    "accuracy": 0.8235294117647058
+   },
+   "conflicted": {
+    "n": 66,
+    "correct": 15,
+    "accuracy": 0.22727272727272727
+   }
+  }
+ },
+ "mcnemar_conflicted": {
+  "native_repeat": {
+   "n": 66,
+   "b_native_only": 0,
+   "c_arm_only": 0,
+   "net": 0,
+   "p_exact": 1.0
+  },
+  "detector_suppress": {
+   "n": 66,
+   "b_native_only": 0,
+   "c_arm_only": 20,
+   "net": 20,
+   "p_exact": 1.9073486328125e-06
+  },
+  "detector_demote_late": {
+   "n": 66,
+   "b_native_only": 2,
+   "c_arm_only": 5,
+   "net": 3,
+   "p_exact": 0.453125
+  },
+  "detector_anti": {
+   "n": 66,
+   "b_native_only": 3,
+   "c_arm_only": 1,
+   "net": -2,
+   "p_exact": 0.625
+  }
+ },
+ "tokens": {
+  "native": {
+   "prompt_chars": 15852510,
+   "delta_chars_vs_native": 0,
+   "delta_pct": 0.0,
+   "approx_prompt_tokens": 3963127
+  },
+  "native_repeat": {
+   "prompt_chars": 15852510,
+   "delta_chars_vs_native": 0,
+   "delta_pct": 0.0,
+   "approx_prompt_tokens": 3963127
+  },
+  "detector_suppress": {
+   "prompt_chars": 15803885,
+   "delta_chars_vs_native": -48625,
+   "delta_pct": -0.3067337601427156,
+   "approx_prompt_tokens": 3950971
+  },
+  "detector_demote_late": {
+   "prompt_chars": 15852510,
+   "delta_chars_vs_native": 0,
+   "delta_pct": 0.0,
+   "approx_prompt_tokens": 3963127
+  },
+  "detector_anti": {
+   "prompt_chars": 15852510,
+   "delta_chars_vs_native": 0,
+   "delta_pct": 0.0,
+   "approx_prompt_tokens": 3963127
+  }
+ },
+ "harm": {
+  "native_repeat": {
+   "n_harmed": 0,
+   "counts": {
+    "gold_cut": 0,
+    "malformed_generation": 0,
+    "refusal_after_edit": 0,
+    "information_loss": 0
+   },
+   "by_stratum": {},
+   "protective_claim_void": false,
+   "voiding_questions": [],
+   "harms": []
+  },
+  "detector_suppress": {
+   "n_harmed": 1,
+   "counts": {
+    "gold_cut": 0,
+    "malformed_generation": 0,
+    "refusal_after_edit": 1,
+    "information_loss": 0
+   },
+   "by_stratum": {
+    "unique": {
+     "gold_cut": 0,
+     "malformed_generation": 0,
+     "refusal_after_edit": 1,
+     "information_loss": 0
+    }
+   },
+   "protective_claim_void": true,
+   "voiding_questions": [
+    77
+   ],
+   "harms": [
+    {
+     "index": 77,
+     "stratum": "unique",
+     "class": "refusal_after_edit",
+     "native_output": "John Milton",
+     "arm_output": "The provided knowledge pool does not contain any information about",
+     "target_serial": 2558,
+     "gold_cut": false
+    }
+   ]
+  },
+  "detector_demote_late": {
+   "n_harmed": 2,
+   "counts": {
+    "gold_cut": 0,
+    "malformed_generation": 0,
+    "refusal_after_edit": 0,
+    "information_loss": 2
+   },
+   "by_stratum": {
+    "conflicted": {
+     "gold_cut": 0,
+     "malformed_generation": 0,
+     "refusal_after_edit": 0,
+     "information_loss": 2
+    }
+   },
+   "protective_claim_void": false,
+   "voiding_questions": [],
+   "harms": [
+    {
+     "index": 42,
+     "stratum": "conflicted",
+     "class": "information_loss",
+     "native_output": "United Kingdom",
+     "arm_output": "Sweden",
+     "target_serial": 3048,
+     "gold_cut": false
+    },
+    {
+     "index": 69,
+     "stratum": "conflicted",
+     "class": "information_loss",
+     "native_output": "California State University, Long Beach",
+     "arm_output": "University of Arizona",
+     "target_serial": 4505,
+     "gold_cut": false
+    }
+   ]
+  },
+  "detector_anti": {
+   "n_harmed": 3,
+   "counts": {
+    "gold_cut": 0,
+    "malformed_generation": 0,
+    "refusal_after_edit": 0,
+    "information_loss": 3
+   },
+   "by_stratum": {
+    "conflicted": {
+     "gold_cut": 0,
+     "malformed_generation": 0,
+     "refusal_after_edit": 0,
+     "information_loss": 3
+    }
+   },
+   "protective_claim_void": false,
+   "voiding_questions": [],
+   "harms": [
+    {
+     "index": 19,
+     "stratum": "conflicted",
+     "class": "information_loss",
+     "native_output": "French",
+     "arm_output": "Russian",
+     "target_serial": 3797,
+     "gold_cut": false
+    },
+    {
+     "index": 42,
+     "stratum": "conflicted",
+     "class": "information_loss",
+     "native_output": "United Kingdom",
+     "arm_output": "Sweden",
+     "target_serial": 3048,
+     "gold_cut": false
+    },
+    {
+     "index": 51,
+     "stratum": "conflicted",
+     "class": "information_loss",
+     "native_output": "Madonna",
+     "arm_output": "The Beatles",
+     "target_serial": 3447,
+     "gold_cut": false
+    }
+   ]
+  }
+ },
+ "void_conditions": {
+  "1_page_edit_mismatch": {
+   "condition": 1,
+   "voids": "run",
+   "status": "pass",
+   "observed": 0,
+   "note": ""
+  },
+  "2_native_in_band": {
+   "condition": 2,
+   "voids": "run",
+   "status": "pass",
+   "observed": {
+    "native_overall": 0.45,
+    "band": [
+     0.3,
+     0.5
+    ],
+    "unique_native": 0.8235294117647058,
+    "unique_floor": 0.8
+   },
+   "note": ""
+  },
+  "3_aa_floor_zero": {
+   "condition": 3,
+   "voids": "run",
+   "status": "pass",
+   "observed": {
+    "b": 0,
+    "c": 0
+   },
+   "note": ""
+  },
+  "4_no_harmful_suppression": {
+   "condition": 4,
+   "voids": "run",
+   "status": "pass",
+   "observed": {
+    "n_suppressed_harmful": 0,
+    "n_suppressed_superseded": 735,
+    "n_suppressed_same_value": 0
+   },
+   "note": ""
+  },
+  "5_protected_stratum": {
+   "condition": 5,
+   "voids": "protective_claim_only",
+   "status": "fail",
+   "observed": {
+    "voiding_questions": [
+     77
+    ],
+    "counts": {
+     "gold_cut": 0,
+     "malformed_generation": 0,
+     "refusal_after_edit": 1,
+     "information_loss": 0
+    }
+   },
+   "note": "the ONLY condition that leaves the run and the accuracy result standing; the shot is still spent"
+  },
+  "6_7_page_source": {
+   "condition": 6,
+   "voids": "run",
+   "status": "pass",
+   "observed": {
+    "page_source": "benchmark"
+   },
+   "note": "Amendments 1 and 3: chunk vectors valid AND the page is the benchmark's own"
+  },
+  "8_guards_and_positive_control": {
+   "condition": 8,
+   "voids": "run",
+   "status": "pass",
+   "observed": {
+    "containment": 0,
+    "page_edit_errors": 0,
+    "positive_control": {
+     "n_questions": 100,
+     "n_questions_policy_fired": 100,
+     "n_fact_edits_applied": 200,
+     "n_facts_suppressed": 735,
+     "ok": true,
+     "n_editing_arms": 2,
+     "n_fact_edits_applied_per_arm": 100.0,
+     "counter_note": "n_fact_edits_applied ACCUMULATES ACROSS THE TWO EDITING ARMS (suppress and demote_late). 200 = 100 questions x 2 arms; the per-arm figure is 100, which is what pre-registration v2 VC8 means by 'must equal the number of questions fired'. ok=true and the condition is MET; the raw 200 is not a failure."
+    }
+   },
+   "note": ""
+  },
+  "verdict": {
+   "run_void": false,
+   "run_void_because": [],
+   "protective_claim_void": true,
+   "shot_spent": true
+  }
+ },
+ "corrections": [
+  {
+   "applied_at_utc": "2026-08-15",
+   "kind": "post-run annotation only - no measured value was recomputed or changed",
+   "items": [
+    "void_conditions object added, derived entirely from counters already in this artifact plus the parse-derived harm audit; the supervisor had to assemble it by hand from scattered fields.",
+    "positive_control gains n_editing_arms / n_fact_edits_applied_per_arm and counter_note, because the raw 200 could be misread against VC8's 'expected 100'.",
+    "GOLD-CUT MECHANISM CORRECTION. The commit message of 077ca68 and the first relayed report stated the two gold-not-latest questions BACKWARDS. Correct, re-derived from this artifact: q18 (gold serial 7, 'Tom Clancy'; latest 1219, 'Torquato Tasso') was NEVER acted on - its gold was not suppressed - and native answered wrongly ('Torquato Tasso'). q20 (gold serial 2374, 'Europe'; latest 2468, 'Asia') DID have its gold fact suppressed, native was correct, and the suppressed arm answered correctly ANYWAY. So 2 predicted gold-cuts produced 1 deletion and 0 accuracy losses.",
+    "The pool-cap attribution offered for the missed prediction is WITHDRAWN: per-question pools were not recorded in this artifact, so it was not verifiable. detector_gap now records n_pool and pool per question so future claims of that shape can be checked.",
+    "NO ORACLE-CEILING RATIO EXISTS FOR sh_64k. detector_vs_oracle is empty because no oracle arm was ever run there - the whole-context probe does not fit the window. The 0.984 / 0.957 ratios are calibration-only and cross-harness, and may not be quoted for this subset."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,298 @@
+{
+ "provenance": {
+  "git_commit": "a3ccddd73f8632b6dbc0c2c4b0a59a7d3132699e",
+  "dataset": "stage0_results\\conflict_pairs\\gold_conflict_dataset.jsonl.gz",
+  "dataset_sha256": "f9be7cae6323149bf6a95cdc3cf52a40d907c29b6c7341a8c6e32bf6655979e7",
+  "embed_cache_namespace": "Qwen_Qwen3-Embedding-4B|float32|L8192",
+  "abtt_artifact": "stage0_results\\abtt\\abtt_whitening_D128.json",
+  "seed": 20260824,
+  "experiment": "geo_pairlevel",
+  "artifact_fingerprint": "335b4540d61cf6b79a7ead27cc7b107b84b5646a3a7618e53abfc943e89ccb2a",
+  "n_boot": 1000
+ },
+ "pca_note": {
+  "64": "calibration-fit PCA of |d_hat| before the probe",
+  "256": "calibration-fit PCA of |d_hat| before the probe"
+ },
+ "balanced": {
+  "sh_6k": {
+   "n_pos": 160,
+   "n_neg": 160,
+   "in_sample_for_fit": true,
+   "methods": {
+    "geo": {
+     "auroc": 0.9926953125,
+     "band_auroc": 0.9921841076856275
+    },
+    "probe": {
+     "auroc": 0.9879296875,
+     "band_auroc": 0.9867564046895354
+    },
+    "abtt_cos": {
+     "auroc": 0.9900390625,
+     "band_auroc": 0.9882761615284411
+    },
+    "campaign_cos": {
+     "auroc": 0.95984375,
+     "band_auroc": 0.8803734259661311
+    },
+    "ces": {
+     "auroc": 0.9928515625,
+     "band_auroc": 0.9924012158054711
+    },
+    "probe_pca64": {
+     "auroc": 0.700703125,
+     "band_auroc": 0.6463308727746417
+    },
+    "probe_pca256": {
+     "auroc": 0.8753515625,
+     "band_auroc": 0.8354320451584889
+    }
+   }
+  },
+  "sh_32k": {
+   "n_pos": 829,
+   "n_neg": 829,
+   "in_sample_for_fit": true,
+   "methods": {
+    "geo": {
+     "auroc": 0.9867018993337127,
+     "band_auroc": 0.9823188332404922
+    },
+    "probe": {
+     "auroc": 0.9696947650096546,
+     "band_auroc": 0.9641135362333519
+    },
+    "abtt_cos": {
+     "auroc": 0.9735915057454372,
+     "band_auroc": 0.9649921507064364
+    },
+    "campaign_cos": {
+     "auroc": 0.9108551439742391,
+     "band_auroc": 0.8882994885299033
+    },
+    "ces": {
+     "auroc": 0.9929195144061544,
+     "band_auroc": 0.9898136425786196
+    },
+    "probe_pca64": {
+     "auroc": 0.7191436482980498,
+     "band_auroc": 0.683169595381577
+    },
+    "probe_pca256": {
+     "auroc": 0.8411910814401352,
+     "band_auroc": 0.818020458803869
+    }
+   }
+  },
+  "sh_64k": {
+   "n_pos": 1681,
+   "n_neg": 1681,
+   "in_sample_for_fit": false,
+   "methods": {
+    "geo": {
+     "auroc": 0.9715605813796708,
+     "band_auroc": 0.9657343884849992,
+     "auroc_ci95": {
+      "point": 0.9715605813796708,
+      "lo": 0.9668405519787413,
+      "hi": 0.9761308458146319,
+      "n_boot": 1000
+     },
+     "delta_vs_ces": {
+      "delta": -0.004028295386623304,
+      "lo": -0.009091250109262598,
+      "hi": 0.0011752497822709999,
+      "p_delta_le_0": 0.936,
+      "n_boot": 1000
+     }
+    },
+    "probe": {
+     "auroc": 0.9130538640741379,
+     "band_auroc": 0.9020248526249579,
+     "auroc_ci95": {
+      "point": 0.9130538640741379,
+      "lo": 0.9037937214081445,
+      "hi": 0.9228216399051441,
+      "n_boot": 1000
+     },
+     "delta_vs_ces": {
+      "delta": -0.06253501269215622,
+      "lo": -0.07205038748853845,
+      "hi": -0.05295379722488915,
+      "p_delta_le_0": 1.0,
+      "n_boot": 1000
+     }
+    },
+    "abtt_cos": {
+     "auroc": 0.9647857692140277,
+     "band_auroc": 0.9516398978004671,
+     "auroc_ci95": {
+      "point": 0.9647857692140277,
+      "lo": 0.9593929829875917,
+      "hi": 0.9697202275776331,
+      "n_boot": 1000
+     },
+     "delta_vs_ces": {
+      "delta": -0.010803107552266433,
+      "lo": -0.01684450666563808,
+      "hi": -0.005234802235574835,
+      "p_delta_le_0": 1.0,
+      "n_boot": 1000
+     }
+    },
+    "campaign_cos": {
+     "auroc": 0.8929679473954096,
+     "band_auroc": 0.8497993554018012,
+     "auroc_ci95": {
+      "point": 0.8929679473954096,
+      "lo": 0.8815803158865878,
+      "hi": 0.903742009674562,
+      "n_boot": 1000
+     },
+     "delta_vs_ces": {
+      "delta": -0.0826209293708845,
+      "lo": -0.09542259589540653,
+      "hi": -0.07139806763558561,
+      "p_delta_le_0": 1.0,
+      "n_boot": 1000
+     }
+    },
+    "ces": {
+     "auroc": 0.9755888767662941,
+     "band_auroc": 0.9690457557450668,
+     "auroc_ci95": {
+      "point": 0.9755888767662941,
+      "lo": 0.9714019692394368,
+      "hi": 0.9796127485657846,
+      "n_boot": 1000
+     }
+    },
+    "probe_pca64": {
+     "auroc": 0.7263346050851435,
+     "band_auroc": 0.7006945765009337,
+     "auroc_ci95": {
+      "point": 0.7263346050851435,
+      "lo": 0.7095132603217328,
+      "hi": 0.7441436749250909,
+      "n_boot": 1000
+     },
+     "delta_vs_ces": {
+      "delta": -0.24925427168115066,
+      "lo": -0.26614890643617767,
+      "hi": -0.23190079592718565,
+      "p_delta_le_0": 1.0,
+      "n_boot": 1000
+     }
+    },
+    "probe_pca256": {
+     "auroc": 0.8207810214664297,
+     "band_auroc": 0.7995205739947048,
+     "auroc_ci95": {
+      "point": 0.8207810214664297,
+      "lo": 0.8074729869228148,
+      "hi": 0.8350593521532783,
+      "n_boot": 1000
+     },
+     "delta_vs_ces": {
+      "delta": -0.1548078552998644,
+      "lo": -0.16816494742478225,
+      "hi": -0.14092010966249452,
+      "p_delta_le_0": 1.0,
+      "n_boot": 1000
+     }
+    }
+   }
+  }
+ },
+ "hard_confirmatory": {
+  "n_pos": 1681,
+  "n_neg": 39215,
+  "methods": {
+   "geo": {
+    "auroc": 0.9983552591408899,
+    "auprc": 0.9784454469112628,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.959167991621479
+    },
+    "tpr_seen_fpr_0.001": 0.8794258373205741,
+    "tpr_seen_fpr_0.0001": 0.7196172248803828,
+    "tpr_unseen_fpr_0.001": 0.7515723270440252,
+    "tpr_unseen_fpr_0.0001": 0.4811320754716981
+   },
+   "probe": {
+    "auroc": 0.9468503346042345,
+    "auprc": 0.6633047356217265,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.9061685342521373
+    },
+    "tpr_seen_fpr_0.001": 0.39712918660287083,
+    "tpr_seen_fpr_0.0001": 0.2555023923444976,
+    "tpr_unseen_fpr_0.001": 0.1289308176100629,
+    "tpr_unseen_fpr_0.0001": 0.07389937106918239
+   },
+   "abtt_cos": {
+    "auroc": 0.999065782580404,
+    "auprc": 0.9785938982113415,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.9271736531945008
+    },
+    "tpr_seen_fpr_0.001": 0.784688995215311,
+    "tpr_seen_fpr_0.0001": 0.507177033492823,
+    "tpr_unseen_fpr_0.001": 0.7955974842767296,
+    "tpr_unseen_fpr_0.0001": 0.40408805031446543
+   },
+   "campaign_cos": {
+    "auroc": 0.9920045709663691,
+    "auprc": 0.9159454283650931,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.0
+    },
+    "tpr_seen_fpr_0.001": 0.69377990430622,
+    "tpr_seen_fpr_0.0001": 0.3722488038277512,
+    "tpr_unseen_fpr_0.001": 0.5078616352201258,
+    "tpr_unseen_fpr_0.0001": 0.2138364779874214
+   },
+   "ces": {
+    "auroc": 0.9809575531343363,
+    "auprc": 0.8465634793746379,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.9798809248247834
+    },
+    "tpr_seen_fpr_0.001": 0.8822966507177034,
+    "tpr_seen_fpr_0.0001": 0.8354066985645933,
+    "tpr_unseen_fpr_0.001": 0.29874213836477986,
+    "tpr_unseen_fpr_0.0001": 0.20754716981132076
+   },
+   "probe_pca64": {
+    "auroc": 0.8317237611444042,
+    "auprc": 0.3169552940757712,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.6393118836114158
+    },
+    "tpr_seen_fpr_0.001": 0.17607655502392344,
+    "tpr_seen_fpr_0.0001": 0.07272727272727272,
+    "tpr_unseen_fpr_0.001": 0.05660377358490566,
+    "tpr_unseen_fpr_0.0001": 0.03459119496855346
+   },
+   "probe_pca256": {
+    "auroc": 0.8939342994124051,
+    "auprc": 0.4874913916274442,
+    "inverted_vs_campaign_cos": {
+     "n_comparisons": 527062,
+     "win_rate": 0.7665625675916685
+    },
+    "tpr_seen_fpr_0.001": 0.28995215311004785,
+    "tpr_seen_fpr_0.0001": 0.15119617224880383,
+    "tpr_unseen_fpr_0.001": 0.08490566037735849,
+    "tpr_unseen_fpr_0.0001": 0.0330188679245283
+   }
+  }
+ }
+}

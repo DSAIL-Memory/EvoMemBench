@@ -1,0 +1,36 @@
+[
+  {
+    "arena": "InEp-Know (MemoryAgentBench, LangChain FAISS IndexFlatL2) \u2014 sh_6k",
+    "n_pairs": 50,
+    "n_docs": 2,
+    "top_k": 2,
+    "top1_agreement": 0.94,
+    "topk_agreement": 0.94,
+    "kendall_tau": 0.88,
+    "max_abs_score_error": 0.5259203910827637,
+    "tie_rate": 0.0,
+    "embed_model": "Qwen/Qwen3-Embedding-4B",
+    "bank_norm_min": 0.9980922341346741,
+    "bank_norm_max": 1.0010758638381958,
+    "unit_normalized": false,
+    "fallback_chunker": false,
+    "WARNING": "bank vectors are NOT unit-normalized (norms 0.9981\u20131.0011). The d\u00b2\u2192cos identity does not hold; max_abs_score_error is not interpretable. Ranking agreement (top1/topk/tau) is still valid \u2014 it only needs a monotone map."
+  },
+  {
+    "arena": "InEp-Know (MemoryAgentBench, LangChain FAISS IndexFlatL2) \u2014 sh_32k",
+    "n_pairs": 50,
+    "n_docs": 9,
+    "top_k": 9,
+    "top1_agreement": 0.9,
+    "topk_agreement": 0.24,
+    "kendall_tau": 0.9333333333333331,
+    "max_abs_score_error": 0.5572671890258789,
+    "tie_rate": 0.0,
+    "embed_model": "Qwen/Qwen3-Embedding-4B",
+    "bank_norm_min": 0.9981033802032471,
+    "bank_norm_max": 1.0021544694900513,
+    "unit_normalized": false,
+    "fallback_chunker": false,
+    "WARNING": "bank vectors are NOT unit-normalized (norms 0.9981\u20131.0022). The d\u00b2\u2192cos identity does not hold; max_abs_score_error is not interpretable. Ranking agreement (top1/topk/tau) is still valid \u2014 it only needs a monotone map."
+  }
+]

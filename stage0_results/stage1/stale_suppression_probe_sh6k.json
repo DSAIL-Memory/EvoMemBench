@@ -1,0 +1,6133 @@
+{
+  "generated_at_utc": "2026-08-15T14:55:22+00:00",
+  "git_head": "fbadb5614ff9c3d96a7affe4584deb118cd2192a",
+  "mode": "off",
+  "smoke_llm": false,
+  "harness": {
+    "llm_model": "Qwen/Qwen3-4B-Instruct-2507",
+    "llm_base_url": "http://localhost:8003/v1",
+    "temperature": 0.0,
+    "max_tokens": 10,
+    "system_message": "You are a helpful assistant that can read the context and memorize it for future retrieval.",
+    "prompt_shape": "RAGSystem: 'Memory 1:\\n<whole context>\\n' + templated query",
+    "prompt_source": "hnav.stage1.calibrate_read_policy (imported verbatim)",
+    "grader": "hnav.labeling.counterfactual.substring_exact_match",
+    "deviation_from_campaign": "the campaign presents top_k CHUNKS in similarity-rank order; on the calibration split all chunks are retrieved (2 and 9 vs retrieve_num=10) so the same facts are shown, but block order is query-dependent. This probe uses one Memory block in context order, identically for every arm, because placement arms need a defined 'end of context'.",
+    "aa_floor_caveat": "the A/A floor is two calls in one process; the eight committed t4_s2 runs give the wider cross-run floor (conflicted stratum 0-5 of 74). Treat the in-harness floor as a LOWER bound on noise."
+  },
+  "arms": {
+    "native": "untouched context",
+    "native_repeat": "same prompt, independent second call (A/A floor)",
+    "oracle_suppress": "delete every non-expected-value fact of the queried key; serials NOT renumbered",
+    "oracle_recency": "move the highest-serial fact of the queried key to the END",
+    "anti": "highest-serial fact to the FRONT, most recent stale fact LAST"
+  },
+  "split": {
+    "calibration": [
+      "sh_6k",
+      "sh_32k"
+    ],
+    "refused": [
+      "sh_64k",
+      "sh_262k"
+    ]
+  },
+  "budget": {
+    "per_subset": [
+      {
+        "subset": "sh_6k",
+        "n_questions": 100,
+        "n_distinct_prompts": 373,
+        "n_aa_repeats": 100,
+        "n_calls": 473,
+        "approx_prompt_tokens": 3187602,
+        "n_identical_to_native": {
+          "oracle_suppress": 26,
+          "oracle_recency": 1,
+          "anti": 0
+        }
+      }
+    ],
+    "total_calls": 473,
+    "approx_total_prompt_tokens": 3187602
+  },
+  "results": [
+    {
+      "subset": "sh_6k",
+      "n_facts": 455,
+      "strata_counts": {
+        "unique": 26,
+        "conflicted": 74,
+        "ambiguous": 0,
+        "unmatched": 0
+      },
+      "campaign_reference": {
+        "source": "stage0_results/question_strata.json",
+        "n_runs": 8,
+        "runs": [
+          "sh_6k_detA",
+          "sh_6k_detB",
+          "sh_6k_detC",
+          "sh_6k_detD",
+          "sh_6k_off",
+          "sh_6k_offA",
+          "sh_6k_offB",
+          "sh_6k_shadow"
+        ],
+        "strata_counts": {
+          "unique": 26,
+          "conflicted": 74,
+          "ambiguous": 0,
+          "unmatched": 0
+        },
+        "accuracy_overall_range": [
+          0.26,
+          0.31
+        ],
+        "unique_accuracy_range": [
+          1.0,
+          1.0
+        ],
+        "conflicted_accuracy_range": [
+          0.0,
+          0.06756756756756757
+        ]
+      },
+      "n_llm_calls": 473,
+      "arms": {
+        "native": {
+          "n": 100,
+          "correct": 29,
+          "accuracy": 0.29
+        },
+        "native_repeat": {
+          "n": 100,
+          "correct": 29,
+          "accuracy": 0.29
+        },
+        "oracle_suppress": {
+          "n": 100,
+          "correct": 91,
+          "accuracy": 0.91
+        },
+        "oracle_recency": {
+          "n": 100,
+          "correct": 46,
+          "accuracy": 0.46
+        },
+        "anti": {
+          "n": 100,
+          "correct": 26,
+          "accuracy": 0.26
+        }
+      },
+      "paired_vs_native": {
+        "native_repeat": {
+          "n": 100,
+          "b_native_only": 0,
+          "c_arm_only": 0,
+          "net": 0,
+          "p_exact": 1.0
+        },
+        "oracle_suppress": {
+          "n": 100,
+          "b_native_only": 0,
+          "c_arm_only": 62,
+          "net": 62,
+          "p_exact": 4.336808689942018e-19
+        },
+        "oracle_recency": {
+          "n": 100,
+          "b_native_only": 1,
+          "c_arm_only": 18,
+          "net": 17,
+          "p_exact": 7.62939453125e-05
+        },
+        "anti": {
+          "n": 100,
+          "b_native_only": 4,
+          "c_arm_only": 1,
+          "net": -3,
+          "p_exact": 0.375
+        }
+      },
+      "aa_floor": {
+        "n": 100,
+        "b_native_only": 0,
+        "c_arm_only": 0,
+        "net": 0,
+        "p_exact": 1.0
+      },
+      "by_stratum": {
+        "unique": {
+          "arms": {
+            "native": {
+              "n": 26,
+              "correct": 25,
+              "accuracy": 0.9615384615384616
+            },
+            "native_repeat": {
+              "n": 26,
+              "correct": 25,
+              "accuracy": 0.9615384615384616
+            },
+            "oracle_suppress": {
+              "n": 26,
+              "correct": 25,
+              "accuracy": 0.9615384615384616
+            },
+            "oracle_recency": {
+              "n": 26,
+              "correct": 26,
+              "accuracy": 1.0
+            },
+            "anti": {
+              "n": 26,
+              "correct": 25,
+              "accuracy": 0.9615384615384616
+            }
+          },
+          "paired_vs_native": {
+            "native_repeat": {
+              "n": 26,
+              "b_native_only": 0,
+              "c_arm_only": 0,
+              "net": 0,
+              "p_exact": 1.0
+            },
+            "oracle_suppress": {
+              "n": 26,
+              "b_native_only": 0,
+              "c_arm_only": 0,
+              "net": 0,
+              "p_exact": 1.0
+            },
+            "oracle_recency": {
+              "n": 26,
+              "b_native_only": 0,
+              "c_arm_only": 1,
+              "net": 1,
+              "p_exact": 1.0
+            },
+            "anti": {
+              "n": 26,
+              "b_native_only": 1,
+              "c_arm_only": 1,
+              "net": 0,
+              "p_exact": 1.0
+            }
+          }
+        },
+        "conflicted": {
+          "arms": {
+            "native": {
+              "n": 74,
+              "correct": 4,
+              "accuracy": 0.05405405405405406
+            },
+            "native_repeat": {
+              "n": 74,
+              "correct": 4,
+              "accuracy": 0.05405405405405406
+            },
+            "oracle_suppress": {
+              "n": 74,
+              "correct": 66,
+              "accuracy": 0.8918918918918919
+            },
+            "oracle_recency": {
+              "n": 74,
+              "correct": 20,
+              "accuracy": 0.2702702702702703
+            },
+            "anti": {
+              "n": 74,
+              "correct": 1,
+              "accuracy": 0.013513513513513514
+            }
+          },
+          "paired_vs_native": {
+            "native_repeat": {
+              "n": 74,
+              "b_native_only": 0,
+              "c_arm_only": 0,
+              "net": 0,
+              "p_exact": 1.0
+            },
+            "oracle_suppress": {
+              "n": 74,
+              "b_native_only": 0,
+              "c_arm_only": 62,
+              "net": 62,
+              "p_exact": 4.336808689942018e-19
+            },
+            "oracle_recency": {
+              "n": 74,
+              "b_native_only": 1,
+              "c_arm_only": 17,
+              "net": 16,
+              "p_exact": 0.00014495849609375
+            },
+            "anti": {
+              "n": 74,
+              "b_native_only": 3,
+              "c_arm_only": 0,
+              "net": -3,
+              "p_exact": 0.25
+            }
+          }
+        }
+      },
+      "per_question": [
+        {
+          "index": 0,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "goaltender"
+          ],
+          "truths": [
+            "pesäpallo"
+          ],
+          "plan": {
+            "gold_serials": [
+              310
+            ],
+            "stale_serials": [
+              223
+            ],
+            "latest": 310,
+            "stale_anchor": 223,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "ice hockey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1f208d4937450743",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "ice hockey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1f208d4937450743",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "pesäpallo",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "9011209c5a5e787e",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "ice hockey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "cebffdd1ff21adc1",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "ice hockey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "fdc04278edea3af2",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 1,
+          "stratum": "conflicted",
+          "key": [
+            "| is famous for ",
+            "Nobuhiro Watsuki"
+          ],
+          "truths": [
+            "the fairly oddparents"
+          ],
+          "plan": {
+            "gold_serials": [
+              259
+            ],
+            "stale_serials": [
+              91
+            ],
+            "latest": 259,
+            "stale_anchor": 91,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Rurouni Kenshin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b97826cc85c85bc2",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Rurouni Kenshin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b97826cc85c85bc2",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "The Fairly OddParents",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "1e25e93d53184ed5",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Rurouni Kenshin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "52212d7a755c9d1c",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Rurouni Kenshin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "6217dc0571cb1a54",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 2,
+          "stratum": "conflicted",
+          "key": [
+            "| was created in the country of ",
+            "rugby union"
+          ],
+          "truths": [
+            "india"
+          ],
+          "plan": {
+            "gold_serials": [
+              186
+            ],
+            "stale_serials": [
+              100
+            ],
+            "latest": 186,
+            "stale_anchor": 100,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a6b4d3165a6bb6f9",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a6b4d3165a6bb6f9",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "India",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "b74de282a6d056ca",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bdf203b189ad8ef0",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f624a6ddeff4552e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 3,
+          "stratum": "unique",
+          "key": [
+            "| is famous for ",
+            "Ferdowsi"
+          ],
+          "truths": [
+            "shahnameh"
+          ],
+          "plan": {
+            "gold_serials": [
+              86
+            ],
+            "stale_serials": [],
+            "latest": 86,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Shahnameh",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "cf38e33a39c35434",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Shahnameh",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "cf38e33a39c35434",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Shahnameh",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "cf38e33a39c35434",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Shahnameh",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "506bb53bc6017cf0",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Shahnameh",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c82d5aa83b8e896b",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 4,
+          "stratum": "unique",
+          "key": [
+            "The univeristy where | was educated is ",
+            "Joan Didion"
+          ],
+          "truths": [
+            "university of california, berkeley"
+          ],
+          "plan": {
+            "gold_serials": [
+              63
+            ],
+            "stale_serials": [],
+            "latest": 63,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "University of California, Berkeley",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "46acc0d9edc5a00d",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "University of California, Berkeley",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "46acc0d9edc5a00d",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "University of California, Berkeley",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "46acc0d9edc5a00d",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "University of California, Berkeley",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "222ec62db8eed2f8",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "University of California, Berkeley",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "20fea15eefba97d4",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 5,
+          "stratum": "conflicted",
+          "key": [
+            "The author of | is ",
+            "The Marriage of Figaro"
+          ],
+          "truths": [
+            "thomas kyd"
+          ],
+          "plan": {
+            "gold_serials": [
+              398
+            ],
+            "stale_serials": [
+              271
+            ],
+            "latest": 398,
+            "stale_anchor": 271,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Pierre Beaumarchais",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "72ca2614010ce00f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Pierre Beaumarchais",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "72ca2614010ce00f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Thomas Kyd",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "046b94d368522ad1",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Pierre Beaumarchais",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b0175bdd308a5330",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Pierre Beaumarchais",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a06237ae721bb87f",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 6,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "Tunisia national football team"
+          ],
+          "truths": [
+            "basketball"
+          ],
+          "plan": {
+            "gold_serials": [
+              418
+            ],
+            "stale_serials": [
+              235
+            ],
+            "latest": 418,
+            "stale_anchor": 235,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ef05ec5e28d025e1",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ef05ec5e28d025e1",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "basketball",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "c4d73d912179c602",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f835123b452cb7d2",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bc2fd19a21c3f9cd",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 7,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "quarterback"
+          ],
+          "truths": [
+            "muay thai"
+          ],
+          "plan": {
+            "gold_serials": [
+              50
+            ],
+            "stale_serials": [
+              31
+            ],
+            "latest": 50,
+            "stale_anchor": 31,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "6214f6e94a2aa03f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "6214f6e94a2aa03f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Muay Thai",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "16c62671222c7e86",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8ef85cda7285b8b1",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "72290634a28425c7",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 8,
+          "stratum": "conflicted",
+          "key": [
+            "The official language of | is ",
+            "Japan"
+          ],
+          "truths": [
+            "swedish"
+          ],
+          "plan": {
+            "gold_serials": [
+              439
+            ],
+            "stale_serials": [
+              240
+            ],
+            "latest": 439,
+            "stale_anchor": 240,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Japanese",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "26f4df391e978aaf",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Japanese",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "26f4df391e978aaf",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Swedish",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "beb0b98289ca9bde",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Japanese",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9e4b2f13d2b4de0e",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Japanese",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0d5305c105ced33c",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 9,
+          "stratum": "unique",
+          "key": [
+            "The name of the current head of the | government is ",
+            "Tucson"
+          ],
+          "truths": [
+            "jonathan rothschild"
+          ],
+          "plan": {
+            "gold_serials": [
+              454
+            ],
+            "stale_serials": [],
+            "latest": 454,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Jonathan Rothschild",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "3f9710928620b4f3",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Jonathan Rothschild",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "3f9710928620b4f3",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Jonathan Rothschild",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "3f9710928620b4f3",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Jonathan Rothschild",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "3f9710928620b4f3",
+              "identical_to_native": true
+            },
+            "anti": {
+              "output": "Bill Peduto",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f6ffc7c284aa4b22",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 10,
+          "stratum": "unique",
+          "key": [
+            "The name of the current head of the | government is ",
+            "Italy"
+          ],
+          "truths": [
+            "giuseppe conte"
+          ],
+          "plan": {
+            "gold_serials": [
+              375
+            ],
+            "stale_serials": [],
+            "latest": 375,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Giuseppe Conte",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b60a943e7493e9d0",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Giuseppe Conte",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b60a943e7493e9d0",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Giuseppe Conte",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b60a943e7493e9d0",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Giuseppe Conte",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "cfd02fb19e64b52f",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Giuseppe Conte",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "f6de0aa272d31cd1",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 11,
+          "stratum": "unique",
+          "key": [
+            "| was performed by ",
+            "Meredith Grey"
+          ],
+          "truths": [
+            "ellen pompeo"
+          ],
+          "plan": {
+            "gold_serials": [
+              96
+            ],
+            "stale_serials": [],
+            "latest": 96,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Derek Shepherd",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "00d57f8916842cdb",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Derek Shepherd",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "00d57f8916842cdb",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Derek Shepherd",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "00d57f8916842cdb",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Ellen Pompeo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "9cc458f8411ec1d2",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Ellen Pompeo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6c2cfe1c00f4a848",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 12,
+          "stratum": "conflicted",
+          "key": [
+            "| plays the position of ",
+            "Robert Parish"
+          ],
+          "truths": [
+            "quarterback"
+          ],
+          "plan": {
+            "gold_serials": [
+              334
+            ],
+            "stale_serials": [
+              330
+            ],
+            "latest": 334,
+            "stale_anchor": 330,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "center",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "198bd1b1223c35df",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "center",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "198bd1b1223c35df",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "quarterback",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "25905d8ca9dacc30",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "quarterback",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c72af613943a0015",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "center",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "448af803fa33b355",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 13,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Cédric Klapisch"
+          ],
+          "truths": [
+            "malaysia"
+          ],
+          "plan": {
+            "gold_serials": [
+              239
+            ],
+            "stale_serials": [
+              210
+            ],
+            "latest": 239,
+            "stale_anchor": 210,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "15a581c31f7ffd95",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "15a581c31f7ffd95",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Malaysia",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "6c000704eaf419be",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Malaysia",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "8a1513d15e426047",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "921237bcaad2bf64",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 14,
+          "stratum": "conflicted",
+          "key": [
+            "The author of | is ",
+            "Sidereus Nuncius"
+          ],
+          "truths": [
+            "samuel beckett"
+          ],
+          "plan": {
+            "gold_serials": [
+              401
+            ],
+            "stale_serials": [
+              124
+            ],
+            "latest": 401,
+            "stale_anchor": 124,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Galileo Galilei",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b09a0044c781066d",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Galileo Galilei",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b09a0044c781066d",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Samuel Beckett",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "e32da41b52a998e9",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Galileo Galilei",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5dce6205cb43cec8",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Galileo Galilei",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ffcc788e303067df",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 15,
+          "stratum": "conflicted",
+          "key": [
+            "| is located in the continent of ",
+            "Germany"
+          ],
+          "truths": [
+            "africa"
+          ],
+          "plan": {
+            "gold_serials": [
+              435
+            ],
+            "stale_serials": [
+              41
+            ],
+            "latest": 435,
+            "stale_anchor": 41,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Europe",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "085c62eecf3e06d7",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Europe",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "085c62eecf3e06d7",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Europe",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "1340429d0e9b0d7a",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Europe",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "78b320b117c70825",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Europe",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "4fbc4795c5f62630",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 16,
+          "stratum": "conflicted",
+          "key": [
+            "| is affiliated with the religion of ",
+            "Kingdom of Ireland"
+          ],
+          "truths": [
+            "zoroastrianism"
+          ],
+          "plan": {
+            "gold_serials": [
+              260
+            ],
+            "stale_serials": [
+              70
+            ],
+            "latest": 260,
+            "stale_anchor": 70,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8012499b628d8804",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8012499b628d8804",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Zoroastrianism",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "3b3e13f0a2b8d28d",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Zoroastrianism",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "94fa0d18e974d0c2",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "4fc41c5219268a11",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 17,
+          "stratum": "conflicted",
+          "key": [
+            "| was created in the country of ",
+            "association football"
+          ],
+          "truths": [
+            "italy"
+          ],
+          "plan": {
+            "gold_serials": [
+              389
+            ],
+            "stale_serials": [
+              272
+            ],
+            "latest": 389,
+            "stale_anchor": 272,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e52ea46defd05f7f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e52ea46defd05f7f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Italy",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "4cb44fc46e3b02d6",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "2a96fd7e1b69eeee",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "England",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "59ed8c2300bea9df",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 18,
+          "stratum": "unique",
+          "key": [
+            "| was developed by ",
+            "Windows Phone"
+          ],
+          "truths": [
+            "microsoft"
+          ],
+          "plan": {
+            "gold_serials": [
+              221
+            ],
+            "stale_serials": [],
+            "latest": 221,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Microsoft",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "a41fc1a1721aba72",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Microsoft",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "a41fc1a1721aba72",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Microsoft",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "a41fc1a1721aba72",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Microsoft",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "ec37891c664ff4f4",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Microsoft",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "050942c61ad48b5a",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 19,
+          "stratum": "conflicted",
+          "key": [
+            "The chief executive officer of | is ",
+            "Microsoft"
+          ],
+          "truths": [
+            "steve jobs"
+          ],
+          "plan": {
+            "gold_serials": [
+              188
+            ],
+            "stale_serials": [
+              85
+            ],
+            "latest": 188,
+            "stale_anchor": 85,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Satya Nadella",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1207895979ebdf4f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Satya Nadella",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1207895979ebdf4f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Steve Jobs",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "0da4551894e24d61",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Satya Nadella",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b78080af6664c017",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Satya Nadella",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bb662edc1a7c4aba",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 20,
+          "stratum": "conflicted",
+          "key": [
+            "The chairperson of | is ",
+            "Harvard University"
+          ],
+          "truths": [
+            "peter diamandis"
+          ],
+          "plan": {
+            "gold_serials": [
+              222
+            ],
+            "stale_serials": [
+              80
+            ],
+            "latest": 222,
+            "stale_anchor": 80,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Lawrence S. Bacow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8e26bc9740b83983",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Lawrence S. Bacow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8e26bc9740b83983",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Peter Diamandis",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "eb878d8f58e525a1",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Lawrence S. Bacow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8500bd3d04c5ea3b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Lawrence S. Bacow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3c948739ecba7e0d",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 21,
+          "stratum": "unique",
+          "key": [
+            "| was founded by ",
+            "Church of Scotland"
+          ],
+          "truths": [
+            "john knox"
+          ],
+          "plan": {
+            "gold_serials": [
+              17
+            ],
+            "stale_serials": [],
+            "latest": 17,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "John Knox",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1abe10ae10517aac",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "John Knox",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1abe10ae10517aac",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "John Knox",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1abe10ae10517aac",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "John Knox",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1f0ac98f81cb9880",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "John Knox",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "f826487b1aded80a",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 22,
+          "stratum": "unique",
+          "key": [
+            "| is associated with the sport of ",
+            "Galwegians RFC"
+          ],
+          "truths": [
+            "rugby union"
+          ],
+          "plan": {
+            "gold_serials": [
+              23
+            ],
+            "stale_serials": [],
+            "latest": 23,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "7653b12651726d8d",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "7653b12651726d8d",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "7653b12651726d8d",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "429e7e0402d3ea8b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4fba4d94613e4dba",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 23,
+          "stratum": "conflicted",
+          "key": [
+            "The director of | is ",
+            "American Broadcasting Company"
+          ],
+          "truths": [
+            "ernst heinkel"
+          ],
+          "plan": {
+            "gold_serials": [
+              392
+            ],
+            "stale_serials": [
+              64
+            ],
+            "latest": 392,
+            "stale_anchor": 64,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Bob Iger",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8d3aed131330fb7f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Bob Iger",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8d3aed131330fb7f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Ernst Heinkel",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "b3a3d2b797f399ca",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Bob Iger",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a5fd17fa6ae9131b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Tony Hall, Baron Hall of Birkenhead",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "91462a797d8260ab",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 24,
+          "stratum": "conflicted",
+          "key": [
+            "| died in the city of ",
+            "Gennady Rozhdestvensky"
+          ],
+          "truths": [
+            "united states of america"
+          ],
+          "plan": {
+            "gold_serials": [
+              451
+            ],
+            "stale_serials": [
+              292
+            ],
+            "latest": 451,
+            "stale_anchor": 292,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Moscow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a59bc56b6c13b9b3",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Moscow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a59bc56b6c13b9b3",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "United States of America",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "85f847b6a620a013",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Moscow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ff0ddb95286cba77",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Moscow",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "36b5da1fa7662643",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 25,
+          "stratum": "conflicted",
+          "key": [
+            "The capital of | is ",
+            "Tang Empire"
+          ],
+          "truths": [
+            "beaumont"
+          ],
+          "plan": {
+            "gold_serials": [
+              177
+            ],
+            "stale_serials": [
+              21
+            ],
+            "latest": 177,
+            "stale_anchor": 21,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Chang'an",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8971d6706c7b30c4",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Chang'an",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8971d6706c7b30c4",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Beaumont",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "1dfaf5100bf99d06",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Beaumont",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6179572111ffd7eb",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Chang'an",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1727428c19dbc04c",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 26,
+          "stratum": "conflicted",
+          "key": [
+            "The director of | is ",
+            "British Broadcasting Corporation"
+          ],
+          "truths": [
+            "narendra modi"
+          ],
+          "plan": {
+            "gold_serials": [
+              428
+            ],
+            "stale_serials": [
+              7
+            ],
+            "latest": 428,
+            "stale_anchor": 7,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Tony Hall, Baron Hall of Birkenhead",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "73d5fd26802bbc88",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Tony Hall, Baron Hall of Birkenhead",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "73d5fd26802bbc88",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Narendra Modi",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "3827d8a9dcef54de",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Tony Hall, Baron Hall of Birkenhead",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5a0b90f54280cba4",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Tony Hall, Baron Hall of Birkenhead",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c28912c6b4ef53bc",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 27,
+          "stratum": "unique",
+          "key": [
+            "| is a citizen of ",
+            "Benjamin Mazar"
+          ],
+          "truths": [
+            "israel"
+          ],
+          "plan": {
+            "gold_serials": [
+              313
+            ],
+            "stale_serials": [],
+            "latest": 313,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "e5c92f07990273c7",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "e5c92f07990273c7",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "e5c92f07990273c7",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "5a7828c4365e55db",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "d7dd7c3d0199c752",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 28,
+          "stratum": "conflicted",
+          "key": [
+            "The type of music that | plays is ",
+            "Michael Mantler"
+          ],
+          "truths": [
+            "post-punk"
+          ],
+          "plan": {
+            "gold_serials": [
+              298
+            ],
+            "stale_serials": [
+              289
+            ],
+            "latest": 298,
+            "stale_anchor": 289,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "jazz",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5287a50a52bdb25f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "jazz",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5287a50a52bdb25f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "post-punk",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "3d6845521a106fe6",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "post-punk",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "921191f6485b119b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "jazz",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "59573a1a954e17e7",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 29,
+          "stratum": "conflicted",
+          "key": [
+            "| died in the city of ",
+            "Oscar Wilde"
+          ],
+          "truths": [
+            "guangzhou"
+          ],
+          "plan": {
+            "gold_serials": [
+              270
+            ],
+            "stale_serials": [
+              128
+            ],
+            "latest": 270,
+            "stale_anchor": 128,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d19c5876f099f3d8",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d19c5876f099f3d8",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Guangzhou",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "1825a5cf87682048",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Guangzhou",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "a4343b23cffcbd54",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d5e40cd0865a7057",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 30,
+          "stratum": "conflicted",
+          "key": [
+            "| was created in the country of ",
+            "baseball"
+          ],
+          "truths": [
+            "japan"
+          ],
+          "plan": {
+            "gold_serials": [
+              382
+            ],
+            "stale_serials": [
+              160
+            ],
+            "latest": 382,
+            "stale_anchor": 160,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3f8a0e6a651f6012",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3f8a0e6a651f6012",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "4b7b18402f5957c0",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "42869955d1fdaac4",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1933fc2239d9f644",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 31,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Ernst Heinkel"
+          ],
+          "truths": [
+            "tang empire"
+          ],
+          "plan": {
+            "gold_serials": [
+              203
+            ],
+            "stale_serials": [
+              192
+            ],
+            "latest": 203,
+            "stale_anchor": 192,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b5a23d30179e3002",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b5a23d30179e3002",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "657365d5da15da51",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bae16a75000a3ce2",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f5ec51db5324583d",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 32,
+          "stratum": "unique",
+          "key": [
+            "The headquarters of | is located in the city of ",
+            "The University of the Arts"
+          ],
+          "truths": [
+            "philadelphia"
+          ],
+          "plan": {
+            "gold_serials": [
+              387
+            ],
+            "stale_serials": [],
+            "latest": 387,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Philadelphia",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "aacdd2ba56d97d54",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Philadelphia",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "aacdd2ba56d97d54",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Philadelphia",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "aacdd2ba56d97d54",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Philadelphia",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1ead23be603cfd3e",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Philadelphia",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "31751331bea2768f",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 33,
+          "stratum": "conflicted",
+          "key": [
+            "| was created in the country of ",
+            "rap rock"
+          ],
+          "truths": [
+            "russian empire"
+          ],
+          "plan": {
+            "gold_serials": [
+              403
+            ],
+            "stale_serials": [
+              359
+            ],
+            "latest": 403,
+            "stale_anchor": 359,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e67790e8257ed118",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e67790e8257ed118",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Russian Empire",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "b52ddedd3264e714",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "64f86bcae7de9f46",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d3a52825ec6ba143",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 34,
+          "stratum": "conflicted",
+          "key": [
+            "| was founded in the city of ",
+            "Christianity"
+          ],
+          "truths": [
+            "taipei"
+          ],
+          "plan": {
+            "gold_serials": [
+              43
+            ],
+            "stale_serials": [
+              40
+            ],
+            "latest": 43,
+            "stale_anchor": 40,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Jerusalem",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "51f247d530102066",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Jerusalem",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "51f247d530102066",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Taipei",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "e9e1577251783118",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Jerusalem",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "dd5d9776e917fc22",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Jerusalem",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5afd8e4a2ced4d1e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 35,
+          "stratum": "conflicted",
+          "key": [
+            "The official language of | is ",
+            "United States of America"
+          ],
+          "truths": [
+            "german"
+          ],
+          "plan": {
+            "gold_serials": [
+              295
+            ],
+            "stale_serials": [
+              242
+            ],
+            "latest": 295,
+            "stale_anchor": 242,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "American English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0160ca1a0788572a",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "American English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0160ca1a0788572a",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "German",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "3494342c1b11b057",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "German",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b5ab7ff93f46b507",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "American English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ace6efc8f31eb31c",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 36,
+          "stratum": "conflicted",
+          "key": [
+            "| was performed by ",
+            "Past Masters"
+          ],
+          "truths": [
+            "madonna"
+          ],
+          "plan": {
+            "gold_serials": [
+              364
+            ],
+            "stale_serials": [
+              251
+            ],
+            "latest": 364,
+            "stale_anchor": 251,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "The Beatles",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8ae6cd5c09eaedca",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "The Beatles",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8ae6cd5c09eaedca",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Madonna",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "5158d30a3b058b94",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "The Beatles",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bd3709e704d81d86",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "The Beatles",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "853b01cbcdf2e8c9",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 37,
+          "stratum": "unique",
+          "key": [
+            "The capital of | is ",
+            "Japan"
+          ],
+          "truths": [
+            "tokyo"
+          ],
+          "plan": {
+            "gold_serials": [
+              103
+            ],
+            "stale_serials": [],
+            "latest": 103,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Tokyo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "848b21088bf94794",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Tokyo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "848b21088bf94794",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Tokyo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "848b21088bf94794",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Tokyo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "f639cd8b9605e956",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Tokyo",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "dc559a4c716d751d",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 38,
+          "stratum": "conflicted",
+          "key": [
+            "The capital of | is ",
+            "France"
+          ],
+          "truths": [
+            "harare"
+          ],
+          "plan": {
+            "gold_serials": [
+              171
+            ],
+            "stale_serials": [
+              163
+            ],
+            "latest": 171,
+            "stale_anchor": 163,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "36ff35971e88987f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "36ff35971e88987f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "842f83e75a7d3a8b",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "42ce325ba46b545f",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Paris",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5617142601a2c96c",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 39,
+          "stratum": "conflicted",
+          "key": [
+            "| was developed by ",
+            "SteamOS"
+          ],
+          "truths": [
+            "abb group"
+          ],
+          "plan": {
+            "gold_serials": [
+              277
+            ],
+            "stale_serials": [
+              238
+            ],
+            "latest": 277,
+            "stale_anchor": 238,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Valve Corporation",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "4540375a78f06a09",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Valve Corporation",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "4540375a78f06a09",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "ABB Group",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "ced74ac995e89218",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Valve Corporation",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e96b68183f409075",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Valve Corporation",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1371c7a8d929f78a",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 40,
+          "stratum": "conflicted",
+          "key": [
+            "The headquarters of | is located in the city of ",
+            "University of Bucharest"
+          ],
+          "truths": [
+            "ankara"
+          ],
+          "plan": {
+            "gold_serials": [
+              409
+            ],
+            "stale_serials": [
+              173
+            ],
+            "latest": 409,
+            "stale_anchor": 173,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7f73a24807a25475",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7f73a24807a25475",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Ankara",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "2b64767e6ab91fd0",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "43478f9749b495a8",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b501e86c02cb313e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 41,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "wide receiver"
+          ],
+          "truths": [
+            "rugby"
+          ],
+          "plan": {
+            "gold_serials": [
+              252
+            ],
+            "stale_serials": [
+              46
+            ],
+            "latest": 252,
+            "stale_anchor": 46,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d0605ae558adc721",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d0605ae558adc721",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "e45b7f6ad84658be",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "851b0fe3cdca617a",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "154f69e09bb62e18",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 42,
+          "stratum": "conflicted",
+          "key": [
+            "| plays the position of ",
+            "Hines Ward"
+          ],
+          "truths": [
+            "cornerback"
+          ],
+          "plan": {
+            "gold_serials": [
+              36
+            ],
+            "stale_serials": [
+              3
+            ],
+            "latest": 36,
+            "stale_anchor": 3,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "cornerback",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "85375efa332bcee3",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "cornerback",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "85375efa332bcee3",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "cornerback",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "10ceb8beead53925",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "cornerback",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "eba1d966fae43319",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "cornerback",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "f8a2feb73acc67e6",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 43,
+          "stratum": "conflicted",
+          "key": [
+            "The capital of | is ",
+            "Australia"
+          ],
+          "truths": [
+            "oderzo"
+          ],
+          "plan": {
+            "gold_serials": [
+              388
+            ],
+            "stale_serials": [
+              284
+            ],
+            "latest": 388,
+            "stale_anchor": 284,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Canberra",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d86edeb80fa57249",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Canberra",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d86edeb80fa57249",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Oderzo",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "0b893d8aa08f8da5",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Canberra",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "4abad9687e9847bd",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Canberra",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1d4c9b7da3ebc1fb",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 44,
+          "stratum": "conflicted",
+          "key": [
+            "| is located in the continent of ",
+            "Malaysia"
+          ],
+          "truths": [
+            "antarctica"
+          ],
+          "plan": {
+            "gold_serials": [
+              442
+            ],
+            "stale_serials": [
+              373
+            ],
+            "latest": 442,
+            "stale_anchor": 373,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "35b7c822d44e09b2",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "35b7c822d44e09b2",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Antarctica",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "619ee8b4ad68c817",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a25a8fc2fae42a98",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "44e186a902e9e8be",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 45,
+          "stratum": "conflicted",
+          "key": [
+            "The author of | is ",
+            "A Wizard of Earthsea"
+          ],
+          "truths": [
+            "pius xii"
+          ],
+          "plan": {
+            "gold_serials": [
+              301
+            ],
+            "stale_serials": [
+              10
+            ],
+            "latest": 301,
+            "stale_anchor": 10,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Ursula K. Le Guin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3436dd4557b4e29c",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Ursula K. Le Guin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3436dd4557b4e29c",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Pius XII",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "a7865f9662dd56d4",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Ursula K. Le Guin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f6e84efcee3d70f1",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Ursula K. Le Guin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3f601bd4876855be",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 46,
+          "stratum": "unique",
+          "key": [
+            "| was performed by ",
+            "Free as a Bird"
+          ],
+          "truths": [
+            "the beatles"
+          ],
+          "plan": {
+            "gold_serials": [
+              350
+            ],
+            "stale_serials": [],
+            "latest": 350,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "The Beatles",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fdd95e7f33b3321a",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "The Beatles",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fdd95e7f33b3321a",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "The Beatles",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fdd95e7f33b3321a",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "The Beatles",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6cf75f924507d593",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "The Beatles",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1f4d709eca8789aa",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 47,
+          "stratum": "conflicted",
+          "key": [
+            "The author of | is ",
+            "Our Mutual Friend"
+          ],
+          "truths": [
+            "charles darwin"
+          ],
+          "plan": {
+            "gold_serials": [
+              146
+            ],
+            "stale_serials": [
+              107
+            ],
+            "latest": 146,
+            "stale_anchor": 107,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Charles Dickens",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c706d7684c457b01",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Charles Dickens",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c706d7684c457b01",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Charles Darwin",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "92c808be649a5a10",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Charles Dickens",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "81ccf7d8f0570360",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Charles Dickens",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c8022a2c9e82bc31",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 48,
+          "stratum": "conflicted",
+          "key": [
+            "| was created in the country of ",
+            "basketball"
+          ],
+          "truths": [
+            "soviet union"
+          ],
+          "plan": {
+            "gold_serials": [
+              348
+            ],
+            "stale_serials": [
+              216
+            ],
+            "latest": 348,
+            "stale_anchor": 216,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ed73f5f9e5ff39c1",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ed73f5f9e5ff39c1",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Soviet Union",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "ac1d338b70634b48",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5ebb0fbbc4d34c4e",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "02d421f05cfb29f8",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 49,
+          "stratum": "unique",
+          "key": [
+            "| is a citizen of ",
+            "Hal Needham"
+          ],
+          "truths": [
+            "united states of america"
+          ],
+          "plan": {
+            "gold_serials": [
+              73
+            ],
+            "stale_serials": [],
+            "latest": 73,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "United States of America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "958262fafb35b755",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "United States of America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "958262fafb35b755",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "United States of America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "958262fafb35b755",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "United States of America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "abfe3ad7534e817a",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "United States of America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "19beede3806be963",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 50,
+          "stratum": "conflicted",
+          "key": [
+            "| is located in the continent of ",
+            "Bengaluru"
+          ],
+          "truths": [
+            "oceania"
+          ],
+          "plan": {
+            "gold_serials": [
+              234
+            ],
+            "stale_serials": [
+              4
+            ],
+            "latest": 234,
+            "stale_anchor": 4,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "198aab63db8c2b01",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "198aab63db8c2b01",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Oceania",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "be2f5e1f569f4424",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e106ecfaef112e70",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7b9738547962fbf8",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 51,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "Slovakia national football team"
+          ],
+          "truths": [
+            "cricket"
+          ],
+          "plan": {
+            "gold_serials": [
+              279
+            ],
+            "stale_serials": [
+              18
+            ],
+            "latest": 279,
+            "stale_anchor": 18,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "72e9c80d00b9c9c5",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "72e9c80d00b9c9c5",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "cricket",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "affb862813821b8a",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "104376da61ba1c20",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "77e943c650d55a07",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 52,
+          "stratum": "conflicted",
+          "key": [
+            "The name of the current head of state in | is ",
+            "United States of America"
+          ],
+          "truths": [
+            "connachta"
+          ],
+          "plan": {
+            "gold_serials": [
+              126
+            ],
+            "stale_serials": [
+              115
+            ],
+            "latest": 126,
+            "stale_anchor": 115,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Donald Trump",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c375b39b1c5fe2da",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Donald Trump",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c375b39b1c5fe2da",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Donald Trump",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "4393ce35acce57a4",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Connachta",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "bfcaad65269cae91",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Donald Trump",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bdb7a1bc2a2935f9",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 53,
+          "stratum": "conflicted",
+          "key": [
+            "| is affiliated with the religion of ",
+            "Imelda Marcos"
+          ],
+          "truths": [
+            "atheism"
+          ],
+          "plan": {
+            "gold_serials": [
+              374
+            ],
+            "stale_serials": [
+              248
+            ],
+            "latest": 374,
+            "stale_anchor": 248,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Catholicism",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0c09bd3c789ca9d2",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Catholicism",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0c09bd3c789ca9d2",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "atheism",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "074ee1be41b81833",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Catholicism",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1cf77eb8b26a296c",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Catholicism",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "267d7480031c1968",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 54,
+          "stratum": "conflicted",
+          "key": [
+            "The type of music that | plays is ",
+            "Dana International"
+          ],
+          "truths": [
+            "australian hip hop"
+          ],
+          "plan": {
+            "gold_serials": [
+              281
+            ],
+            "stale_serials": [
+              243
+            ],
+            "latest": 281,
+            "stale_anchor": 243,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "pop music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "50f027a664e439ca",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "pop music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "50f027a664e439ca",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Australian hip hop",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "b31213479df3d65f",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Australian hip hop",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "abed8a47394c6d6f",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "pop music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0ae581707875c6dd",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 55,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Sable"
+          ],
+          "truths": [
+            "czech republic"
+          ],
+          "plan": {
+            "gold_serials": [
+              299
+            ],
+            "stale_serials": [
+              244
+            ],
+            "latest": 299,
+            "stale_anchor": 244,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Czech Republic",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4f39d27e38328e6f",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Czech Republic",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4f39d27e38328e6f",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Czech Republic",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "fb5abe754e7da0e4",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Czech Republic",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "805213d6b4727fc7",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "United States of America",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "632537d9fcd54a2b",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 56,
+          "stratum": "conflicted",
+          "key": [
+            "| was created in the country of ",
+            "Charlie Hebdo"
+          ],
+          "truths": [
+            "italy"
+          ],
+          "plan": {
+            "gold_serials": [
+              358
+            ],
+            "stale_serials": [
+              155
+            ],
+            "latest": 358,
+            "stale_anchor": 155,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b343461d0f4ac3c2",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "b343461d0f4ac3c2",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Italy",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "a622ec09a1713fb5",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "6c6e5ec1b9b89bd5",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ebbc3c8deacfa942",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 57,
+          "stratum": "conflicted",
+          "key": [
+            "| is married to ",
+            "Elvis Presley"
+          ],
+          "truths": [
+            "charles the bold"
+          ],
+          "plan": {
+            "gold_serials": [
+              139
+            ],
+            "stale_serials": [
+              120
+            ],
+            "latest": 139,
+            "stale_anchor": 120,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Priscilla Presley",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "851e6c68ad2b6d53",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Priscilla Presley",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "851e6c68ad2b6d53",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Charles the Bold",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "7f401fb3a5ab4ebb",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Priscilla Presley",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0d619f5533a79954",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Priscilla Presley",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "68c9d40d7237be0b",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 58,
+          "stratum": "conflicted",
+          "key": [
+            "| was performed by ",
+            "Hermione Granger"
+          ],
+          "truths": [
+            "kylie minogue"
+          ],
+          "plan": {
+            "gold_serials": [
+              425
+            ],
+            "stale_serials": [
+              413
+            ],
+            "latest": 425,
+            "stale_anchor": 413,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Emma Watson",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "600b3e7a0660ae78",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Emma Watson",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "600b3e7a0660ae78",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Kylie Minogue",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "88e23e3ce0929d0b",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Kylie Minogue",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6e2f9caf3a652521",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Emma Watson",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "950a21bc971b43c4",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 59,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "Bo Ryan"
+          ],
+          "truths": [
+            "association football"
+          ],
+          "plan": {
+            "gold_serials": [
+              346
+            ],
+            "stale_serials": [
+              194
+            ],
+            "latest": 346,
+            "stale_anchor": 194,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "basketball",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "944eb7be602cc323",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "basketball",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "944eb7be602cc323",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "association football",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "7050391085862910",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "basketball",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "516e39d85352bc86",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "basketball",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1504a66dfb8de89e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 60,
+          "stratum": "conflicted",
+          "key": [
+            "The type of music that | plays is ",
+            "John McVie"
+          ],
+          "truths": [
+            "rap rock"
+          ],
+          "plan": {
+            "gold_serials": [
+              415
+            ],
+            "stale_serials": [
+              90
+            ],
+            "latest": 415,
+            "stale_anchor": 90,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "rock music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "42b53e23bd5ee32e",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "rock music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "42b53e23bd5ee32e",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "rap rock",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "19afacc7aa565b44",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "rock music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "498ee6a6ed83ad03",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "rock music",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c51a94adc2bf4929",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 61,
+          "stratum": "conflicted",
+          "key": [
+            "| plays the position of ",
+            "Rogério Ceni"
+          ],
+          "truths": [
+            "flanker"
+          ],
+          "plan": {
+            "gold_serials": [
+              434
+            ],
+            "stale_serials": [
+              6
+            ],
+            "latest": 434,
+            "stale_anchor": 6,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "goalkeeper",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "85232f2bf8341c59",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "goalkeeper",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "85232f2bf8341c59",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "flanker",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "2f48376290b7e6ec",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "goalkeeper",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9f78cba37feef911",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "goalkeeper",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "4bc5b5a18f0b5ba0",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 62,
+          "stratum": "conflicted",
+          "key": [
+            "The chief executive officer of | is ",
+            "Twitter"
+          ],
+          "truths": [
+            "bernard arnault"
+          ],
+          "plan": {
+            "gold_serials": [
+              275
+            ],
+            "stale_serials": [
+              109
+            ],
+            "latest": 275,
+            "stale_anchor": 109,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Jack Dorsey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c721f920dd5b99aa",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Jack Dorsey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c721f920dd5b99aa",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Bernard Arnault",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "b0932443915003cd",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Jack Dorsey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "2939e4cb05cca347",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Jack Dorsey",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a28dfe8a9bc3d15f",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 63,
+          "stratum": "conflicted",
+          "key": [
+            "| speaks the language of ",
+            "Kylie Minogue"
+          ],
+          "truths": [
+            "german"
+          ],
+          "plan": {
+            "gold_serials": [
+              157
+            ],
+            "stale_serials": [
+              122
+            ],
+            "latest": 157,
+            "stale_anchor": 122,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3e166ec313f1db9c",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3e166ec313f1db9c",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "German",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "3fc25e7d34d41e1e",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "82848f6ef19e2974",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "English",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "16695a66fd126ea0",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 64,
+          "stratum": "unique",
+          "key": [
+            "| is associated with the sport of ",
+            "Darryl Strawberry"
+          ],
+          "truths": [
+            "baseball"
+          ],
+          "plan": {
+            "gold_serials": [
+              213
+            ],
+            "stale_serials": [],
+            "latest": 213,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "baseball",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c5ab469272c335e6",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "baseball",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c5ab469272c335e6",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "baseball",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c5ab469272c335e6",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "baseball",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "d9d494c8fb9c97a3",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Baseball",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "5be9d6a5de8a1b4b",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 65,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "placekicker"
+          ],
+          "truths": [
+            "rugby"
+          ],
+          "plan": {
+            "gold_serials": [
+              321
+            ],
+            "stale_serials": [
+              78
+            ],
+            "latest": 321,
+            "stale_anchor": 78,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "79c901636dd2910c",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "79c901636dd2910c",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "rugby",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "376109c945bf5b33",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "0ad4999b7c1c82f5",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "American football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "43c0530c75b0f56d",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 66,
+          "stratum": "conflicted",
+          "key": [
+            "| works in the field of ",
+            "Stephen McNeil"
+          ],
+          "truths": [
+            "journalist"
+          ],
+          "plan": {
+            "gold_serials": [
+              320
+            ],
+            "stale_serials": [
+              152
+            ],
+            "latest": 320,
+            "stale_anchor": 152,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "politician",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9ec44e330a364c81",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "politician",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9ec44e330a364c81",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "journalist",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "32a7bced1035bb94",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "journalist",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "ad9c3478f0fb4d48",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "politician",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e7973281fa7ad6cb",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 67,
+          "stratum": "conflicted",
+          "key": [
+            "| is employed by ",
+            "Dave Filoni"
+          ],
+          "truths": [
+            "british broadcasting corporation"
+          ],
+          "plan": {
+            "gold_serials": [
+              226
+            ],
+            "stale_serials": [
+              38
+            ],
+            "latest": 226,
+            "stale_anchor": 38,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Lucasfilm",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d0cc76132dfc4053",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Lucasfilm",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d0cc76132dfc4053",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "British Broadcasting Corporation",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "acd83e92036688c1",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Lucasfilm",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "997ff67de93be69d",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Lucasfilm",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "16089ff617a170ed",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 68,
+          "stratum": "unique",
+          "key": [
+            "| is located in the continent of ",
+            "San Francisco"
+          ],
+          "truths": [
+            "north america"
+          ],
+          "plan": {
+            "gold_serials": [
+              397
+            ],
+            "stale_serials": [],
+            "latest": 397,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "North America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "37c9c05d3b61b8a3",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "North America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "37c9c05d3b61b8a3",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "North America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "37c9c05d3b61b8a3",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "North America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "2a8eb8ee79d05278",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "North America",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "288c33d9d47adc65",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 69,
+          "stratum": "conflicted",
+          "key": [
+            "| was founded in the city of ",
+            "Canadair"
+          ],
+          "truths": [
+            "tucson"
+          ],
+          "plan": {
+            "gold_serials": [
+              265
+            ],
+            "stale_serials": [
+              237
+            ],
+            "latest": 265,
+            "stale_anchor": 237,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Montreal",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bbbbbee9527903aa",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Montreal",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bbbbbee9527903aa",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Tucson",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "fb6daea007b2591e",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Montreal",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c16c05d172e30676",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Montreal",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a72f251c3e4e805f",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 70,
+          "stratum": "conflicted",
+          "key": [
+            "The company that produced | is ",
+            "AP1000"
+          ],
+          "truths": [
+            "canadair"
+          ],
+          "plan": {
+            "gold_serials": [
+              356
+            ],
+            "stale_serials": [
+              196
+            ],
+            "latest": 356,
+            "stale_anchor": 196,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Westinghouse Electric",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "00b7c95e056343ce",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Westinghouse Electric",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "00b7c95e056343ce",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Canadair",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "07e7486f5e69ccbd",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Westinghouse Electric",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d58e89347f603177",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Westinghouse Electric",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "64ac4cc46d2beaa8",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 71,
+          "stratum": "unique",
+          "key": [
+            "| is a citizen of ",
+            "Ayumi Hamasaki"
+          ],
+          "truths": [
+            "japan"
+          ],
+          "plan": {
+            "gold_serials": [
+              293
+            ],
+            "stale_serials": [],
+            "latest": 293,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Japan",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "157ff9ee9d100302",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Japan",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "157ff9ee9d100302",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Japan",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "157ff9ee9d100302",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Japan",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "7c468c2aef7d276b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Japan",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "cb9bc5e23a3d8c4e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 72,
+          "stratum": "unique",
+          "key": [
+            "| plays the position of ",
+            "Blair Walsh"
+          ],
+          "truths": [
+            "placekicker"
+          ],
+          "plan": {
+            "gold_serials": [
+              419
+            ],
+            "stale_serials": [],
+            "latest": 419,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "placekicker",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "dcb9ed9986f748cd",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "placekicker",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "dcb9ed9986f748cd",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "placekicker",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "dcb9ed9986f748cd",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "placekicker",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fda89d4430b6e622",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "placekicker",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b9b9f95d1ad6921e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 73,
+          "stratum": "conflicted",
+          "key": [
+            "| is married to ",
+            "Tony Blair"
+          ],
+          "truths": [
+            "alan jay lerner"
+          ],
+          "plan": {
+            "gold_serials": [
+              424
+            ],
+            "stale_serials": [
+              141
+            ],
+            "latest": 424,
+            "stale_anchor": 141,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Cherie Blair",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "29a9a128b4905beb",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Cherie Blair",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "29a9a128b4905beb",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Alan Jay Lerner",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "50b456f8d3a1f983",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Cherie Blair",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f2cfb5ca577c464b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Cherie Blair",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "d4e2e04ba235ae8e",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 74,
+          "stratum": "unique",
+          "key": [
+            "The author of | is ",
+            "Endymion"
+          ],
+          "truths": [
+            "john keats"
+          ],
+          "plan": {
+            "gold_serials": [
+              180
+            ],
+            "stale_serials": [],
+            "latest": 180,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "John Keats",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "22a252a8fc39d783",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "John Keats",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "22a252a8fc39d783",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "John Keats",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "22a252a8fc39d783",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "John Keats",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4fd3839d700795c2",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "John Keats",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "decaa8d9aee7e996",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 75,
+          "stratum": "unique",
+          "key": [
+            "The author of | is ",
+            "Lady Windermere's Fan"
+          ],
+          "truths": [
+            "oscar wilde"
+          ],
+          "plan": {
+            "gold_serials": [
+              147
+            ],
+            "stale_serials": [],
+            "latest": 147,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Oscar Wilde",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6e9157b8477c9cea",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Oscar Wilde",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6e9157b8477c9cea",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Oscar Wilde",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "6e9157b8477c9cea",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Oscar Wilde",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1aa5d2b74274688b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Oscar Wilde",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4ed19c0fe3ba8337",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 76,
+          "stratum": "unique",
+          "key": [
+            "The name of the current head of the | government is ",
+            "Japan"
+          ],
+          "truths": [
+            "shinzō abe"
+          ],
+          "plan": {
+            "gold_serials": [
+              202
+            ],
+            "stale_serials": [],
+            "latest": 202,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Shinzō Abe",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c0e8b3bc2c239039",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Shinzō Abe",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c0e8b3bc2c239039",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Shinzō Abe",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "c0e8b3bc2c239039",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Shinzō Abe",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "cf4582a65fcec585",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Shinzō Abe",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "edff379b2109a124",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 77,
+          "stratum": "conflicted",
+          "key": [
+            "The chairperson of | is ",
+            "Congolese Party of Labour"
+          ],
+          "truths": [
+            "stephen mcneil"
+          ],
+          "plan": {
+            "gold_serials": [
+              445
+            ],
+            "stale_serials": [
+              54
+            ],
+            "latest": 445,
+            "stale_anchor": 54,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Denis Sassou-Nguesso",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3a0cb78530f638cc",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Denis Sassou-Nguesso",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3a0cb78530f638cc",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Stephen McNeil",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "20264df47453e157",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Denis Sassou-Nguesso",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "752e0f0464933a0a",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Denis Sassou-Nguesso",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "06ebe511fa1d0c47",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 78,
+          "stratum": "unique",
+          "key": [
+            "| is associated with the sport of ",
+            "flanker"
+          ],
+          "truths": [
+            "rugby union"
+          ],
+          "plan": {
+            "gold_serials": [
+              258
+            ],
+            "stale_serials": [],
+            "latest": 258,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "d1953e00992aef6a",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "d1953e00992aef6a",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "d1953e00992aef6a",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "3501932fef4e9fa7",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Rugby union",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "980cae93748fac21",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 79,
+          "stratum": "unique",
+          "key": [
+            "The capital of | is ",
+            "Czech Republic"
+          ],
+          "truths": [
+            "prague"
+          ],
+          "plan": {
+            "gold_serials": [
+              190
+            ],
+            "stale_serials": [],
+            "latest": 190,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Prague",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4107b6864ab4bb82",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Prague",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4107b6864ab4bb82",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Prague",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4107b6864ab4bb82",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Prague",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "ed9fd79b556d0487",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Prague",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "2650cee69cca15de",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 80,
+          "stratum": "conflicted",
+          "key": [
+            "| plays the position of ",
+            "Lisa Leslie"
+          ],
+          "truths": [
+            "goaltender"
+          ],
+          "plan": {
+            "gold_serials": [
+              169
+            ],
+            "stale_serials": [
+              14
+            ],
+            "latest": 169,
+            "stale_anchor": 14,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "goaltender",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "0b11c5ef0b226e2e",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "goaltender",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "0b11c5ef0b226e2e",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "goaltender",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "8541572a6b40f5f2",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "center",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5587d3df2e4f633b",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "center",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "31812d1b7c7b14e3",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 81,
+          "stratum": "conflicted",
+          "key": [
+            "The name of the current head of state in | is ",
+            "Soviet Union"
+          ],
+          "truths": [
+            "elizabeth ii"
+          ],
+          "plan": {
+            "gold_serials": [
+              365
+            ],
+            "stale_serials": [
+              159
+            ],
+            "latest": 365,
+            "stale_anchor": 159,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Mikhail Gorbachev",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "477d076ef3e551f9",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Mikhail Gorbachev",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "477d076ef3e551f9",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Elizabeth II",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "7a750e7fb725c071",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Elizabeth II",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b5deac9857c9ceaa",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Mikhail Gorbachev",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9c08784aa30ad019",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 82,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Ferdinand von Richthofen"
+          ],
+          "truths": [
+            "canada"
+          ],
+          "plan": {
+            "gold_serials": [
+              386
+            ],
+            "stale_serials": [
+              24
+            ],
+            "latest": 386,
+            "stale_anchor": 24,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "322d694ca7d25482",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "322d694ca7d25482",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Canada",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "7139e2a8c8ba3345",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e28f57a3077486a3",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Germany",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5a1bf8e29f639e80",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 83,
+          "stratum": "conflicted",
+          "key": [
+            "| is affiliated with the religion of ",
+            "Karen Armstrong"
+          ],
+          "truths": [
+            "church of scotland"
+          ],
+          "plan": {
+            "gold_serials": [
+              412
+            ],
+            "stale_serials": [
+              266
+            ],
+            "latest": 412,
+            "stale_anchor": 266,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9965e833d6b148ba",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9965e833d6b148ba",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Church of Scotland",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "e8bbf02aa33ed623",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "83a0417d78964a00",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Catholic Church",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "3e29049a600bafc6",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 84,
+          "stratum": "conflicted",
+          "key": [
+            "| was created by ",
+            "Vito Corleone"
+          ],
+          "truths": [
+            "nobuhiro watsuki"
+          ],
+          "plan": {
+            "gold_serials": [
+              390
+            ],
+            "stale_serials": [
+              256
+            ],
+            "latest": 390,
+            "stale_anchor": 256,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Mario Puzo",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5fd7037b550415be",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Mario Puzo",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "5fd7037b550415be",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Nobuhiro Watsuki",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "23a1f4e503a601a3",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Mario Puzo",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a2725da9e9dd2e3e",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Mario Puzo",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7f4390e95ec76f10",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 85,
+          "stratum": "conflicted",
+          "key": [
+            "The capital of | is ",
+            "Romania"
+          ],
+          "truths": [
+            "rajanpur"
+          ],
+          "plan": {
+            "gold_serials": [
+              449
+            ],
+            "stale_serials": [
+              185
+            ],
+            "latest": 449,
+            "stale_anchor": 185,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8f5a9bf338fc8e64",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "8f5a9bf338fc8e64",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Rajanpur",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "ad4bb43bd909c344",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "bc6edb036ba1591d",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Bucharest",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "dba36fcfc23d6f1f",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 86,
+          "stratum": "conflicted",
+          "key": [
+            "| is located in the continent of ",
+            "India"
+          ],
+          "truths": [
+            "africa"
+          ],
+          "plan": {
+            "gold_serials": [
+              280
+            ],
+            "stale_serials": [
+              228
+            ],
+            "latest": 280,
+            "stale_anchor": 228,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "42343bfda54e0844",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "42343bfda54e0844",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "d529b83b74270430",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "1384adaab5d73d0a",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Asia",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e95ccef283cc9382",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 87,
+          "stratum": "conflicted",
+          "key": [
+            "| died in the city of ",
+            "Olga of Kiev"
+          ],
+          "truths": [
+            "rodez"
+          ],
+          "plan": {
+            "gold_serials": [
+              450
+            ],
+            "stale_serials": [
+              125
+            ],
+            "latest": 450,
+            "stale_anchor": 125,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Rodez",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "9099bd3912de750a",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Rodez",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "9099bd3912de750a",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Rodez",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "768002c44ef9434c",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Rodez",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "72014907c6edbef3",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Kyiv",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "235e2b3f382ce759",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 88,
+          "stratum": "conflicted",
+          "key": [
+            "| was founded by ",
+            "Sasanian Empire"
+          ],
+          "truths": [
+            "walter chrysler"
+          ],
+          "plan": {
+            "gold_serials": [
+              264
+            ],
+            "stale_serials": [
+              224
+            ],
+            "latest": 264,
+            "stale_anchor": 224,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Ardashir I",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "194a1daf436db79a",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Ardashir I",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "194a1daf436db79a",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Walter Chrysler",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "4fc762b6f75f728c",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Ardashir I",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "79f144db919e8fc6",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Ardashir I",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "73f9756ea3b96be8",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 89,
+          "stratum": "unique",
+          "key": [
+            "| worked in the city of ",
+            "Pedro Pierluisi"
+          ],
+          "truths": [
+            "washington, d.c."
+          ],
+          "plan": {
+            "gold_serials": [
+              5
+            ],
+            "stale_serials": [],
+            "latest": 5,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Washington, D.C.",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "55f204500d93cbc0",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Washington, D.C.",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "55f204500d93cbc0",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Washington, D.C.",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "55f204500d93cbc0",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "Washington, D.C.",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "8d3de4da89df003c",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Washington, D.C.",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "4c5ea4625d5e38b7",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 90,
+          "stratum": "conflicted",
+          "key": [
+            "| is associated with the sport of ",
+            "Surrey Senior Cup"
+          ],
+          "truths": [
+            "basketball"
+          ],
+          "plan": {
+            "gold_serials": [
+              315
+            ],
+            "stale_serials": [
+              291
+            ],
+            "latest": 315,
+            "stale_anchor": 291,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "814d7cdb002d86cd",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "814d7cdb002d86cd",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "basketball",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "2a7b1fb73c4fcc00",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "basketball",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "b40bbc1e148e5b5f",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "association football",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "f6cf9981f4c7d292",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 91,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Narendra Modi"
+          ],
+          "truths": [
+            "australia"
+          ],
+          "plan": {
+            "gold_serials": [
+              217
+            ],
+            "stale_serials": [
+              176
+            ],
+            "latest": 217,
+            "stale_anchor": 176,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "India",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7fcd6f602fb54b16",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "India",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7fcd6f602fb54b16",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "India",
+              "correct": false,
+              "n_facts": 454,
+              "prompt_sha": "9594447f2e42f9e1",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "India",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ffa471f24c183157",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "India",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "7cb0350e8c9144b2",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 92,
+          "stratum": "unique",
+          "key": [
+            "| is married to ",
+            "Victoria Beckham"
+          ],
+          "truths": [
+            "david beckham"
+          ],
+          "plan": {
+            "gold_serials": [
+              8
+            ],
+            "stale_serials": [],
+            "latest": 8,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "David Beckham",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fc9558372f5b47cb",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "David Beckham",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fc9558372f5b47cb",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "David Beckham",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "fc9558372f5b47cb",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "David Beckham",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "1562e96173729732",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "David Beckham",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "e665613b8c76a9c9",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 93,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Charles Messier"
+          ],
+          "truths": [
+            "iran"
+          ],
+          "plan": {
+            "gold_serials": [
+              343
+            ],
+            "stale_serials": [
+              204
+            ],
+            "latest": 343,
+            "stale_anchor": 204,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e0678560a5e37da6",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "e0678560a5e37da6",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Iran",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "96973f143789d009",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Iran",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "03e7c4c834d07625",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "France",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "fef96333787c6c26",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 94,
+          "stratum": "conflicted",
+          "key": [
+            "| was created by ",
+            "Rand al'Thor"
+          ],
+          "truths": [
+            "ferdowsi"
+          ],
+          "plan": {
+            "gold_serials": [
+              326
+            ],
+            "stale_serials": [
+              66
+            ],
+            "latest": 326,
+            "stale_anchor": 66,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Robert Jordan",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ba3bb738e426b733",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Robert Jordan",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "ba3bb738e426b733",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Ferdowsi",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "1760c50ea2a74607",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Robert Jordan",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "869245417862e4ba",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Robert Jordan",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "652c390ad07afe42",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 95,
+          "stratum": "unique",
+          "key": [
+            "| plays the position of ",
+            "Mike D'Antoni"
+          ],
+          "truths": [
+            "point guard"
+          ],
+          "plan": {
+            "gold_serials": [
+              110
+            ],
+            "stale_serials": [],
+            "latest": 110,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "point guard",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "be9dc101bdd678d1",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "point guard",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "be9dc101bdd678d1",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "point guard",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "be9dc101bdd678d1",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "point guard",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "41d1e1a27b20da28",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "point guard",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "f014f4b182d83d9a",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 96,
+          "stratum": "conflicted",
+          "key": [
+            "| is a citizen of ",
+            "Colin Irwin"
+          ],
+          "truths": [
+            "israel"
+          ],
+          "plan": {
+            "gold_serials": [
+              441
+            ],
+            "stale_serials": [
+              55
+            ],
+            "latest": 441,
+            "stale_anchor": 55,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "United Kingdom",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9fc79d473f2ef8e9",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "United Kingdom",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9fc79d473f2ef8e9",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "ce1d7b71e0fb1346",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Israel",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "9b1a3f27cb8733ef",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "United Kingdom",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "56183e0eccc210bc",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 97,
+          "stratum": "conflicted",
+          "key": [
+            "|'s child is ",
+            "Walter Chrysler"
+          ],
+          "truths": [
+            "charles frederick, duke of holstein-gottorp"
+          ],
+          "plan": {
+            "gold_serials": [
+              231
+            ],
+            "stale_serials": [
+              61
+            ],
+            "latest": 231,
+            "stale_anchor": 61,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Walter Percy Chrysler Jr.",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9c4419853c4ab4da",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Walter Percy Chrysler Jr.",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "9c4419853c4ab4da",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Charles Frederick, Duke of Holstein-Gottorp",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "efd3ce0afb24b411",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Charles Frederick, Duke of Holstein-Gottorp",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "83d3dfff359ef861",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Walter Percy Chrysler Jr.",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "a7f4ab0c098f7164",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 98,
+          "stratum": "conflicted",
+          "key": [
+            "| is married to ",
+            "Charles Darwin"
+          ],
+          "truths": [
+            "amala paul"
+          ],
+          "plan": {
+            "gold_serials": [
+              335
+            ],
+            "stale_serials": [
+              164
+            ],
+            "latest": 335,
+            "stale_anchor": 164,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "Emma Darwin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "fa80253d5a3110e2",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "Emma Darwin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "fa80253d5a3110e2",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "Amala Paul",
+              "correct": true,
+              "n_facts": 454,
+              "prompt_sha": "893f6ce5233eb51b",
+              "identical_to_native": false
+            },
+            "oracle_recency": {
+              "output": "Amala Paul",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "ca19a8ffa052eb5c",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "Emma Darwin",
+              "correct": false,
+              "n_facts": 455,
+              "prompt_sha": "c70ed4f1168101ad",
+              "identical_to_native": false
+            }
+          }
+        },
+        {
+          "index": 99,
+          "stratum": "unique",
+          "key": [
+            "| plays the position of ",
+            "Irving Fryar"
+          ],
+          "truths": [
+            "wide receiver"
+          ],
+          "plan": {
+            "gold_serials": [
+              227
+            ],
+            "stale_serials": [],
+            "latest": 227,
+            "stale_anchor": null,
+            "gold_is_latest": true
+          },
+          "arms": {
+            "native": {
+              "output": "wide receiver",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "03c36a1b1bf56db5",
+              "identical_to_native": true
+            },
+            "native_repeat": {
+              "output": "wide receiver",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "03c36a1b1bf56db5",
+              "identical_to_native": true
+            },
+            "oracle_suppress": {
+              "output": "wide receiver",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "03c36a1b1bf56db5",
+              "identical_to_native": true
+            },
+            "oracle_recency": {
+              "output": "wide receiver",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "41521e95c021d7f5",
+              "identical_to_native": false
+            },
+            "anti": {
+              "output": "wide receiver",
+              "correct": true,
+              "n_facts": 455,
+              "prompt_sha": "72c75508cf5e1302",
+              "identical_to_native": false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

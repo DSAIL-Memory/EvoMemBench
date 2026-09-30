@@ -1,0 +1,11 @@
+# Editing happens on Windows, execution happens on the Linux GPU box.
+# A shell script checked out with CRLF fails there with:
+#     bash: $'\r': command not found
+# Force LF for everything executed or parsed by the remote machine.
+
+*.sh   text eol=lf
+*.py   text eol=lf
+*.yaml text eol=lf
+*.yml  text eol=lf
+*.env  text eol=lf
+*.template text eol=lf

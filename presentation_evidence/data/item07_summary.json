@@ -1,0 +1,98 @@
+{
+ "sh_6k": {
+  "best_f1": {
+   "tau": 0.91,
+   "n_predicted": 172,
+   "tp": 148,
+   "precision": 0.8604651162790697,
+   "recall": 0.925,
+   "f1": 0.891566265060241
+  },
+  "equal_coverage": {
+   "tau": 0.9171316623687744,
+   "n_predicted": 160,
+   "tp": 140,
+   "precision": 0.875,
+   "recall": 0.875,
+   "f1": 0.875
+  },
+  "recall_ceiling_from_knn": 1.0,
+  "n_truth_pairs": 160,
+  "n_candidate_pairs": 3144,
+  "parse_coverage_pct": 99.56,
+  "interpretation": "Geometry that recovers the regex grouping *without parsing* is what licenses applying H-Nav to CrossEp-Know, where no templates and no serial numbers exist. High F1 -> the detector is validated. Low F1 -> any downstream gain is attributable to the metadata, not to geometry, and must be reported as such.",
+  "pr_curve_len": 50
+ },
+ "sh_32k": {
+  "best_f1": {
+   "tau": 0.93,
+   "n_predicted": 819,
+   "tp": 694,
+   "precision": 0.8473748473748474,
+   "recall": 0.8311377245508982,
+   "f1": 0.8391777509068924
+  },
+  "equal_coverage": {
+   "tau": 0.928530752658844,
+   "n_predicted": 835,
+   "tp": 699,
+   "precision": 0.837125748502994,
+   "recall": 0.837125748502994,
+   "f1": 0.8371257485029939
+  },
+  "recall_ceiling_from_knn": 1.0,
+  "n_truth_pairs": 835,
+  "n_candidate_pairs": 16770,
+  "parse_coverage_pct": 99.65,
+  "interpretation": "Geometry that recovers the regex grouping *without parsing* is what licenses applying H-Nav to CrossEp-Know, where no templates and no serial numbers exist. High F1 -> the detector is validated. Low F1 -> any downstream gain is attributable to the metadata, not to geometry, and must be reported as such.",
+  "pr_curve_len": 50
+ },
+ "sh_64k": {
+  "best_f1": {
+   "tau": 0.94,
+   "n_predicted": 1426,
+   "tp": 1278,
+   "precision": 0.8962131837307152,
+   "recall": 0.7575577949021932,
+   "f1": 0.8210729200128493
+  },
+  "equal_coverage": {
+   "tau": 0.9309226870536804,
+   "n_predicted": 1687,
+   "tp": 1387,
+   "precision": 0.8221695317131001,
+   "recall": 0.8221695317131001,
+   "f1": 0.8221695317131001
+  },
+  "recall_ceiling_from_knn": 1.0,
+  "n_truth_pairs": 1687,
+  "n_candidate_pairs": 33755,
+  "parse_coverage_pct": 99.63,
+  "interpretation": "Geometry that recovers the regex grouping *without parsing* is what licenses applying H-Nav to CrossEp-Know, where no templates and no serial numbers exist. High F1 -> the detector is validated. Low F1 -> any downstream gain is attributable to the metadata, not to geometry, and must be reported as such.",
+  "pr_curve_len": 50
+ },
+ "sh_262k": {
+  "best_f1": {
+   "tau": 0.95,
+   "n_predicted": 6037,
+   "tp": 5006,
+   "precision": 0.8292198111644856,
+   "recall": 0.6962447844228095,
+   "f1": 0.7569365691388826
+  },
+  "equal_coverage": {
+   "tau": 0.9431421756744385,
+   "n_predicted": 7190,
+   "tp": 5466,
+   "precision": 0.7602225312934632,
+   "recall": 0.7602225312934632,
+   "f1": 0.7602225312934632
+  },
+  "recall_ceiling_from_knn": 1.0,
+  "n_truth_pairs": 7190,
+  "n_candidate_pairs": 135875,
+  "parse_coverage_pct": 99.44,
+  "interpretation": "Geometry that recovers the regex grouping *without parsing* is what licenses applying H-Nav to CrossEp-Know, where no templates and no serial numbers exist. High F1 -> the detector is validated. Low F1 -> any downstream gain is attributable to the metadata, not to geometry, and must be reported as such.",
+  "pr_curve_len": 50
+ }
+}

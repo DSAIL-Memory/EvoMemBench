@@ -1,0 +1,14 @@
+{
+ "name": "hnav_geo",
+ "description": "H-Nav read-time conflict detector with the fully parser-free GEO identity screen: raw cosine pair screen + a per-axis rectangle over (ABTT-whitened cosine, slot-probe logit) replacing the parser same-key filter; no parser field consulted anywhere at inference (E2E-3)",
+ "geometry_space": "raw",
+ "pair_screen": "geo",
+ "operating_point": "stage0_results/geometry_filter/geo_operating_point.json",
+ "operating_point_sha256": "9c3cb668706ddd3e820f99ef5cba8047f3138709cc48aa3fab901011aa616038",
+ "geo_artifact": "stage0_results/geometry_filter/geo_identity_screen.json",
+ "geo_fingerprint": "335b4540d61cf6b79a7ead27cc7b107b84b5646a3a7618e53abfc943e89ccb2a",
+ "embed_model": "Qwen/Qwen3-Embedding-4B",
+ "subsets": ["sh_6k", "sh_32k", "sh_64k"],
+ "frozen_thresholds_for_reference": {"cos_pair": 0.94, "geo_tau": "-0.4:0.2", "nli_contradiction": 0.90, "r_min": 0.44, "pair_filter": "geo"},
+ "preregistration": "stage0_results/geometry_filter/GEO_PREREG.md. Round-1 (preregistered diagonal grid) chose tau 0.10: recall 0.5955, 0 harmful. Amendment 1 (calibration-only, the CES-grid precedent): per-axis 'tw:tp' rectangles; chosen cos_pair 0.94 + tau -0.4:0.2 - precision 1.000, pool recall 0.7895, 0 harmful, conflicted-question recall 104/139. sh_64k untouched throughout selection; wet-run gate GG1 (recall > 0.4444) passed."
+}
