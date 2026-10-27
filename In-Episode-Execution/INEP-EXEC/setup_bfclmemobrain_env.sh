@@ -9,8 +9,8 @@ CONDA_BASE="$(conda info --base)"
 source "$CONDA_BASE/etc/profile.d/conda.sh"
 
 ENV_NAME="bfclmemobrain"
-BFCL_DIR="/data/chimo/BFCL/in-episode/ours"
-MEMOBRAIN_DIR="/data/chimo/MemoBrain"
+BFCL_DIR="ours"
+MEMOBRAIN_DIR="MemoBrain"
 
 echo "=== Creating conda environment: $ENV_NAME (Python 3.10) ==="
 conda create -y -n "$ENV_NAME" python=3.10

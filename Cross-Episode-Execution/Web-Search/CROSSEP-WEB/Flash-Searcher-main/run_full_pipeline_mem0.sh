@@ -9,7 +9,6 @@
 # Reversed order: WebWalkerQA (Phase 1) → XBench (Phase 2)  [--ww-first]
 #
 # Usage:
-#   cd Flash-Searcher-main
 #   bash run_full_pipeline_mem0.sh                          # XBench → WebWalkerQA
 #   bash run_full_pipeline_mem0.sh --ww-first               # WebWalkerQA → XBench
 #   bash run_full_pipeline_mem0.sh --both-orders            # Run both orderings

@@ -7,7 +7,6 @@ Localized fork of the A-mem agentic memory library (Zettelkasten-style semantic 
 Clone this repository, then install it in editable mode from the repo root:
 
 ```bash
-git clone git@github.com:IcohM/A-mem.git
 cd A-mem
 pip install -e .
 ```

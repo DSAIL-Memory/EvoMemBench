@@ -48,7 +48,7 @@ def get_all_game_files(config, split="eval_out_of_distribution"):
 
 
 if __name__ == "__main__":
-    os.environ["ALFWORLD_DATA"] = "/Users/wang/.cache/alfworld"
+    os.environ["ALFWORLD_DATA"] = ".cache/alfworld"
     config = load_config("configs/base_config.yaml")
     game_files = get_all_game_files(config, "train")
     game_files = [game[len(os.environ["ALFWORLD_DATA"]) + 1 :] for game in game_files]

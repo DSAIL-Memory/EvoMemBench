@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# 串行执行 16 个 pipeline 脚本的冒烟测试，失败不中断，最后汇总 PASS/FAIL
 set -u
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -10,7 +9,6 @@ SMOKE_ROOT="$SCRIPT_DIR/smoke_tests/$TS"
 mkdir -p "$SMOKE_ROOT"
 SUMMARY="$SMOKE_ROOT/SUMMARY.txt"
 
-# 14 个默认 both-orders 脚本（会产 2 份 pipeline_report.txt）
 SCRIPTS_BOTH=(
     run_full_pipeline_ace.sh
     run_full_pipeline_agent_kb.sh
@@ -27,7 +25,7 @@ SCRIPTS_BOTH=(
     run_full_pipeline_reasoning_bank.sh
     run_full_pipeline_skillweaver.sh
 )
-# 2 个 nomemory 单向脚本（产 1 份 pipeline_report.txt）
+
 SCRIPTS_SINGLE=(
     run_full_pipeline_gemini3flash_nomemory.sh
     run_full_pipeline_gpt5mini_nomemory.sh

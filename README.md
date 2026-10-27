@@ -3,7 +3,7 @@
 ![EvoMemBench overview](assets/main_figure.jpg)
 
 
-EvoMemBench is a benchmark suite for evaluating memory mechanisms in LLM-based agents from a self-evolving perspective. It accompanies the paper [EvoMemBench: Benchmarking Agent Memory from a Self-Evolving Perspective](https://arxiv.org/abs/2605.18421).
+EvoMemBench is a benchmark suite for evaluating memory mechanisms in LLM-based agents from a self-evolving perspective. 
 
 The benchmark follows the taxonomy in the paper and organizes self-evolving memory along two axes:
 
@@ -17,10 +17,10 @@ This yields four forms of memory evolution: in-episode knowledge, in-episode exe
 
 | Setting | Benchmark | Source / domain | Samples | Directory |
 | --- | --- | --- | --- | --- |
-| In-episode knowledge | InEp-Know | MemoryAgentBench: Accurate Retrieval and Selective Forgetting | 2,800 | `In-Episode-Knowledge/INEP-KNOW/` |
-| In-episode execution | InEp-Exec | BFCL-MultiTurn-LongContext: file system, vehicle control, trading, travel | 800 | `In-Episode-Execution/INEP-EXEC/` |
+| In-episode knowledge | InEp-Know | MemoryAgentBench: Accurate Retrieval and Selective Forgetting | 1,200 QA pairs | `In-Episode-Knowledge/INEP-KNOW/` |
+| In-episode execution | InEp-Exec | BFCL-MultiTurn-LongContext: file system, vehicle control, trading, travel | 200 | `In-Episode-Execution/INEP-EXEC/` |
 | Cross-episode knowledge | CrossEp-Know | CL-Bench: facts, rules, procedures, empirical patterns | 884 | `Cross-Episode-Knowledge/CROSSEP-KNOW/` |
-| Cross-episode execution | CrossEp-Tool | BFCL-MultiTurn-Base: four tool-use environments | 800 | `Cross-Episode-Execution/Tool-Using/CROSSEP-TOOL/` |
+| Cross-episode execution | CrossEp-Tool | BFCL-MultiTurn-Base: four tool-use environments | 200 | `Cross-Episode-Execution/Tool-Using/CROSSEP-TOOL/` |
 | Cross-episode execution | CrossEp-Web | xbench-DeepSearch and WebWalkerQA | 270 | `Cross-Episode-Execution/Web-Search/CROSSEP-WEB/` |
 | Cross-episode execution | CrossEp-Emb | ALFWorld: six embodied task categories | 200 | `Cross-Episode-Execution/Embodied-AI/CROSSEP-EMB/` |
 
@@ -30,13 +30,13 @@ The paths below are relative to the repository root and were collected from the 
 
 | Benchmark | Subset | Data path or download source |
 | --- | --- | --- |
-| InEp-Know | `eventqa_full`, `eventqa_65536`, `eventqa_131072`, `longmemeval_s_-1_500`, `longmemeval_s*`, `ruler_qa1_197K`, `ruler_qa2_421K` | Hugging Face dataset id: `ai-hyz/MemoryAgentBench`, split `Accurate_Retrieval`; local mirror: `In-Episode-Knowledge/INEP-KNOW/MemoryAgentBench/data/Accurate_Retrieval.json` |
-| InEp-Know | `factconsolidation_sh_6k`, `factconsolidation_sh_32k`, `factconsolidation_sh_64k`, `factconsolidation_sh_262k`, `factconsolidation_mh_6k`, `factconsolidation_mh_32k`, `factconsolidation_mh_64k`, `factconsolidation_mh_262k` | Hugging Face dataset id: `ai-hyz/MemoryAgentBench`, split `Conflict_Resolution`; local mirror: `In-Episode-Knowledge/INEP-KNOW/MemoryAgentBench/data/Conflict_Resolution.json` |
+| InEp-Know | `eventqa_full`, `longmemeval_s*`, `ruler_qa1_197K`, `ruler_qa2_421K` | Hugging Face dataset id: `ai-hyz/MemoryAgentBench`, split `Accurate_Retrieval`; bundled JSON snapshot: `In-Episode-Knowledge/INEP-KNOW/MemoryAgentBench/data/Accurate_Retrieval.json` |
+| InEp-Know | `factconsolidation_sh_262k`, `factconsolidation_mh_262k` | Hugging Face dataset id: `ai-hyz/MemoryAgentBench`, split `Conflict_Resolution`; bundled JSON snapshot: `In-Episode-Knowledge/INEP-KNOW/MemoryAgentBench/data/Conflict_Resolution.json` |
 | InEp-Exec | `gorilla_fs`, `vehicle_control`, `trading_bot`, `travel_api` | `In-Episode-Execution/INEP-EXEC/bfcl_eval/data/BFCL_v4_multi_turn_ours.json`; answers: `In-Episode-Execution/INEP-EXEC/bfcl_eval/data/possible_answer/BFCL_v4_multi_turn_ours.json` |
 | CrossEp-Know | `Rule System Application`, `Domain Knowledge Reasoning`, `Procedural Task Execution`, `Empirical Discovery & Simulation` | `Cross-Episode-Knowledge/CROSSEP-KNOW/CL-bench_context_ge5.jsonl` |
 | CrossEp-Tool | `gorilla_fs`, `vehicle_control`, `trading_bot`, `travel_api` | `Cross-Episode-Execution/Tool-Using/CROSSEP-TOOL/bfcl_eval/data/BFCL_v4_multi_turn_ours.json`; answers: `Cross-Episode-Execution/Tool-Using/CROSSEP-TOOL/bfcl_eval/data/possible_answer/BFCL_v4_multi_turn_ours.json` |
-| CrossEp-Web | `xbench` / XBench DeepSearch | `Cross-Episode-Execution/Web-Search/CROSSEP-WEB/Flash-Searcher-main/data/xbench/DeepSearch.csv` |
-| CrossEp-Web | `webwalkerqa` / WebWalkerQA | `Cross-Episode-Execution/Web-Search/CROSSEP-WEB/Flash-Searcher-main/data/webwalkerqa/webwalkerqa_subset_170.jsonl` |
+| CrossEp-Web | xBench DeepSearch | `Cross-Episode-Execution/Web-Search/CROSSEP-WEB/Flash-Searcher-main/data/xbench/DeepSearch.csv` |
+| CrossEp-Web | WebWalkerQA | `Cross-Episode-Execution/Web-Search/CROSSEP-WEB/Flash-Searcher-main/data/webwalkerqa/webwalkerqa_subset_170.jsonl` |
 | CrossEp-Emb | `pick_and_place_simple`, `pick_two_obj_and_place`, `pick_clean_then_place_in_recep`, `pick_cool_then_place_in_recep`, `pick_heat_then_place_in_recep`, `look_at_obj_in_light` | ALFWorld download command from setup: run `alfworld-download` after setting `ALFWORLD_DATA=~/.cache/alfworld` |
 
 The four cells in the taxonomy are instantiated as follows:
@@ -223,12 +223,11 @@ EvoMemBench is built based on the following repositories:
 ## Citation
 
 If you use EvoMemBench in your research, please cite:
-
-```bibtex
-@article{wang2026evomembench,
+```
+@inproceedings{wang2026evomembench,
   title={EvoMemBench: Benchmarking Agent Memory from a Self-Evolving Perspective},
   author={Wang, Yuyao and Zhang, Zhongjian and Chi, Mo and Yu, Kaichi and Li, Yuhan and Peng, Miao and Tong, Bing and Zhang, Chen and Zhou, Yan and Li, Jia},
-  journal={arXiv preprint arXiv:2605.18421},
-  year={2026}
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2026}
 }
 ```

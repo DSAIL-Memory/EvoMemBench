@@ -87,10 +87,6 @@ class MemOSMemoryProvider(BaseMemoryProvider):
     # ── initialize ────────────────────────────────────────────────────────────
 
     def initialize(self) -> bool:
-        # MemOS 的 memos/api/config.py:26 在 import 链路上会执行
-        # load_dotenv(override=True)，从 /data/chimo/MemOS/.env 把 OPENAI_API_KEY /
-        # OPENAI_API_BASE 等变量覆盖成 aigcbest 的值，污染后续 judge_model 创建。
-        # 这里在 import 前后保存/恢复 env 来阻止污染。
         _preserved = {
             k: os.environ.get(k)
             for k in ("OPENAI_API_KEY", "OPENAI_API_BASE", "OPENAI_BASE_URL",

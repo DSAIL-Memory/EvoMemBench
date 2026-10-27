@@ -19,7 +19,7 @@ INEP-KNOW/
 │   ├── bash_files/
 │   │   ├── configs/                     # Script config lists
 │   │   └── sh/                          # Experiment and smoke-test scripts
-│   ├── data/                            # Optional local JSON data
+│   ├── data/                            # Bundled JSON snapshots
 │   ├── agents/                          # Agent and memory caches
 │   └── outputs/                         # Evaluation outputs
 ├── requirements.txt
@@ -48,21 +48,31 @@ pip install "numpy<2"
 
 ## Data
 
-By default, the benchmark loads data from the Hugging Face dataset:
+The current evaluation code loads the following Hugging Face dataset at revision `main` and filters each split by `metadata.source` to match the configured `sub_dataset` exactly:
 
 ```text
 ai-hyz/MemoryAgentBench
 ```
 
-Supported splits include:
+All 12 full experiment scripts (`MemoryAgentBench/bash_files/sh/run_exp_*.sh`) select the following six subsets. A complete evaluation covers **1,200 QA pairs per method**: 1,000 from Accurate Retrieval and 200 from Conflict Resolution. Counts are calculated from the selected subsets in the bundled JSON snapshots with the current dataset configuration limits.
 
-- `Accurate_Retrieval`
-- `Conflict_Resolution`
+| Split | Subset | QA pairs |
+| --- | --- | ---: |
+| `Accurate_Retrieval` | `eventqa_full` | 500 |
+| `Accurate_Retrieval` | `longmemeval_s*` | 300 |
+| `Accurate_Retrieval` | `ruler_qa1_197K` | 100 |
+| `Accurate_Retrieval` | `ruler_qa2_421K` | 100 |
+| `Conflict_Resolution` | `factconsolidation_sh_262k` | 100 |
+| `Conflict_Resolution` | `factconsolidation_mh_262k` | 100 |
+| **Total** | | **1,200** |
 
-Local JSON files can also be placed under:
+Each dataset record contains a context and multiple question-answer pairs. The evaluator expands these pairs and evaluates each question individually. `max_test_samples` limits context records; `--max_test_queries_ablation` limits questions within one invocation of `main.py`. The full experiment scripts do not set a question limit. The `run_smoke_*.sh` scripts limit each method to two questions on `factconsolidation_sh_262k`.
+
+Bundled JSON snapshots are available at the following paths, but the current loader does not automatically read them:
 
 ```text
-MemoryAgentBench/data/*.json
+MemoryAgentBench/data/Accurate_Retrieval.json
+MemoryAgentBench/data/Conflict_Resolution.json
 ```
 
 Dataset YAML files live in:
@@ -77,6 +87,7 @@ Each dataset config usually defines:
 | --- | --- | --- |
 | `dataset` | `Accurate_Retrieval`, `Conflict_Resolution` | Top-level benchmark split. |
 | `sub_dataset` | Config-specific | Subset name used for sample filtering and output filenames. |
+| `max_test_samples` | `1`, `5`, `100` | Maximum number of context records to load for the selected subset. |
 | `chunk_size` | `4096` | Context chunk size. Memory agents can override this with `agent_chunk_size`. |
 
 ## Environment Variables
@@ -111,7 +122,7 @@ cd MemoryAgentBench
 
 python main.py \
   --agent_config configs/agent_conf/RAG_Agents/deepseek-chat/Simple_rag_deepseek-chat-bm25.yaml \
-  --dataset_config configs/data_conf/Conflict_Resolution/Factconsolidation_sh_6k.yaml \
+  --dataset_config configs/data_conf/Conflict_Resolution/Factconsolidation_sh_262k.yaml \
   --max_test_queries_ablation 2 \
   --force
 ```

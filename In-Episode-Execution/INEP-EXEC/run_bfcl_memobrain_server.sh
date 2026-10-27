@@ -7,11 +7,11 @@
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate bfclmemobrain
 export CUDA_VISIBLE_DEVICES=5
-export HF_HOME=/data/chimo/llms
+export HF_HOME=llms
 
 python -m vllm.entrypoints.openai.api_server \
     --model TommyChien/MemoBrain-14B \
-    --download-dir /data/chimo/llms \
+    --download-dir llms \
     --port 8002 \
     --tensor-parallel-size 1 \
     --dtype bfloat16 \

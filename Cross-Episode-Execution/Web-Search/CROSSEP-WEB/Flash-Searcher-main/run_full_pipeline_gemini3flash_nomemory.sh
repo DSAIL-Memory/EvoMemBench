@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run_full_pipeline_gemini3flash_nomemory.sh — gemini-3-flash-preview 无 memory 基线
-#
-# 基于 run_full_pipeline.sh，agent 模型换成 gemini-3-flash-preview（aigcbest OpenAI 兼容
-# 端点），不使用任何 memory。judge 仍保留 deepseek Ark batch（与 deepseek 基线
-# 同口径，方便对比）。
-#
 # Usage:
 #   bash run_full_pipeline_gemini3flash_nomemory.sh                      # 全量
 #   bash run_full_pipeline_gemini3flash_nomemory.sh --xbench-n 3 --ww-n 3  # 小样验证
